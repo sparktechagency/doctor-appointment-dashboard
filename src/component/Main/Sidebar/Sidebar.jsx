@@ -31,11 +31,11 @@ const sidebarItems = [
     name: "Appointment",
     icon: <BiCalendarEdit className="size-8" />,
   },
-  {
-    path: "/chat",
-    name: "Chat",
-    icon: <IoChatbubblesOutline className="size-8" />,
-  },
+  // {
+  //   path: "/chat",
+  //   name: "Chat",
+  //   icon: <IoChatbubblesOutline className="size-8" />,
+  // },
   {
     path: "/earnings",
     name: "Earnings",
