@@ -18,7 +18,6 @@ import EditPrivacyPolicy from "../page/EditPrivacyPolicy/EditPrivacyPolicy";
 import EditTermsConditions from "../page/EditTermsConditions/EditTermsConditions";
 import EditAboutUs from "../page/EditAboutUs/EditAboutUs";
 import Appointment from "../page/Appointment/Appointment";
-import Chat from "../page/Chat/Chat";
 import AddSubsciptionsPage from "../page/AddSubscriptions/AddSubscriptions";
 import SubscriptionsPage from "../page/Subscriptions/SubscriptionsPage";
 import EditSubscriptionsitems from "../page/EditSubscriptionsitems/EditSubscriptionsitems";
@@ -27,6 +26,7 @@ import AppointmentListPage from "../page/Appointment/AppointmentList";
 import AddInformationPage from "../page/AddInformation/AddInformation";
 import EditInformationPage from "../page/EditInformation/EditInformation.";
 import TeamMemberPage from "../page/TeamMember/TeamMemberpage";
+import Chat from '../page/Chat/Chat'
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
