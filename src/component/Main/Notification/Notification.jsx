@@ -35,8 +35,8 @@ const Notification = () => {
 
       <div className="space-y-4 ">
         {paginatedNotifications.map((item) => (
-          <div key={item.id} className=" rounded-md p-4 flex items-center space-x-4 border border-[#77C4FE]">
-            <div className="text-[#77C4FE] border border-[#77C4FE] rounded-full p-2">
+          <div key={item.id} className=" rounded-md p-4 flex items-center space-x-4 border border-primary">
+            <div className="text-primary border border-primary rounded-full p-2">
               <IoMdNotificationsOutline size={30} />
             </div>
             <div>

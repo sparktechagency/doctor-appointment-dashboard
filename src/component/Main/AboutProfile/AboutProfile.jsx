@@ -1,7 +1,6 @@
-import { Form } from "antd";
+import { Card, Form } from "antd";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
 import { MdKeyboardArrowLeft } from "react-icons/md";
-import { Card } from "antd";
 import { Link } from "react-router-dom";
 const { Meta } = Card;
 
@@ -16,13 +15,13 @@ const AboutProfile = () => {
             </h1>
             <Form layout="inline" className="md:flex space-x-4 ">
               <Link to="/teammember">
-              <button className=" flex justify-center items-center bg-[#77C4FE] text-white px-3 py-2 rounded-md">
+              <button className=" flex justify-center items-center bg-primary text-white px-3 py-2 rounded-md">
                 <FaArrowRightArrowLeft className="size-5" />
                 <p className="px-2">My Team Member</p>
               </button>
               </Link>
               <Link to="/addInformation">
-                <button className=" flex justify-center items-center bg-[#77C4FE] text-white px-3 py-2 rounded-md">
+                <button className=" flex justify-center items-center bg-primary text-white px-3 py-2 rounded-md">
                   <FaArrowRightArrowLeft className="size-5" />
                   <p className="px-2">Add Information </p>
                 </button>
@@ -48,7 +47,7 @@ const AboutProfile = () => {
             <Link to="/edit-personal-info">
               <button
                 border
-                className="w-full mt-2 bg-[#77C4FE]  py-2 text-center    text-white rounded-md border-none"
+                className="w-full mt-2 bg-primary  py-2 text-center    text-white rounded-md border-none"
               >
                 Edit Information
               </button>

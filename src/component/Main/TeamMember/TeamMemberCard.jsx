@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 // import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
-import { toast } from "sonner";
 import { Modal } from "antd"; // Import Ant Design's Modal component
+import { toast } from "sonner";
+import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
 
 const TeamMemberCard = ({ item }) => {
   const [deleteProduct] = useDeleteProductMutation();
@@ -60,13 +60,13 @@ const TeamMemberCard = ({ item }) => {
       <div className="flex justify-between items-center mt-3">
         <button
           onClick={() => showDeleteConfirm(id)}
-          className="px-4 py-2 border border-[#77C4FE] text-[#77C4FE] rounded text-sm transition duration-200"
+          className="px-4 py-2 border border-primary text-primary rounded text-sm transition duration-200"
         >
           Delete
         </button>
 
         <Link to={`/teammember/edit-item/${id}`}>
-          <button className="px-4 py-2 bg-[#77C4FE] text-white rounded text-sm transition duration-200">
+          <button className="px-4 py-2 bg-primary text-white rounded text-sm transition duration-200">
             Edit
           </button>
         </Link>

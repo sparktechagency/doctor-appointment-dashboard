@@ -1,16 +1,16 @@
 
-import { useGetDashboardStatusQuery } from "../../../redux/features/dashboard/dashboardApi";
 import Frame1 from "../../../assets/auth/Frame1.png";
 import Frame2 from "../../../assets/auth/Frame2.png";
 import Frame3 from "../../../assets/auth/Frame3.png";
 import OrganizationImage from "../../../assets/auth/user.png";
+import { useGetDashboardStatusQuery } from "../../../redux/features/dashboard/dashboardApi";
 
 const Status = () => {
     const {data} = useGetDashboardStatusQuery();
     console.log(data)
   return (
     <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
-    <div className="flex items-center justify-between p-5 rounded-lg bg-[#77C4FE] w-full">
+    <div className="flex items-center justify-between p-5 rounded-lg bg-primary w-full">
       <div className="size-16 p-3 flex justify-center items-center">
         <img src={OrganizationImage} alt="logo" className="w-[64px]  h-[64px]  mb-5" />
       </div>
@@ -21,7 +21,7 @@ const Status = () => {
         <h1>Total Patient</h1>
       </div>
     </div>
-    <div className="flex items-center justify-between p-5 rounded-lg bg-[#77C4FE] w-full">
+    <div className="flex items-center justify-between p-5 rounded-lg bg-primary w-full">
       <div className="size-16 p-3 flex justify-center items-center">
         <img src={Frame1} alt="logo" className="w-[64px]  h-[64px]  mb-5" />
       </div>
@@ -32,7 +32,7 @@ const Status = () => {
         <h1>Total Earnings</h1>
       </div>
     </div>
-    <div className="flex items-center justify-between p-5 rounded-lg bg-[#77C4FE] w-full">
+    <div className="flex items-center justify-between p-5 rounded-lg bg-primary w-full">
       <div className="size-16 p-3 flex justify-center items-center">
         <img src={Frame2} alt="logo" className="w-[64px]  h-[64px]  mb-5" />
       </div>
@@ -43,7 +43,7 @@ const Status = () => {
         <h1>Daily affirmation</h1>
       </div>
     </div>
-    <div className="flex items-center justify-between p-5 rounded-lg bg-[#77C4FE] w-full">
+    <div className="flex items-center justify-between p-5 rounded-lg bg-primary w-full">
       <div className="size-16 p-3 flex justify-center items-center">
         <img src={Frame3} alt="logo" className="w-[64px]  h-[64px]  mb-5" />
       </div>

@@ -1,8 +1,8 @@
 import { FaPlus } from "react-icons/fa";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../../redux/features/product/productApi";
 import CategoriesCard from "./SubscriptionsCard";
-import { MdKeyboardArrowLeft } from "react-icons/md";
 
 
 const Subscriptions = () => {
@@ -82,7 +82,7 @@ const Subscriptions = () => {
       <div className="w-full flex justify-between items-center py-6 ">
         <h1 className="text-xl font-semibold flex items-center"><MdKeyboardArrowLeft /> Subscriptions</h1>
         <Link to={`/subscriptions/add-item`}>
-          <button className="px-8 py-3 bg-[#77C4FE] text-white flex justify-center items-center gap-1 rounded text-sm">
+          <button className="px-8 py-3 bg-primary text-white flex justify-center items-center gap-1 rounded text-sm">
             <FaPlus />
             Add Subscriptions
           </button>

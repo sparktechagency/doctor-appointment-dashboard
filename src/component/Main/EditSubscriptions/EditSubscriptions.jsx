@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from "react";
 import { Form } from "antd";
-import {  IoChevronBack } from "react-icons/io5";
+import { useEffect, useRef, useState } from "react";
+import { FaMinus, } from "react-icons/fa6";
+import { IoChevronBack } from "react-icons/io5";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { imageBaseUrl } from "../../../config/imageBaseUrl";
 import {
-  useGetProductByIdQuery,
-  useUpdateProductMutation,
+    useGetProductByIdQuery,
+    useUpdateProductMutation,
 } from "../../../redux/features/product/productApi";
 import CustomInput from "../../../utils/CustomInput";
-import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import { FaMinus, } from "react-icons/fa6";
 
 const EditSubscriptions = () => {
   const [imageFile, setImageFile] = useState(null);
@@ -130,19 +130,19 @@ const EditSubscriptions = () => {
           >
             <CustomInput type="" />
           </Form.Item>
-          <div className="bg-[#77C4FE] w-10 h-10 rounded-full ml-5 p-3 text-white">
+          <div className="bg-primary w-10 h-10 rounded-full ml-5 p-3 text-white">
           <FaMinus />
           </div>
         </div>
 
         {/* Submit Button */}
-        <button loading={isLoading} border className="w-[90%] bg-[#77C4FE] px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none">
+        <button loading={isLoading} border className="w-[90%] bg-primary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none">
          Add fields
         </button>
 
 
          {/* Submit Button */}
-         <button loading={isLoading} border className="mt-12  bg-[#77C4FE] px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
+         <button loading={isLoading} border className="mt-12  bg-primary px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
          Update
         </button>
       </Form>

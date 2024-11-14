@@ -1,11 +1,11 @@
 import { Form } from "antd";
 import { useRef, useState } from "react";
+import { FaPlus } from "react-icons/fa6";
 import { IoChevronBack } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAddProductMutation } from "../../../redux/features/product/productApi";
 import CustomInput from "../../../utils/CustomInput";
-import { FaPlus } from "react-icons/fa6";
 
 const AddSubsciptions = () => {
   const [imageFile, setImageFile] = useState(null);
@@ -107,7 +107,7 @@ const AddSubsciptions = () => {
           >
             <CustomInput type="" />
           </Form.Item>
-          <div className="bg-[#77C4FE] w-10 h-10 rounded-full ml-5 p-3 text-white">
+          <div className="bg-primary w-10 h-10 rounded-full ml-5 p-3 text-white">
             <FaPlus />
           </div>
         </div>
@@ -116,13 +116,13 @@ const AddSubsciptions = () => {
         <button
           loading={isLoading}
           border
-          className="w-[90%] bg-[#77C4FE] px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none"
+          className="w-[90%] bg-primary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none"
         >
           Add Subscriptions
         </button>
 
         {/* Submit Button */}
-        <button loading={isLoading} border className="mt-12  bg-[#77C4FE] px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
+        <button loading={isLoading} border className="mt-12  bg-primary px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
          Save
         </button>
       </Form>

@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 
-import { MdOutlineNotificationsActive } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
+import { MdOutlineNotificationsActive } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
 
 const Header = ({ toggleSidebar }) => {
@@ -11,7 +11,7 @@ const Header = ({ toggleSidebar }) => {
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <div className="w-[99%] p-2 mx-2  flex justify-between items-center text-gray-500 sticky top-0 left-0 z-10 bg-[#77C4FE] rounded-md">
+    <div className="w-[99%] p-2 mx-2  flex justify-between items-center text-gray-500 sticky top-0 left-0 z-10 bg-primary rounded-md">
       <div className="flex items-center gap-3  py-1 px-3  rounded">
         {/* Hamburger menu for mobile */}
         <button

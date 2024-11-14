@@ -1,8 +1,8 @@
+import TextArea from "antd/es/input/TextArea";
 import { IoChevronBack } from "react-icons/io5";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import { useSelector } from "react-redux";
-import TextArea from "antd/es/input/TextArea";
 
 const EditInformation = () => {
   const { user } = useSelector((state) => state.auth);
@@ -31,7 +31,7 @@ const EditInformation = () => {
                 alt=""
               />
             </div>
-            <button className="px-8 py-3 bg-[#77C4FE] text-white rounded-lg ">
+            <button className="px-8 py-3 bg-primary text-white rounded-lg ">
               Upload Photo
             </button>
             <span className="text-lg font-semibold uppercase">
@@ -101,7 +101,7 @@ const EditInformation = () => {
             />
           </div>
           <div className="flex justify-end">
-              <button className="px-8 py-3 bg-[#77C4FE] text-white rounded-lg ">
+              <button className="px-8 py-3 bg-primary text-white rounded-lg ">
                 Update Profile
               </button>
           </div>

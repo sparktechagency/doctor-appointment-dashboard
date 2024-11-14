@@ -1,7 +1,7 @@
 import { IoChevronBack } from "react-icons/io5";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import { useSelector } from "react-redux";
 
 
 const PersonalInformation = () => {
@@ -18,7 +18,7 @@ const PersonalInformation = () => {
           <h1 className="text-2xl font-semibold">Personal Information</h1>
         </div>
         <Link to="/edit-personal-info">
-          <button className="px-8 py-3 bg-[#77C4FE] text-white rounded-lg">
+          <button className="px-8 py-3 bg-primary text-white rounded-lg">
             Edit Profile
           </button>
         </Link>
@@ -81,7 +81,7 @@ const PersonalInformation = () => {
               className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
             />
           </div>
-          <button className="px-8 py-3 bg-[#77C4FE] text-white rounded-lg w-full">
+          <button className="px-8 py-3 bg-primary text-white rounded-lg w-full">
             Save
           </button>
         </form>

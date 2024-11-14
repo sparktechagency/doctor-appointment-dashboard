@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { FaCheckCircle } from "react-icons/fa";
-import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
-import { toast } from "sonner";
 import { Modal } from "antd"; // Import Ant Design's Modal component
+import PropTypes from "prop-types";
+import { FaCheckCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
 
 const SubscriptionsCard = ({ item, index }) => {
   const [deleteProduct] = useDeleteProductMutation();
@@ -40,7 +40,7 @@ const SubscriptionsCard = ({ item, index }) => {
   return (
     <div
   className={`w-full rounded-lg border shadow-sm ${
-    item.id === 1 || index === 0 ? 'bg-[#77C4FE] text-white' : 'bg-[#D5EDFF] text-black'
+    item.id === 1 || index === 0 ? 'bg-primary text-white' : 'bg-[#D5EDFF] text-black'
   }`}
 >
   {/* Image Handling with Centered Fallback */}
@@ -56,15 +56,15 @@ const SubscriptionsCard = ({ item, index }) => {
       {amount}$ <br />Per Month
     </div>
     <h1 className="flex items-center py-1">
-      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-[#77C4FE]'} mr-3`} />
+      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-primary'} mr-3`} />
       {subTitle1}
     </h1>
     <h1 className="flex items-center py-1">
-      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-[#77C4FE]'} mr-3`} />
+      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-primary'} mr-3`} />
       {subTitle2}
     </h1>
     <h1 className="flex items-center py-1">
-      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-[#77C4FE]'} mr-3`} />
+      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-primary'} mr-3`} />
       {subTitle3}
     </h1>
     <h1 className="flex items-center py-1">
@@ -82,13 +82,13 @@ const SubscriptionsCard = ({ item, index }) => {
     <button
       onClick={() => showDeleteConfirm(id)}
       className={`px-3 py-2 border ${
-        index === 0 ? 'border-white text-white' : 'border-[#77C4FE] text-[#77C4FE]'
-      } rounded text-sm hover:bg-[#77C4FE] hover:text-white transition`}
+        index === 0 ? 'border-white text-white' : 'border-primary text-primary'
+      } rounded text-sm hover:bg-primary hover:text-white transition`}
     >
       Delete
     </button>
     <Link to={`/subscriptions/edit-item/${id}`}>
-      <button className={`px-5 py-2 ${index === 0 ? 'bg-white text-[#77C4FE]' : 'bg-[#77C4FE] text-white'} rounded text-sm hover:bg-[#77C4FE] hover:text-white transition`}>
+      <button className={`px-5 py-2 ${index === 0 ? 'bg-white text-primary' : 'bg-primary text-white'} rounded text-sm hover:bg-primary hover:text-white transition`}>
         Edit
       </button>
     </Link>

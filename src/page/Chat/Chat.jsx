@@ -1,15 +1,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { useState } from "react";
 import {
-    FiPhone,
-    FiVideo,
-    FiImage,
-    FiSmile,
-    FiLink,
-    FiMoreVertical,
-  } from "react-icons/fi";
-  import { useState } from "react";
-  import { Link } from "react-router-dom";
+  FiImage,
+  FiLink,
+  FiMoreVertical,
+  FiPhone,
+  FiSmile,
+  FiVideo,
+} from "react-icons/fi";
+import { Link } from "react-router-dom";
   
   const members = [
     {
@@ -57,7 +57,7 @@ import {
   ];
   
   const Chat = () => {
-    const [selectedMember, setSelectedMember] = useState(null);
+    const [selectedMember, setSelectedMember] = useState(members[0]);
     const [showChatWindow, setShowChatWindow] = useState(false);
   
     const handleMemberClick = (member) => {
@@ -71,7 +71,7 @@ import {
         <MemberList members={members} onMemberClick={handleMemberClick} />
   
         {/* Chat Window */}
-        {showChatWindow && selectedMember && (
+        {selectedMember && (
           <ChatWindow
             member={selectedMember}
             onClose={() => setShowChatWindow(false)}
@@ -85,9 +85,9 @@ import {
     <div className="w-full lg:w-1/4 p-2 py-3">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 bg-white">
-        <h2 className="text-2xl font-bold text-[#77C4FE]">Message</h2>
+        <h2 className="text-2xl font-bold text-primary">Message</h2>
         <input
-          className="border border-gray-300 focus:border-[#77C4FE] rounded-full px-4 py-2 text-sm outline-none shadow-sm transition duration-200"
+          className="border border-gray-300 focus:border-primary rounded-full px-4 py-2 text-sm outline-none shadow-sm transition duration-200"
           type="text"
           placeholder="Search members..."
         />
@@ -120,7 +120,7 @@ import {
               {/* Last Active & Notification Badge */}
               <div className="flex flex-col items-center ml-2">
                 <p className="text-gray-400 text-xs mb-1">{member.lastActive}</p>
-                <div className="bg-[#77C4FE] text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+                <div className="bg-primary text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
                   2
                 </div>
               </div>

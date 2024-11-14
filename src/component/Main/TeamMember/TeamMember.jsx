@@ -1,8 +1,8 @@
 import { FaPlus } from "react-icons/fa";
+import { IoChevronBack } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../../redux/features/product/productApi";
 import TeamMemberCard from "./TeamMemberCard";
-import { IoChevronBack } from "react-icons/io5";
 
 const TeamMember = () => {
   const dataSource = [
@@ -103,7 +103,7 @@ const TeamMember = () => {
           </h1>
         </Link>
         <Link to={"#"}>
-          <button className="px-8 py-3  text-white bg-[#77C4FE] flex justify-center items-center gap-1 rounded text-sm">
+          <button className="px-8 py-3  text-white bg-primary flex justify-center items-center gap-1 rounded text-sm">
             <FaPlus />
             Add Member
           </button>

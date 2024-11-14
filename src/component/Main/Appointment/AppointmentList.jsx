@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Table, Modal, ConfigProvider, Form, DatePicker, Input } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { IoIosSearch } from "react-icons/io";
+import { ConfigProvider, DatePicker, Form, Input, Modal, Table } from "antd";
 import moment from "moment";
+import { useState } from "react";
+import { IoIosSearch } from "react-icons/io";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
 
@@ -226,7 +226,7 @@ const AppointmentList = () => {
               <Input placeholder="User name" />
             </Item>
             <Item>
-              <button className=" size-8 rounded-full flex justify-center items-center bg-[#77C4FE] text-white">
+              <button className=" size-8 rounded-full flex justify-center items-center bg-primary text-white">
                 <IoIosSearch className="size-5" />
               </button>
             </Item>

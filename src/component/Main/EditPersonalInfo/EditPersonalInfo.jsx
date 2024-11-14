@@ -1,14 +1,14 @@
 import { Form } from "antd";
-import { useEffect, useState, useRef } from "react";
-import { IoChevronBack, IoCameraOutline } from "react-icons/io5";
+import { useEffect, useRef, useState } from "react";
+import { IoCameraOutline, IoChevronBack } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { imageBaseUrl } from "../../../config/imageBaseUrl";
+import { updateUser } from "../../../redux/features/auth/authSlice";
 import { useUpdateUserMutation } from "../../../redux/features/profile/profileApi";
 import CustomButton from "../../../utils/CustomButton";
 import CustomInput from "../../../utils/CustomInput";
-import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../../../redux/features/auth/authSlice";
 
 const EditPersonalInfo = () => {
   const { user } = useSelector((state) => state.auth);
@@ -99,7 +99,7 @@ const EditPersonalInfo = () => {
                 alt="Profile Preview"
               />
             ) : (
-              <div className="bg-[#77C4FE] p-10 text-white flex flex-col items-center rounded-full ">
+              <div className="bg-primary p-10 text-white flex flex-col items-center rounded-full ">
                 <IoCameraOutline size={40} />
                 <span className="text-sm">Upload Image</span>
               </div>

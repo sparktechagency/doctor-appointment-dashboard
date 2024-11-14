@@ -1,19 +1,19 @@
-import {  useState } from "react";
 import {
-  ConfigProvider,
-  DatePicker,
-  Input,
-  Modal,
-  Space,
-  Table,
-  Form,
+    ConfigProvider,
+    DatePicker,
+    Form,
+    Input,
+    Modal,
+    Space,
+    Table,
 } from "antd";
-import { BsInfoCircle } from "react-icons/bs";
 import moment from "moment";
+import { useState } from "react";
+import { BsInfoCircle } from "react-icons/bs";
 import { IoIosSearch } from "react-icons/io";
 // import { useGetAllUsersQuery } from "../../../redux/features/user/userApi";
-import { imageBaseUrl } from "../../../config/imageBaseUrl";
 import { MdKeyboardArrowLeft } from "react-icons/md";
+import { imageBaseUrl } from "../../../config/imageBaseUrl";
 
 const { Item } = Form;
 
@@ -246,7 +246,7 @@ const Users = () => {
             <Input placeholder="User name" />
           </Item>
           <Item>
-            <button className=" size-8 rounded-full flex justify-center items-center bg-[#77C4FE] text-white">
+            <button className=" size-8 rounded-full flex justify-center items-center bg-primary text-white">
               <IoIosSearch className="size-5" />
             </button>
           </Item>

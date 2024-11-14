@@ -1,14 +1,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import { Button, Form, Input, Modal, Switch } from "antd";
-import { useEffect, useState } from "react";
-import { GoArrowLeft } from "react-icons/go";
-import { HiOutlineLockClosed, HiOutlineMailOpen } from "react-icons/hi";
-import { ImSpinner6 } from "react-icons/im";
+import { useState } from "react";
+import { HiOutlineLockClosed } from "react-icons/hi";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import OTPInput from "react-otp-input";
 // import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { useChangePasswordMutation, useChangePasswordUseingOldPasswordMutation, useForgotPasswordMutation, useVerifyOtpMutation } from "../../../redux/features/auth/authApi";
 
 const Settings = () => {
@@ -280,7 +278,7 @@ const Settings = () => {
                   className="w-full px-3 py-2"
                 />
               </Form.Item>
-              <p className=" text-secondary font-medium">
+              <p className=" text-primary font-medium">
                 <button onClick={() => setModelTitle("Forget password")}>
                   <h1 className="underline text-blue-500"> Forget Password</h1>
                 </button>
@@ -288,7 +286,7 @@ const Settings = () => {
               <Form.Item>
                 <button
                   type="submit"
-                  className="w-full px-5 py-4  mt-2 text-white bg-[#77C4FE] rounded-lg"
+                  className="w-full px-5 py-4  mt-2 text-white bg-primary rounded-lg"
                 >
                   {/* {isLoading ? (
                     <h1 className="flex justify-center items-center gap-1">
@@ -385,7 +383,7 @@ const Settings = () => {
                   size: "18px",
                   height: "56px",
                 }}
-                className="bg-secondary
+                className="bg-primary
                 w-full
                 text-white mt-5 py-3 rounded-lg duration-200"
               >
@@ -433,7 +431,7 @@ const Settings = () => {
                         rounded w-full 
                         justify-start 
                         mt-[12px]
-                         outline-none focus:border-none border-secondary"
+                         outline-none focus:border-none border-primary"
                 />
               </Form.Item>
 
@@ -473,7 +471,7 @@ const Settings = () => {
                     rounded w-full 
                     justify-start 
                     mt-[12px]
-                     outline-none focus:border-none border-secondary"
+                     outline-none focus:border-none border-primary"
                 />
               </Form.Item>
               <Form.Item>
@@ -485,7 +483,7 @@ const Settings = () => {
                     height: "56px",
                   }}
                   htmlType="submit"
-                  className="block w-full h-[56px] px-2 py-4 mt-2 text-white bg-secondary rounded-lg"
+                  className="block w-full h-[56px] px-2 py-4 mt-2 text-white bg-primary rounded-lg"
                 >
                   {/* {
                                         changePassLoading ? <h1 className="flex justify-center items-center gap-1"><ImSpinner6 className="animate-spin size-5" /> <span> Update password</span></h1> : 'Update password'

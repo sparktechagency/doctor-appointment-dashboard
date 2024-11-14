@@ -1,17 +1,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { IoChatbubblesOutline } from "react-icons/io5";
+import { BiCalendarEdit } from "react-icons/bi";
+import { HiOutlineDatabase } from "react-icons/hi";
 import { IoIosLogOut } from "react-icons/io";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoChatbubblesOutline, IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { PiCurrencyCircleDollar, PiUsersThree } from "react-icons/pi";
-import { NavLink, useNavigate } from "react-router-dom";
-import { HiOutlineDatabase } from "react-icons/hi";
-import { BiCalendarEdit } from "react-icons/bi";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../../../redux/features/auth/authSlice";
+import { NavLink, useNavigate } from "react-router-dom";
 import LogoImage from "../../../assets/auth/Logo.png";
-import { IoPersonOutline } from "react-icons/io5";
+import { logoutUser } from "../../../redux/features/auth/authSlice";
 
 
 
@@ -34,6 +32,12 @@ const sidebarItems = [
   {
     path: "/chat",
     name: "Chat",
+    icon: <IoChatbubblesOutline className="size-8" />,
+  },
+  // laboratory-test-request
+  {
+    path: "/laboratory-test-request",
+    name: "Laboratory Test Request",
     icon: <IoChatbubblesOutline className="size-8" />,
   },
   {
@@ -70,7 +74,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   return (
     <div>
       {/* Desktop Sidebar */}
-      <div className="hidden md:block w-[350px] h-full bg-[#77C4FE] fixed">
+      <div className="hidden md:block w-[350px] h-full bg-primary fixed overflow-y-scroll">
         <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-[#FFFFFF99]">
           <img src={LogoImage} alt="logo" className="w-46 h-24 mb-5" />
         </div>
@@ -81,7 +85,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               to={item.path}
               className={({ isActive }) =>
                 isActive
-                  ? "bg-[#9cd9f5] px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
+                  ? "bg-primary px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
                   : "px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
               }
             >
@@ -92,7 +96,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
         </ul>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-10 py-4 text-white mt-28"
+          className="flex items-center gap-2 px-10 py-4 text-white mt-[15px]"
         >
           <IoIosLogOut className="size-8" />
           <span>Logout</span>
@@ -101,7 +105,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
       {/* Mobile Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-[#77C4FE] shadow-lg transform ${
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-primary shadow-lg transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out md:hidden`}
       >
@@ -116,7 +120,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               onClick={toggleSidebar} // Close sidebar on link click
               className={({ isActive }) =>
                 isActive
-                  ? "bg-[#9cd9f5] px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
+                  ? "bg-primary px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
                   : "px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
               }
             >
@@ -130,7 +134,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             handleLogout();
             toggleSidebar()
           }}
-          className="flex items-center gap-2 px-10 py-4 text-white"
+          className="flex items-center gap-2 px-10  text-white"
         >
           <IoIosLogOut className="size-8" />
           <span>Logout</span>
