@@ -5,7 +5,7 @@ import { HiOutlineDatabase } from "react-icons/hi";
 import { IoIosLogOut } from "react-icons/io";
 import { IoChatbubblesOutline, IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
-import { PiCurrencyCircleDollar, PiUsersThree } from "react-icons/pi";
+import { PiCurrencyCircleDollar, PiTestTubeFill, PiUsersThree } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import LogoImage from "../../../assets/auth/Logo.png";
@@ -38,7 +38,7 @@ const sidebarItems = [
   {
     path: "/laboratory-test-request",
     name: "Laboratory Test Request",
-    icon: <IoChatbubblesOutline className="size-8" />,
+    icon: <PiTestTubeFill className="size-8" />,
   },
   {
     path: "/earnings",
