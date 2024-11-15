@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Form, Input, Button, Select, DatePicker, Table, Tag } from "antd";
-
-const { TextArea } = Input;
-const { Option } = Select;
+import { Form, Button, Table, Tag } from "antd";
+import CustomInput from "../../utils/CustomInput";
+import CustomDatePicker from "../../utils/CustomDatePicker";
+import CustomSelect from "../../utils/CustomSelect";
 
 const LaboratoryTestRequest = () => {
   const [form] = Form.useForm();
@@ -21,6 +21,28 @@ const LaboratoryTestRequest = () => {
     form.resetFields();
   };
 
+  const items = [
+    {
+      label: "Blood Test",
+      value: "bloodTest",
+    },
+    {
+      label: "Urine Test",
+      value: "urineTest",
+    },
+    {
+      label: "X-ray",
+      value: "x-ray",
+    },
+    {
+      label: "CT Scan",
+      value: "ctScan",
+    },
+    {
+      label: "MRI",
+      value: "mri",
+    },
+  ];
   const columns = [
     {
       title: "Patient Name",
@@ -69,7 +91,7 @@ const LaboratoryTestRequest = () => {
             { required: true, message: "Please enter the patient's name" },
           ]}
         >
-          <Input placeholder="Enter patient name" />
+          <CustomInput placeholder="Enter patient name" />
         </Form.Item>
 
         <Form.Item
@@ -77,12 +99,10 @@ const LaboratoryTestRequest = () => {
           name="testType"
           rules={[{ required: true, message: "Please select the test type" }]}
         >
-          <Select placeholder="Select test type">
-            <Option value="Blood Test">Blood Test</Option>
-            <Option value="X-Ray">X-Ray</Option>
-            <Option value="MRI">MRI</Option>
-            <Option value="CT Scan">CT Scan</Option>
-          </Select>
+          <CustomSelect
+            placeholder={"Select test type"}
+            options={items}
+          />
         </Form.Item>
 
         <Form.Item
@@ -90,11 +110,11 @@ const LaboratoryTestRequest = () => {
           name="testDate"
           rules={[{ required: true, message: "Please select the test date" }]}
         >
-          <DatePicker className="w-full" />
+          <CustomDatePicker placeholder="Select test date" />
         </Form.Item>
 
         <Form.Item label="Notes" name="notes">
-          <TextArea rows={4} placeholder="Additional notes" />
+          <CustomInput isTextArea placeholder="Enter additional notes" />
         </Form.Item>
 
         <Form.Item>
