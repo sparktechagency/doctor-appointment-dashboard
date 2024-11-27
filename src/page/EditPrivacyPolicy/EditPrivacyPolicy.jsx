@@ -1,10 +1,10 @@
+import { Form } from "antd";
+import { useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import ReactQuill from "react-quill"; // Import React Quill
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import CustomButton from "../../utils/CustomButton";
-import { Form } from "antd";
 
 const EditPrivacyPolicy = () => {
   const [form] = Form.useForm();
@@ -30,7 +30,7 @@ const EditPrivacyPolicy = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-full p-6 rounded-lg shadow-md bg-[#D5EDFF]">
+      <div className="w-full p-6 rounded-lg shadow-md bg-primary">
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {/* React Quill for Privacy Policy Content */}
           <Form.Item name="content" initialValue={content}>

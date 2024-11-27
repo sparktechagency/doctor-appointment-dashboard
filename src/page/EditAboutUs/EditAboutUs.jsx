@@ -1,9 +1,9 @@
-import { IoChevronBack } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import { Button, Form } from "antd";
+import { useState } from "react";
+import { IoChevronBack } from "react-icons/io5";
 import ReactQuill from "react-quill"; // Import React Quill
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const EditAboutUs = () => {
   const [form] = Form.useForm();
@@ -29,7 +29,7 @@ const EditAboutUs = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-full p-6 rounded-lg shadow-md bg-[#D5EDFF]">
+      <div className="w-full p-6 rounded-lg shadow-md bg-primary">
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {/* React Quill for About Us Content */}
           <Form.Item name="content" initialValue={content}>

@@ -169,7 +169,7 @@ const Settings = () => {
       {settingsItem.map((setting, index) => (
         <div
           key={index}
-          className="w-full p-4 mb-2 text-sm rounded-lg bg-[#D5EDFF]   flex items-center justify-between cursor-pointer "
+          className="w-full p-4 mb-2 text-sm rounded-lg bg-primary   flex items-center justify-between cursor-pointer "
           onClick={() => handleNavigate(setting.path)}
         >
           <h2>{setting.title}</h2>

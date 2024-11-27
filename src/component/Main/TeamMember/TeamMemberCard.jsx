@@ -36,7 +36,7 @@ const TeamMemberCard = ({ item }) => {
   };
 
   return (
-    <div className="w-full rounded-lg border shadow-sm p-2  bg-[#D5EDFF]">
+    <div className="w-full rounded-lg border shadow-sm p-2  bg-primary">
       {/* Image Handling with Centered Fallback */}
       <div className="mx-auto flex justify-center items-center overflow-hidden w-[100%] h-[230px] rounded-lg bg-gray-100">
         <img

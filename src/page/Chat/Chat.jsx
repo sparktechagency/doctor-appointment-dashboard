@@ -2,12 +2,12 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import {
-  FiImage,
-  FiLink,
-  FiMoreVertical,
-  FiPhone,
-  FiSmile,
-  FiVideo,
+    FiImage,
+    FiLink,
+    FiMoreVertical,
+    FiPhone,
+    FiSmile,
+    FiVideo,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
   
@@ -234,7 +234,7 @@ import { Link } from "react-router-dom";
       <div
         className={`max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg shadow-sm ${
           position === "right"
-            ? "bg-[#D5EDFF] text-black rounded-br-none"
+            ? "bg-primary text-black rounded-br-none"
             : "bg-[#EDE9E9] text-gray-900 rounded-bl-none"
         }`}
       >

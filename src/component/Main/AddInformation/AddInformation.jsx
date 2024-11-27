@@ -24,7 +24,7 @@ const AddInformation = () => {
         {/* Profile Picture */}
         <div className="flex justify-start items-center  gap-5">
           <div className="flex justify-around items-center gap-10">
-            <div className="w-[130px] h-[130px] rounded-full bg-[#D5EDFF]">
+            <div className="w-[130px] h-[130px] rounded-full bg-primary">
               <img
                 className="size-32 rounded-full mx-auto"
                 src={`${imageBaseUrl}${user?.image?.url}`}
@@ -49,7 +49,7 @@ const AddInformation = () => {
                 type="text"
                 defaultValue={user?.firstName}
                 readOnly
-                className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-[#D5EDFF] outline-none"
+                className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-primary outline-none"
               />
             </div>
             <div className="w-full md:w-[45%]">
@@ -58,7 +58,7 @@ const AddInformation = () => {
                 type="text"
                 defaultValue={user?.lastName}
                 readOnly
-                className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-[#D5EDFF] outline-none"
+                className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-primary outline-none"
               />
             </div>
           </div>
@@ -69,7 +69,7 @@ const AddInformation = () => {
               defaultValue={user?.degree}
               readOnly
               placeholder=""
-              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-[#D5EDFF] outline-none"
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-primary outline-none"
             />
           </div>
           <div className="space-y-3">
@@ -78,7 +78,7 @@ const AddInformation = () => {
               type="text"
               defaultValue={user?.experiences}
               readOnly
-              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-[#D5EDFF] outline-none"
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-primary outline-none"
             />
           </div>
           <div className="space-y-3">
@@ -89,7 +89,7 @@ const AddInformation = () => {
               type="text"
               defaultValue={user?.awards}
               readOnly
-              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-[#D5EDFF] outline-none"
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-primary outline-none"
             />
           </div>
           <div className="space-y-3">
@@ -98,7 +98,7 @@ const AddInformation = () => {
               type="text"
               defaultValue={user?.bio}
               readOnly
-              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-[#D5EDFF] outline-none"
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-primary outline-none"
             />
           </div>
           <div className="flex justify-end">

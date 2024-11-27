@@ -40,7 +40,7 @@ const SubscriptionsCard = ({ item, index }) => {
   return (
     <div
   className={`w-full rounded-lg border shadow-sm ${
-    item.id === 1 || index === 0 ? 'bg-primary text-white' : 'bg-[#D5EDFF] text-black'
+    item.id === 1 || index === 0 ? 'bg-primary text-white' : 'bg-primary text-black'
   }`}
 >
   {/* Image Handling with Centered Fallback */}
