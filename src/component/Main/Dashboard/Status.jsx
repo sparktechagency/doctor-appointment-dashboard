@@ -15,10 +15,10 @@ const Status = () => {
         <img src={OrganizationImage} alt="logo" className="w-[64px]  h-[50px]  mb-5" />
       </div>
       <div className="space-y-2">
-        <h1 className="text-center text-3xl font-semibold text-[#222222]">
+        <h1 className="text-center text-3xl font-semibold text-white">
           {data?.totalEarnings ?? "1200"}
         </h1>
-        <h1>Total Patient</h1>
+        <h1 className="text-gray-200">Total Patient</h1>
       </div>
     </div>
     <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
@@ -26,10 +26,10 @@ const Status = () => {
         <img src={Frame1} alt="logo" className="w-[64px]  h-[50px]  mb-5" />
       </div>
       <div className="space-y-2">
-        <h1 className="text-center text-3xl font-semibold text-[#222222]">
+        <h1 className="text-center text-3xl font-semibold text-white">
           ${data?.totalUser ?? "2.5"}k
         </h1>
-        <h1>Total Earnings</h1>
+        <h1 className="text-gray-200">Total Earnings</h1>
       </div>
     </div>
     <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
@@ -37,10 +37,10 @@ const Status = () => {
         <img src={Frame2} alt="logo" className="w-[64px]  h-[50px]  mb-5" />
       </div>
       <div className="space-y-2">
-        <h1 className="text-center text-3xl font-semibold text-[#222222]">
+        <h1 className="text-center text-3xl font-semibold text-white">
           {data?.totalOrganizations  ?? "1200"} 
         </h1>
-        <h1>Daily affirmation</h1>
+        <h1 className="text-gray-200">Daily affirmation</h1>
       </div>
     </div>
     <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
@@ -48,10 +48,10 @@ const Status = () => {
         <img src={Frame3} alt="logo" className="w-[64px]  h-[50px]  mb-5" />
       </div>
       <div className="space-y-2">
-        <h1 className="text-center text-3xl font-semibold text-[#222222]">
+        <h1 className="text-center text-3xl font-semibold text-white">
           {data?.totalOrganizations  ?? "1200"} 
         </h1>
-        <h1>Recent Appointment</h1>
+        <h1 className="text-gray-200">Recent Appointment</h1>
       </div>
     </div>
   </div>
