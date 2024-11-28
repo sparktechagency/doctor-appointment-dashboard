@@ -235,7 +235,7 @@ const AppointmentList = () => {
         <ConfigProvider
           theme={{
             token: {
-              colorBgContainer: "#D5EDFF",
+              colorBgContainer: "#fff",
               colorPrimary: "#1890ff", // Custom primary color
             },
             components: {
