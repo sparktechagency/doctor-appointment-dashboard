@@ -105,11 +105,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
       {/* Mobile Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-primary shadow-lg transform ${
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-secondary shadow-lg transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out md:hidden`}
       >
-        <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-[#FFFFFF99]">
+        <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-secondary">
         <img src={LogoImage} alt="logo" className="w-46 h-24 mb-5" />
         </div>
         <ul className="w-full flex flex-col gap-3">
