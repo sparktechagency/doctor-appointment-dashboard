@@ -14,10 +14,10 @@ const PrivacyPolicyPage = () => {
               <h1 className="text-2xl font-semibold">Privacy Policy</h1>
             </div>
             <Link to={'/settings/edit-privacy-policy/11'}>
-              <CustomButton border>
+              <button className="flex items-center justify-center p-2 rounded-md bg-secondary text-white">
                 <TbEdit className="size-5" />
                 <span>Edit</span>
-              </CustomButton>
+              </button>
             </Link>
           </div>
           {/* Your privacy policy content goes here */}

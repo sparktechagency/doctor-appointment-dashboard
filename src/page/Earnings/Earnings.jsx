@@ -289,11 +289,11 @@ const Earnings = () => {
         <div className="md:flex justify-between items-center  py-5">
           <h1 className="text-xl font-semibold flex items-center "><MdKeyboardArrowLeft /> Earning List</h1>
           <Form layout="inline" className="flex space-x-4">
-            <button className=" flex justify-center items-center bg-primary text-white px-3 py-2 rounded-md">
+            <button className=" flex justify-center items-center bg-secondary text-white px-3 py-2 rounded-md">
                 <FaArrowRightArrowLeft  className="size-5" />
                 <p className="px-2"> Today’s Earning $3230</p>
             </button>
-            <button className=" flex justify-center items-center bg-primary text-white px-3 py-2 rounded-md">
+            <button className=" flex justify-center items-center bg-secondary text-white px-3 py-2 rounded-md">
                 <FaArrowRightArrowLeft  className="size-5" />
                 <p className="px-2">All Earning $5230</p>
             </button>
@@ -307,7 +307,7 @@ const Earnings = () => {
             },
             components: {
               Table: {
-                headerBg: "#77C4FE",
+                headerBg: "#3780f9",
                 headerColor: "white",
                 headerBorderRadius: 2,
               },

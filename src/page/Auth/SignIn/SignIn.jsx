@@ -117,9 +117,9 @@ const SignIn = () => {
           </div>
 
           <Form.Item>
-            <CustomButton loading={isLoading} className="w-full" border={true}>
+            <button type="submit" loading={isLoading} className="w-full bg-primary text-xl text-white p-2 rounded-md" border={true}>
               Sign In
-            </CustomButton>
+            </button>
           </Form.Item>
         </Form>
       </div>

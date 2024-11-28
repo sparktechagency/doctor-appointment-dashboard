@@ -118,7 +118,7 @@ const LaboratoryTestRequest = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="bg-blue-600">
+          <Button type="primary" htmlType="submit" className="bg-primary text-white">
             Submit Request
           </Button>
         </Form.Item>

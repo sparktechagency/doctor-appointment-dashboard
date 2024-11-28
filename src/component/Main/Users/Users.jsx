@@ -260,7 +260,7 @@ const Users = () => {
           },
           components: {
             Table: {
-              headerBg: "#77C4FE",
+              headerBg: "#3780f9",
               headerColor: "white",
               headerBorderRadius: 2,
             },
@@ -287,7 +287,7 @@ const Users = () => {
         footer={null}
         centered
       >
-        <div className="text-black bg-primary">
+        <div className="text-black bg-secondary">
           <img
             className="size-28 mx-auto rounded-full"
             src={`${imageBaseUrl}${user?.image}`}

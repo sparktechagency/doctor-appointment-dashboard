@@ -99,7 +99,7 @@ const EditPersonalInfo = () => {
                 alt="Profile Preview"
               />
             ) : (
-              <div className="bg-primary p-10 text-white flex flex-col items-center rounded-full ">
+              <div className="bg-secondary p-10 text-white flex flex-col items-center rounded-full ">
                 <IoCameraOutline size={40} />
                 <span className="text-sm">Upload Image</span>
               </div>
@@ -147,9 +147,9 @@ const EditPersonalInfo = () => {
           </Form.Item>
 
           {/* Submit Button */}
-          <CustomButton loading={isLoading} className="w-full">
-            Update Information
-          </CustomButton>
+          <button loading={isLoading} className="w-full p-2 rounded-md text-white bg-secondary">
+            Update Information 
+          </button>
         </Form>
       </div>
     </div>

@@ -226,7 +226,7 @@ const AppointmentList = () => {
               <Input placeholder="User name" />
             </Item>
             <Item>
-              <button className=" size-8 rounded-full flex justify-center items-center bg-primary text-white">
+              <button className=" size-8 rounded-full flex justify-center items-center bg-secondary text-white">
                 <IoIosSearch className="size-5" />
               </button>
             </Item>
@@ -240,7 +240,7 @@ const AppointmentList = () => {
             },
             components: {
               Table: {
-                headerBg: "#77C4FE",
+                headerBg: "#3780f9",
                 headerColor: "white",
                 headerBorderRadius: 2,
               },

@@ -74,8 +74,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   return (
     <div>
       {/* Desktop Sidebar */}
-      <div className="hidden md:block w-[350px] h-full bg-primary fixed overflow-y-scroll">
-        <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-[#FFFFFF99]">
+      <div className="hidden md:block w-[350px] h-full bg-secondary fixed overflow-y-scroll">
+        <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-secondary">
           <img src={LogoImage} alt="logo" className="w-46 h-24 mb-5" />
         </div>
         <ul className="w-full flex flex-col gap-3 mt-[15px]">

@@ -121,7 +121,7 @@ const RecentTransactions = () => {
     components: {
       Table: {
         colorBgContainer: "",
-        colorFillAlter: "#77C4FE", // Table header background color
+        colorFillAlter: "#3780f9", // Table header background color
         colorTextHeading: "#ffffff", // Header text color for contrast
       },
     },
@@ -172,7 +172,7 @@ const RecentTransactions = () => {
             <button className="w-full bg-white text-black border border-gray-300 py-2 px-4 rounded-xl">
               Download
             </button>
-            <button className="w-full bg-[#193664] text-white py-2 px-4 rounded-xl">
+            <button className="w-full bg-primary text-white py-2 px-4 rounded-xl">
               Print
             </button>
           </div>

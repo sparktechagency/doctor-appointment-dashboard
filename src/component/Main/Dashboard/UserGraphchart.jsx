@@ -75,7 +75,7 @@ const UserGraphChart = () => {
           <Tooltip content={<CustomTooltip />} />
           <ReferenceLine x="April" stroke="green" label="Min" />
           <ReferenceLine y={4000} label="Max" stroke="red" strokeDasharray="3 3" />
-          <Area type="monotone" dataKey="income" stroke="#77C4FE" fill="#77C4FE" />
+          <Area type="monotone" dataKey="income" stroke="#3780f9" fill="#3780f9" />
         </AreaChart>
       </ResponsiveContainer>
     </section>

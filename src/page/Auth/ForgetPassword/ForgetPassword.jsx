@@ -42,11 +42,11 @@ const ForgetPassword = () => {
       </div>
       <div className="mt-16">
         <div className="mb-5 space-y-5">
-        <img
-          src={LogoImage}
-          className="w-[136px] h-[129px] mx-auto mb-3"
-          alt="Sign in illustration"
-        />
+          <img
+            src={LogoImage}
+            className="w-[136px] h-[129px] mx-auto mb-3"
+            alt="Sign in illustration"
+          />
           <h1 className="font-semibold text-2xl flex items-center gap-2">
             <Link to="/auth">
               <IoIosArrowBack />
@@ -85,14 +85,9 @@ const ForgetPassword = () => {
 
           {/* CustomButton for submit */}
           <Form.Item>
-            <CustomButton
-              loading={isLoading}
-              border
-              type="submit"
-              className="w-full"
-            >
+            <button type="submit" loading={isLoading} className="w-full bg-primary text-xl text-white p-2 rounded-md" border={true}>
               Send OTP
-            </CustomButton>
+            </button>
           </Form.Item>
         </Form>
       </div>

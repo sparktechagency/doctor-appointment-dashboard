@@ -130,19 +130,19 @@ const EditSubscriptions = () => {
           >
             <CustomInput type="" />
           </Form.Item>
-          <div className="bg-primary w-10 h-10 rounded-full ml-5 p-3 text-white">
+          <div className="bg-secondary w-10 h-10 rounded-full ml-5 p-3 text-white">
           <FaMinus />
           </div>
         </div>
 
         {/* Submit Button */}
-        <button loading={isLoading} border className="w-[90%] bg-primary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none">
+        <button loading={isLoading} border className="w-[90%] bg-secondary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none">
          Add fields
         </button>
 
 
          {/* Submit Button */}
-         <button loading={isLoading} border className="mt-12  bg-primary px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
+         <button loading={isLoading} border className="mt-12  bg-secondary px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
          Update
         </button>
       </Form>

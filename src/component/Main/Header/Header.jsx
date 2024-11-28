@@ -11,7 +11,7 @@ const Header = ({ toggleSidebar }) => {
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <div className="w-[99%] p-2 mx-2  flex justify-between items-center text-gray-500 sticky top-0 left-0 z-10 bg-primary rounded-md">
+    <div className="w-[99%] p-2 mx-2  flex justify-between items-center text-white sticky top-0 left-0 z-10 bg-secondary rounded-md">
       <div className="flex items-center gap-3  py-1 px-3  rounded">
         {/* Hamburger menu for mobile */}
         <button
@@ -29,7 +29,7 @@ const Header = ({ toggleSidebar }) => {
       <div className="flex justify-between items-start gap-8 pl-5">
         <Link to={"/notification"}>
           <h1 className="relative">
-            <MdOutlineNotificationsActive className="size-10 bg-[#E8EBF0] p-2 rounded-full" />{" "}
+            <MdOutlineNotificationsActive className="size-10 bg-primary p-2 rounded-full" />{" "}
             <span className="absolute top-0 right-0 text-xs   size-5 flex justify-center items-center rounded-full  p-2">
             </span>
           </h1>

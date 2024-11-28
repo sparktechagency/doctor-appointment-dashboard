@@ -18,7 +18,7 @@ const PersonalInformation = () => {
           <h1 className="text-2xl font-semibold">Personal Information</h1>
         </div>
         <Link to="/edit-personal-info">
-          <button className="px-8 py-3 bg-primary text-white rounded-lg">
+          <button className="px-8 py-3 bg-secondary text-white rounded-lg">
             Edit Profile
           </button>
         </Link>
@@ -29,7 +29,7 @@ const PersonalInformation = () => {
         {/* Profile Picture */}
         <div className="flex justify-start items-center  gap-5">
           <div className="flex justify-around items-center gap-10">
-          <div className="w-[130px] h-[130px] rounded-full bg-primary">
+          <div className="w-[130px] h-[130px] rounded-full bg-secondary">
             <img
               className="size-32 rounded-full mx-auto"
               src={`${imageBaseUrl}${user?.image?.url}`}
@@ -81,7 +81,7 @@ const PersonalInformation = () => {
               className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
             />
           </div>
-          <button className="px-8 py-3 bg-primary text-white rounded-lg w-full">
+          <button className="px-8 py-3 bg-secondary text-white rounded-lg w-full">
             Save
           </button>
         </form>

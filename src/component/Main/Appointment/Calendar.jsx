@@ -40,11 +40,11 @@ const CustomCalendar = () => {
   return (
     <div className="p-6 w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
       <div className="flex justify-between items-center w-full mb-6">
-        <button onClick={prevMonth} className="bg-primary text-white py-2 px-3 rounded flex items-center transition duration-300">
+        <button onClick={prevMonth} className="bg-secondary text-white py-2 px-3 rounded flex items-center transition duration-300">
           <FaArrowLeft className="mr-2" /> 
         </button>
         <h2 className="text-2xl font-bold text-gray-700">{`${months[currentMonth]}`}</h2>
-        <button onClick={nextMonth} className="bg-primary text-white py-2 px-3 rounded flex items-center transition duration-300">
+        <button onClick={nextMonth} className="bg-secondary text-white py-2 px-3 rounded flex items-center transition duration-300">
           <FaArrowRight className="ml-2" />
         </button>
       </div>

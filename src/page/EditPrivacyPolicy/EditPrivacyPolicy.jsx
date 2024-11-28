@@ -30,7 +30,7 @@ const EditPrivacyPolicy = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-full p-6 rounded-lg shadow-md bg-primary">
+      <div className="w-full p-6 rounded-lg shadow-md bg-secondary">
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {/* React Quill for Privacy Policy Content */}
           <Form.Item name="content" initialValue={content}>
@@ -57,9 +57,9 @@ const EditPrivacyPolicy = () => {
           </Form.Item>
 
           {/* Update Button */}
-         <div className="w-full flex justify-end mt-16">
-         <CustomButton border  >Update</CustomButton>
-         </div>
+          <div className="w-full flex justify-end mt-16">
+            <button className="py-2 px-8 bg-primary text-white rounded-md"  >Update</button>
+          </div>
         </Form>
       </div>
     </section>

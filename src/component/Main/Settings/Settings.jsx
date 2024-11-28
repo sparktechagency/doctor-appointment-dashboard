@@ -169,7 +169,7 @@ const Settings = () => {
       {settingsItem.map((setting, index) => (
         <div
           key={index}
-          className="w-full p-4 mb-2 text-sm rounded-lg bg-primary   flex items-center justify-between cursor-pointer "
+          className="w-full p-4 mb-2 text-sm rounded-lg bg-secondary text-white  flex items-center justify-between cursor-pointer "
           onClick={() => handleNavigate(setting.path)}
         >
           <h2>{setting.title}</h2>
@@ -186,7 +186,7 @@ const Settings = () => {
         title={
           <div
             onClick={() => setIsModalOpen(false)}
-            className="flex bg-primary items-center cursor-pointer text-black"
+            className="flex items-center cursor-pointer text-black"
           >
             <h1 className="text-xl  font-medium  mb-5">{modelTitle}</h1>
           </div>
@@ -278,7 +278,7 @@ const Settings = () => {
                   className="w-full px-3 py-2"
                 />
               </Form.Item>
-              <p className=" text-primary font-medium">
+              <p className=" text-secondary font-medium">
                 <button onClick={() => setModelTitle("Forget password")}>
                   <h1 className="underline text-blue-500"> Forget Password</h1>
                 </button>
@@ -286,7 +286,7 @@ const Settings = () => {
               <Form.Item>
                 <button
                   type="submit"
-                  className="w-full px-5 py-4  mt-2 text-white bg-primary rounded-lg"
+                  className="w-full px-5 py-4  mt-2 text-white bg-secondary rounded-lg"
                 >
                   {/* {isLoading ? (
                     <h1 className="flex justify-center items-center gap-1">

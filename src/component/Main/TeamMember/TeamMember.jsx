@@ -103,7 +103,7 @@ const TeamMember = () => {
           </h1>
         </Link>
         <Link to={"#"}>
-          <button className="px-8 py-3  text-white bg-primary flex justify-center items-center gap-1 rounded text-sm">
+          <button className="px-8 py-3  text-white bg-secondary flex justify-center items-center gap-1 rounded text-sm">
             <FaPlus />
             Add Member
           </button>
