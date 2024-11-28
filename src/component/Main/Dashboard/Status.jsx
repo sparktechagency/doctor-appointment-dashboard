@@ -12,7 +12,7 @@ const Status = () => {
     <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
     <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
       <div className="size-16 p-3 flex justify-center items-center">
-        <img src={OrganizationImage} alt="logo" className="w-[64px]  h-[64px]  mb-5" />
+        <img src={OrganizationImage} alt="logo" className="w-[64px]  h-[50px]  mb-5" />
       </div>
       <div className="space-y-2">
         <h1 className="text-center text-3xl font-semibold text-[#222222]">
@@ -23,7 +23,7 @@ const Status = () => {
     </div>
     <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
       <div className="size-16 p-3 flex justify-center items-center">
-        <img src={Frame1} alt="logo" className="w-[64px]  h-[64px]  mb-5" />
+        <img src={Frame1} alt="logo" className="w-[64px]  h-[50px]  mb-5" />
       </div>
       <div className="space-y-2">
         <h1 className="text-center text-3xl font-semibold text-[#222222]">
@@ -34,7 +34,7 @@ const Status = () => {
     </div>
     <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
       <div className="size-16 p-3 flex justify-center items-center">
-        <img src={Frame2} alt="logo" className="w-[64px]  h-[64px]  mb-5" />
+        <img src={Frame2} alt="logo" className="w-[64px]  h-[50px]  mb-5" />
       </div>
       <div className="space-y-2">
         <h1 className="text-center text-3xl font-semibold text-[#222222]">
@@ -45,7 +45,7 @@ const Status = () => {
     </div>
     <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
       <div className="size-16 p-3 flex justify-center items-center">
-        <img src={Frame3} alt="logo" className="w-[64px]  h-[64px]  mb-5" />
+        <img src={Frame3} alt="logo" className="w-[64px]  h-[50px]  mb-5" />
       </div>
       <div className="space-y-2">
         <h1 className="text-center text-3xl font-semibold text-[#222222]">

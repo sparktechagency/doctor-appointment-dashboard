@@ -26,7 +26,7 @@ const SignIn = () => {
         dispatch(
           loggedUser({
             token: res.data.data.attributes?.tokens?.access?.token,
-            user: res.data.data.attributes?.user,
+            user: res.data.data.attributes?.user
           })
         );
         toast.success(res.data.message);
@@ -48,11 +48,11 @@ const SignIn = () => {
       </div>
       <div className="mt-16 px-8">
         <div className="mb-8">
-        <img
-          src={LogoImage}
-          className="w-[136px] h-[129px] mx-auto mb-3"
-          alt="Sign in illustration"
-        />
+          <img
+            src={LogoImage}
+            className="w-[136px] h-[129px] mx-auto mb-3"
+            alt="Sign in illustration"
+          />
           <h1 className="font-semibold text-3xl text-gray-800">
             Hello, Welcome!
           </h1>
@@ -65,7 +65,7 @@ const SignIn = () => {
           onFinish={handleSubmit}
           className="space-y-4"
           initialValues={{
-            remember: true,
+            remember: true
           }}
         >
           <Form.Item
@@ -74,15 +74,16 @@ const SignIn = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your email!",
+                message: "Please input your email!"
               },
               {
                 type: "email",
-                message: "The input is not a valid email!",
-              },
+                message: "The input is not a valid email!"
+              }
             ]}
           >
             <CustomInput
+              className="bg-white border-secondary"
               type="email"
               icon={HiOutlineMail}
               placeholder={"Email"}
@@ -95,11 +96,12 @@ const SignIn = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your password!",
-              },
+                message: "Please input your password!"
+              }
             ]}
           >
             <CustomInput
+              className="bg-white border-secondary"
               type="password"
               icon={HiOutlineLockClosed}
               placeholder={"Password"}
@@ -111,13 +113,16 @@ const SignIn = () => {
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
-            <Link to="/auth/forget-password">
-              Forgot password?
-            </Link>
+            <Link to="/auth/forget-password">Forgot password?</Link>
           </div>
 
           <Form.Item>
-            <button type="submit" loading={isLoading} className="w-full bg-primary text-xl text-white p-2 rounded-md" border={true}>
+            <button
+              type="submit"
+              loading={isLoading}
+              className="w-full bg-primary text-xl text-white p-2 rounded-md"
+              border={true}
+            >
               Sign In
             </button>
           </Form.Item>

@@ -30,7 +30,7 @@ const EditPrivacyPolicy = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-full p-6 rounded-lg shadow-md bg-secondary">
+      <div className="w-full p-6 rounded-lg shadow-md bg-white">
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {/* React Quill for Privacy Policy Content */}
           <Form.Item name="content" initialValue={content}>

@@ -16,7 +16,7 @@ const NewPassword = () => {
     try {
       const res = await resetPassword({
         email,
-        password: password,
+        password: password
       });
       if (res.error) {
         toast.error(res.error.data.message);
@@ -62,11 +62,16 @@ const NewPassword = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your new password",
-              },
+                message: "Please input your new password"
+              }
             ]}
           >
-            <CustomInput isPassword type="password" placeholder="Password" />
+            <CustomInput
+              className="bg-white border-secondary"
+              isPassword
+              type="password"
+              placeholder="Password"
+            />
           </Form.Item>
 
           <Form.Item
@@ -75,7 +80,7 @@ const NewPassword = () => {
             rules={[
               {
                 required: true,
-                message: "Please confirm your password",
+                message: "Please confirm your password"
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -83,11 +88,12 @@ const NewPassword = () => {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error("Passwords do not match!"));
-                },
-              }),
+                }
+              })
             ]}
           >
             <CustomInput
+              className="bg-white border-secondary"
               isPassword
               type="password"
               placeholder="Confirm Password"
@@ -96,9 +102,17 @@ const NewPassword = () => {
 
           {/* CustomButton for submission */}
           <Form.Item>
-            <CustomButton loading={isLoading} border className="w-full">
+            {/* <CustomButton loading={isLoading} border className="w-full">
               Update Password
-            </CustomButton>
+            </CustomButton> */}
+            <button
+              type="submit"
+              loading={isLoading}
+              className="w-full bg-primary text-xl text-white p-2 rounded-md"
+              border={true}
+            >
+              Update Password
+            </button>
           </Form.Item>
         </Form>
       </div>

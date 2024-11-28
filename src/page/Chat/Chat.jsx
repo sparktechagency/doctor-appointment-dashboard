@@ -234,8 +234,8 @@ import { Link } from "react-router-dom";
       <div
         className={`max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg shadow-sm ${
           position === "right"
-            ? "bg-secondary text-black rounded-br-none"
-            : "bg-[#EDE9E9] text-gray-900 rounded-bl-none"
+            ? "bg-secondary text-white rounded-br-none"
+            : "bg-[#EDE9E9] text-black rounded-bl-none"
         }`}
       >
         <p className="text-sm">{message}</p>

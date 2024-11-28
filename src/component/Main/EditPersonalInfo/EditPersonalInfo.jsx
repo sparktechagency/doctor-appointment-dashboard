@@ -114,7 +114,7 @@ const EditPersonalInfo = () => {
           />
           <div className="mt-2 text-center">
             <span className="text-gray-500 text-sm">Profile</span>
-            <div className="text-lg font-semibold uppercase mt-1 text-blue-600">
+            <div className="text-lg font-semibold uppercase mt-1 text-secondary">
               {user?.role || "User Role"}
             </div>
           </div>
@@ -129,21 +129,21 @@ const EditPersonalInfo = () => {
         >
           {/* Full Name */}
           <Form.Item label="Full Name" name="fullName">
-            <CustomInput placeholder="Enter your full name" />
+            <CustomInput className="bg-white border-secondary" placeholder="Enter your full name" />
           </Form.Item>
 
           {/* Email */}
           <Form.Item label="Email" name="email">
-            <CustomInput placeholder="Enter your email" />
+            <CustomInput className="bg-white border-secondary" placeholder="Enter your email" />
           </Form.Item>
 
           {/* Phone Number */}
           <Form.Item label="Phone Number" name="phone">
-            <CustomInput type="number" placeholder="Enter your phone number" />
+            <CustomInput className="bg-white border-secondary" type="number" placeholder="Enter your phone number" />
           </Form.Item>
           {/* Address */}
           <Form.Item label="Address" name="address">
-            <CustomInput type="number" placeholder="Enter your phone number" />
+            <CustomInput className="bg-white border-secondary" type="number" placeholder="Enter your phone number" />
           </Form.Item>
 
           {/* Submit Button */}

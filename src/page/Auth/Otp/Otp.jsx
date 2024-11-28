@@ -6,7 +6,7 @@ import { useState } from "react";
 import CustomButton from "../../../utils/CustomButton";
 import {
   useForgotPasswordMutation,
-  useVerifyEmailMutation,
+  useVerifyEmailMutation
 } from "../../../redux/features/auth/authApi";
 import { toast } from "sonner";
 
@@ -23,7 +23,7 @@ const Otp = () => {
     try {
       const res = await verifyOtp({
         email,
-        oneTimeCode: otp,
+        oneTimeCode: otp
       });
       if (res.error) {
         toast.error(res?.error?.data?.message);
@@ -81,13 +81,22 @@ const Otp = () => {
             fontWeight: "bold",
             borderBottom: "1px solid #3780f9",
             textAlign: "center",
-            outline: "none",
+            outline: "none"
           }}
         />
         <div onClick={handleMatchOtp} className="mt-5">
-          <CustomButton loading={isLoading} border className="w-full">
+          {/* <CustomButton className="bg-white border-secondary" loading={isLoading} border className="w-full">
             Verify
-          </CustomButton>
+          </CustomButton> */}
+
+          <button
+            type="submit"
+            loading={isLoading}
+            className="w-full bg-primary text-xl text-white p-2 rounded-md"
+            border={true}
+          >
+            Verify
+          </button>
         </div>
         <div className="flex justify-between items-center my-4">
           <h1>Didn’t receive code?</h1>

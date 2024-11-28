@@ -15,7 +15,7 @@ const LaboratoryTestRequest = () => {
       testType: values.testType,
       testDate: values.testDate.format("YYYY-MM-DD"),
       notes: values.notes || "",
-      status: "Pending",
+      status: "Pending"
     };
     setRequests([...requests, newRequest]);
     form.resetFields();
@@ -24,40 +24,40 @@ const LaboratoryTestRequest = () => {
   const items = [
     {
       label: "Blood Test",
-      value: "bloodTest",
+      value: "bloodTest"
     },
     {
       label: "Urine Test",
-      value: "urineTest",
+      value: "urineTest"
     },
     {
       label: "X-ray",
-      value: "x-ray",
+      value: "x-ray"
     },
     {
       label: "CT Scan",
-      value: "ctScan",
+      value: "ctScan"
     },
     {
       label: "MRI",
-      value: "mri",
-    },
+      value: "mri"
+    }
   ];
   const columns = [
     {
       title: "Patient Name",
       dataIndex: "patientName",
-      key: "patientName",
+      key: "patientName"
     },
     {
       title: "Test Type",
       dataIndex: "testType",
-      key: "testType",
+      key: "testType"
     },
     {
       title: "Test Date",
       dataIndex: "testDate",
-      key: "testDate",
+      key: "testDate"
     },
     {
       title: "Status",
@@ -65,13 +65,13 @@ const LaboratoryTestRequest = () => {
       key: "status",
       render: (status) => (
         <Tag color={status === "Pending" ? "blue" : "green"}>{status}</Tag>
-      ),
+      )
     },
     {
       title: "Notes",
       dataIndex: "notes",
-      key: "notes",
-    },
+      key: "notes"
+    }
   ];
 
   return (
@@ -88,10 +88,10 @@ const LaboratoryTestRequest = () => {
           label="Patient Name"
           name="patientName"
           rules={[
-            { required: true, message: "Please enter the patient's name" },
+            { required: true, message: "Please enter the patient's name" }
           ]}
         >
-          <CustomInput placeholder="Enter patient name" />
+          <CustomInput className="bg-white border-secondary" placeholder="Enter patient name" />
         </Form.Item>
 
         <Form.Item
@@ -100,6 +100,7 @@ const LaboratoryTestRequest = () => {
           rules={[{ required: true, message: "Please select the test type" }]}
         >
           <CustomSelect
+            className="bg-white border-secondary"
             placeholder={"Select test type"}
             options={items}
           />
@@ -110,15 +111,26 @@ const LaboratoryTestRequest = () => {
           name="testDate"
           rules={[{ required: true, message: "Please select the test date" }]}
         >
-          <CustomDatePicker placeholder="Select test date" />
+          <CustomDatePicker
+            className="bg-white border-secondary" 
+            placeholder="Select test date"
+          />
         </Form.Item>
 
         <Form.Item label="Notes" name="notes">
-          <CustomInput isTextArea placeholder="Enter additional notes" />
+          <CustomInput
+            className="bg-white border-secondary"
+            isTextArea
+            placeholder="Enter additional notes"
+          />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="bg-primary text-white">
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="bg-primary text-white"
+          >
             Submit Request
           </Button>
         </Form.Item>

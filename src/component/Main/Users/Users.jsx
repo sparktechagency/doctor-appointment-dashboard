@@ -255,7 +255,7 @@ const Users = () => {
       <ConfigProvider
         theme={{
           token: {
-            colorBgContainer: "#D5EDFF",
+            colorBgContainer: "#fff",
             colorPrimary: "#1890ff", // Custom primary color
           },
           components: {
@@ -287,7 +287,7 @@ const Users = () => {
         footer={null}
         centered
       >
-        <div className="text-black bg-secondary">
+        <div className="text-black bg-white">
           <img
             className="size-28 mx-auto rounded-full"
             src={`${imageBaseUrl}${user?.image}`}

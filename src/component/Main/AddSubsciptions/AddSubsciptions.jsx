@@ -84,7 +84,7 @@ const AddSubsciptions = () => {
           ]}
           className="w-[90%]"
         >
-          <CustomInput placeholder="Type name" />
+          <CustomInput className="bg-white border-secondary" placeholder="Type name" />
         </Form.Item>
 
         {/* Price */}
@@ -94,7 +94,7 @@ const AddSubsciptions = () => {
           rules={[{ required: true, message: "Please enter the price!" }]}
           className="w-[90%]"
         >
-          <CustomInput type="number" placeholder="Type price" />
+          <CustomInput className="bg-white border-secondary" type="number" placeholder="Type price" />
         </Form.Item>
 
         {/* Weight */}
@@ -105,7 +105,7 @@ const AddSubsciptions = () => {
             rules={[{ required: true, message: "Please enter the weight!" }]}
             className="w-[90%]"
           >
-            <CustomInput type="" />
+            <CustomInput className="bg-white border-secondary" type="" />
           </Form.Item>
           <div className="bg-secondary w-10 h-10 rounded-full ml-5 p-3 text-white">
             <FaPlus />

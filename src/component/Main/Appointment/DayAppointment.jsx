@@ -36,7 +36,7 @@ const data = [
     return (
      <div>
         <h1 className="text-xl py-5 ">To Day Appointment </h1>
-         <div className="py-6 space-y-2 bg-primary rounded-md">
+         <div className="py-6 space-y-2 bg-secondary rounded-md">
         {data.map((item, index) => {
           const date = new Date(item.date); // Convert the string to a Date object
           const formattedDate = date.toLocaleString(); // Format the date to show both date and time

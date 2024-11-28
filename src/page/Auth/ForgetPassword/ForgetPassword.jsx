@@ -80,7 +80,7 @@ const ForgetPassword = () => {
               },
             ]}
           >
-            <CustomInput icon={HiOutlineMail} placeholder="Email" />
+            <CustomInput className="bg-white border-secondary" icon={HiOutlineMail} placeholder="Email" />
           </Form.Item>
 
           {/* CustomButton for submit */}
