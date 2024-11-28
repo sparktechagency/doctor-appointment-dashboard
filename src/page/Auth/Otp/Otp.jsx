@@ -91,7 +91,7 @@ const Otp = () => {
         </div>
         <div className="flex justify-between items-center my-4">
           <h1>Didn’t receive code?</h1>
-          <button onClick={handleResendPassword} className="text-[#1397D5]">
+          <button onClick={handleResendPassword} className="text-[#0d28e0]">
             Resend
           </button>
         </div>
