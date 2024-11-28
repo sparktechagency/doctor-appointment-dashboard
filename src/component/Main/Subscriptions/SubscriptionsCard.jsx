@@ -40,7 +40,7 @@ const SubscriptionsCard = ({ item, index }) => {
   return (
     <div
   className={`w-full rounded-lg border shadow-sm ${
-    item.id === 1 || index === 0 ? 'bg-primary text-white' : 'bg-primary text-black'
+    item.id === 1 || index === 0 ? 'bg-primary text-white' : 'bg-primary text-white'
   }`}
 >
   {/* Image Handling with Centered Fallback */}
@@ -81,14 +81,12 @@ const SubscriptionsCard = ({ item, index }) => {
   <div className="flex justify-between items-center md:gap-5 mt-4 p-2">
     <button
       onClick={() => showDeleteConfirm(id)}
-      className={`px-3 py-2 border ${
-        index === 0 ? 'border-white text-white' : 'border-primary text-primary'
-      } rounded text-sm hover:bg-primary hover:text-white transition`}
+      className={`px-6 py-2 border border-white rounded text-sm `}
     >
       Delete
     </button>
     <Link to={`/subscriptions/edit-item/${id}`}>
-      <button className={`px-5 py-2 ${index === 0 ? 'bg-white text-primary' : 'bg-primary text-white'} rounded text-sm hover:bg-primary hover:text-white transition`}>
+      <button className={`px-7 py-2 bg-white rounded text-sm text-primary`}>
         Edit
       </button>
     </Link>
