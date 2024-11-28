@@ -14,7 +14,7 @@ const RecentTransactions = () => {
       PatientName: "Enrique",
       Email: "example@gmail.com",
       Phone: "01317597092",
-      date: "16 Apr 2024",
+      date: "16 Apr 2024"
     },
     {
       key: "2",
@@ -22,7 +22,7 @@ const RecentTransactions = () => {
       PatientName: "Enrique",
       Email: "example@gmail.com",
       Phone: "01317597092",
-      date: "16 Apr 2024",
+      date: "16 Apr 2024"
     },
     {
       key: "3",
@@ -30,7 +30,7 @@ const RecentTransactions = () => {
       PatientName: "Enrique",
       Email: "example@gmail.com",
       Phone: "01317597092",
-      date: "16 Apr 2024",
+      date: "16 Apr 2024"
     },
     {
       key: "4",
@@ -38,7 +38,7 @@ const RecentTransactions = () => {
       PatientName: "Enrique",
       Email: "example@gmail.com",
       Phone: "01317597092",
-      date: "16 Apr 2024",
+      date: "16 Apr 2024"
     },
     {
       key: "5",
@@ -46,8 +46,8 @@ const RecentTransactions = () => {
       PatientName: "Enrique",
       Email: "example@gmail.com",
       Phone: "01317597092",
-      date: "16 Apr 2024",
-    },
+      date: "16 Apr 2024"
+    }
     // {
     //   key: "6",
     //   transactionId: "12345679",
@@ -72,28 +72,28 @@ const RecentTransactions = () => {
     {
       title: "#ID",
       dataIndex: "transactionId",
-      key: "transactionId",
+      key: "transactionId"
     },
     {
       title: "Patient name",
       dataIndex: "PatientName",
-      key: "userName",
+      key: "userName"
     },
     {
       title: "Email",
       dataIndex: "Email",
-      key: "Email",
+      key: "Email"
     },
     {
       title: "Phone number",
       dataIndex: "Phone",
-      key: "Phone",
+      key: "Phone"
     },
     {
       title: "Appointment date ",
       dataIndex: "date",
       key: "date",
-      render: (text) => (text ? moment(text).format("DD MMM YYYY") : "N/A"),
+      render: (text) => (text ? moment(text).format("DD MMM YYYY") : "N/A")
     },
     {
       title: "Action",
@@ -105,30 +105,36 @@ const RecentTransactions = () => {
             style={{ fontSize: "18px", cursor: "pointer" }}
           />
         </Space>
-      ),
-    },
+      )
+    }
   ];
 
   return (
     <div className="w-full col-span-full md:col-span-6  rounded-lg  ">
       <h2 className="font-semibold py-3 pl-5">Recent Transactions</h2>
       <ConfigProvider
-  theme={{
-    token: {
-      colorBgContainer: "",
-      colorPrimary: "", // Custom primary color
-    },
-    components: {
-      Table: {
-        colorBgContainer: "",
-        colorFillAlter: "#3780f9", // Table header background color
-        colorTextHeading: "#ffffff", // Header text color for contrast
-      },
-    },
-  }}
->
-  <Table columns={columns} dataSource={data} pagination={false}  scroll={{ x: 800 }} />
-</ConfigProvider>
+        theme={{
+          token: {
+            colorBgContainer: "#3780f9",
+            colorPrimary: "" // Custom primary color
+          },
+          components: {
+            Table: {
+              colorBgContainer: "",
+              colorFillAlter: "#3780f9", // Table header background color
+              colorTextHeading: "#ffffff", // Header text color for contrast 
+            }
+          }
+        }}
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={false}
+          scroll={{ x: 800 }}
+        />
+      </ConfigProvider>
+
       {/* Modal */}
       <Modal
         open={isModalVisible}
@@ -146,7 +152,7 @@ const RecentTransactions = () => {
               <p>Transaction ID :</p>
               <p>{selectedTransaction?.transactionId || "N/A"}</p>
             </div>
-          
+
             <div className="flex justify-between py-3 border-t-2 border-gray-400">
               <p>User name :</p>
               <p>{selectedTransaction?.PatientName || "N/A"}</p>
