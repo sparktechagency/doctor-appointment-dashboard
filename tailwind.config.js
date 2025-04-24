@@ -6,8 +6,6 @@ export default {
       colors: {
         primary: "#0d28e0",
         secondary: "#3780f9",
-        primaryBg: "#EBF6FE",
-        hoverText: "#dcbb87",
       },
     },
   },
