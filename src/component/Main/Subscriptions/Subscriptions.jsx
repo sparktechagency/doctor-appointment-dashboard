@@ -2,8 +2,14 @@ import { FaPlus } from "react-icons/fa";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
 import CategoriesCard from "./SubscriptionsCard";
+import { useGetAllSubscriptionsQuery } from "../../../redux/features/subscription/subscriptionApi";
 
 const Subscriptions = () => {
+  const { data: subscriptions = [], isLoading } = useGetAllSubscriptionsQuery();
+  console.log(subscriptions)
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   const dataSource = [
     {
       id: "1",
@@ -28,7 +34,7 @@ const Subscriptions = () => {
     {
       id: "3",
       name: "Premium",
-      amount: 1200,
+      amount: 152000,
       subTitle1: "Unlimited product updates",
       subTitle2: "VIP support",
       subTitle3: "Weekly consultations",
@@ -51,8 +57,8 @@ const Subscriptions = () => {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {dataSource?.map((item, index) => (
-          <CategoriesCard key={item.i} index={index} item={item} />
+        {subscriptions?.map((item, index) => (
+          <CategoriesCard key={item.id} index={index} item={item} />
         ))}
       </div>
     </>

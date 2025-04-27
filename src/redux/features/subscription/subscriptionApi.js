@@ -6,16 +6,20 @@ export const subscriptionApi = baseApi.injectEndpoints({
       query: (data) => {
         const token = sessionStorage.getItem("token"); // Get the token from sessionStorage
         return {
-          url: "/subscription", // Adjust the URL as needed
+          url: "/subscription", // POST endpoint
           method: "POST",
-          body: data, // Send the form data
+          body: data,
           headers: {
-            Authorization: `Bearer ${token}`, // Set the Authorization header with Bearer token
+            Authorization: `Bearer ${token}`,
           },
-          // credentials: "include", // Optional: Include credentials (cookies)
         };
       },
     }),
+    getAllSubscriptions: builder.query({
+      query: () => "/subscription/all", // GET endpoint
+      transformResponse: (response) => response.data.attributes, // Get only the array
+    }),
   }),
 });
-export const { useCreateSubscriptionMutation } = subscriptionApi;
+
+export const { useCreateSubscriptionMutation, useGetAllSubscriptionsQuery } = subscriptionApi;
