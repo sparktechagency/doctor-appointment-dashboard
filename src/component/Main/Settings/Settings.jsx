@@ -1,12 +1,21 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+
 import { Button, Form, Input, Modal, Switch } from "antd";
 import { useState } from "react";
 import { HiOutlineLockClosed } from "react-icons/hi";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import OTPInput from "react-otp-input";
 // import { useSelector } from "react-redux";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import {
+  useChangePasswordMutation,
+  useForgotPasswordMutation,
+  useVerifyEmailMutation,
+  useResetPasswordMutation,
+} from "../../../redux/features/auth/authApi";
+import Password from "antd/es/input/Password";
 // import { useChangePasswordMutation, useChangePasswordUseingOldPasswordMutation, useForgotPasswordMutation, useVerifyOtpMutation } from "../../../redux/features/auth/authApi";
 
 const Settings = () => {
@@ -67,25 +76,85 @@ const Settings = () => {
       navigate(`/settings/${value}`);
     }
   };
-
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
   const handleChangePassword = async (values) => {
-    const { oldPassword, newPassword } = values;
-    changePassWithOldPass({ oldPassword, newPassword });
+    try {
+      const res = await changePassword({
+        oldPassword: values.oldPassword,
+        newPassword: values.newPassword,
+      }); // one object
+      if (res.error) {
+        toast.error(res?.error?.data?.message);
+        console.log(res.error);
+      }
+      if (res.data) {
+        toast.success(res.data.message);
+        navigate(`/`);
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
+  const [forgotPassword] = useForgotPasswordMutation();
   const handleForgetPassword = async (values) => {
-    forgotPassword(values);
+    try {
+      console.log("the email value from forget pass", values);
+      sessionStorage.setItem("resetEmail", values.email);
+
+      const res = await forgotPassword(values);
+      if (res.error) {
+        toast.error(res?.error?.data?.message);
+        console.log(res.error);
+      }
+      if (res.data) {
+        toast.success(res.data.message);
+        setModelTitle("Verify OTP");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
+  const [verifyOtp] = useVerifyEmailMutation();
+
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    verifyOtp({
-      code: otp,
-      email: user?.email,
-    });
+    const email = sessionStorage.getItem("resetEmail");
+    try {
+      const res = await verifyOtp({
+        code: otp,
+        email: email,
+      });
+      if (res.error) {
+        toast.error(res?.error?.data?.message);
+        console.log(res.error);
+      }
+      if (res.data) {
+        toast.success(res.data.message);
+        setModelTitle("Reset Password");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
+  const [resetPassword] = useResetPasswordMutation();
   const handleResetPassword = async (values) => {
-    changePassword({ email: user?.email, password: values?.password });
+    const email = sessionStorage.getItem("resetEmail");
+    console.log("password in reset pass",values)
+    try {
+      const res = await resetPassword({ email, password: values.password });
+      if (res.error) {
+        toast.error(res?.error?.data?.message);
+        console.log(res.error);
+      }
+      if (res.data) {
+        toast.success(res.data.message);
+        sessionStorage.removeItem("resetEmail");
+        navigate(`/`);
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
-
   // useEffect(() => {
   //     if (isError && error) {
   //         Swal.fire({
@@ -330,7 +399,7 @@ const Settings = () => {
                 </Form.Item>
               </div>
               <Form.Item>
-              <button
+                <button
                   type="submit"
                   className="w-full px-5 py-4  mt-2 text-white bg-[#193664] rounded-lg"
                 >
@@ -349,7 +418,7 @@ const Settings = () => {
           </div>
         )}
         {modelTitle === "Verify OTP" && (
-          <div className="px-[60px] pb-[60px] bg-primary">
+          <div className="px-[60px] pb-[60px] bg-white">
             <form onSubmit={handleVerifyOtp}>
               <p className="text-[16px] mb-[14px]">
                 Please enter your email address to recover your account.
@@ -396,7 +465,7 @@ const Settings = () => {
           </div>
         )}
         {modelTitle === "Reset Password" && (
-          <div className="px-[60px] pb-[60px] bg-primary">
+          <div className="px-[60px] pb-[60px] bg-white">
             <Form
               form={form}
               name="dependencies"
@@ -427,11 +496,11 @@ const Settings = () => {
                       size={28}
                     />
                   }
-                  className="bg-primary
+                  className="bg-gray-200
                         rounded w-full 
                         justify-start 
                         mt-[12px]
-                         outline-none focus:border-none border-primary"
+                         outline-none focus:border-none border-white"
                 />
               </Form.Item>
 
@@ -467,7 +536,7 @@ const Settings = () => {
                       size={28}
                     />
                   }
-                  className="p-4 bg-primary
+                  className="p-4 bg-gray-200
                     rounded w-full 
                     justify-start 
                     mt-[12px]

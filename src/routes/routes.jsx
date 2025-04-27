@@ -28,6 +28,7 @@ import EditInformationPage from "../page/EditInformation/EditInformation.";
 import TeamMemberPage from "../page/TeamMember/TeamMemberpage";
 import Chat from '../page/Chat/Chat'
 import LaboratoryTestRequest from "../page/LaboratoryTestRequest/LaboratoryTestRequest";
+import AdminRoutes from "./AdminRoutes";
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -35,7 +36,9 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
+      // <AdminRoutes>
         <MainLayout />
+      // </AdminRoutes>
     ),
     errorElement: <h1>Error</h1>,
     children: [

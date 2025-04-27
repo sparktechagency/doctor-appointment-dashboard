@@ -5,7 +5,7 @@ import { Form } from "antd"; // Import Ant Design Form
 import CustomInput from "../../../utils/CustomInput";
 import CustomButton from "../../../utils/CustomButton";
 import { toast } from "sonner";
-import { useResetPasswordMutation } from "../../../redux/features/auth/authApi";
+import { useResetPasswordMutation, } from "../../../redux/features/auth/authApi";
 
 const NewPassword = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const NewPassword = () => {
       }
       if (res.data) {
         toast.success(res.data.message);
-        navigate("/auth/login");
+        navigate("/auth");
       }
     } catch (error) {
       toast.error("Something went wrong");

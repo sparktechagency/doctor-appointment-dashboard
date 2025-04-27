@@ -23,7 +23,7 @@ const Otp = () => {
     try {
       const res = await verifyOtp({
         email,
-        oneTimeCode: otp
+        code: otp
       });
       if (res.error) {
         toast.error(res?.error?.data?.message);
