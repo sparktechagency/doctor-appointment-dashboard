@@ -19,7 +19,13 @@ export const subscriptionApi = baseApi.injectEndpoints({
       query: () => "/subscription/all", // GET endpoint
       transformResponse: (response) => response.data.attributes, // Get only the array
     }),
+    deleteSubscription: builder.mutation({
+      query: (id) => ({
+        url: `/subscription/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useCreateSubscriptionMutation, useGetAllSubscriptionsQuery } = subscriptionApi;
+export const { useCreateSubscriptionMutation, useGetAllSubscriptionsQuery, useDeleteSubscriptionMutation } = subscriptionApi;

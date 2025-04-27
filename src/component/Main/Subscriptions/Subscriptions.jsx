@@ -5,44 +5,12 @@ import CategoriesCard from "./SubscriptionsCard";
 import { useGetAllSubscriptionsQuery } from "../../../redux/features/subscription/subscriptionApi";
 
 const Subscriptions = () => {
-  const { data: subscriptions = [], isLoading } = useGetAllSubscriptionsQuery();
+  const { data: subscriptions = [], isLoading  } = useGetAllSubscriptionsQuery();
   console.log(subscriptions)
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  const dataSource = [
-    {
-      id: "1",
-      name: "Free",
-      amount: 0,
-      subTitle1: "Unlimited product updates",
-      subTitle2: "Unlimited product updates",
-      subTitle3: "Unlimited product updates",
-      subTitle4: "Appointment reminders",
-      subTitle5: "Email and community support",
-    },
-    {
-      id: "2",
-      name: "Standard",
-      amount: 1200,
-      subTitle1: "Unlimited product updates",
-      subTitle2: "Priority support",
-      subTitle3: "Monthly consultations",
-      subTitle4: "Appointment reminders",
-      subTitle5: "Email and community support",
-    },
-    {
-      id: "3",
-      name: "Premium",
-      amount: 152000,
-      subTitle1: "Unlimited product updates",
-      subTitle2: "VIP support",
-      subTitle3: "Weekly consultations",
-      subTitle4: "Appointment reminders",
-      subTitle5: "Email and community support",
-    },
-  ];
-
+  
   return (
     <>
       <div className="w-full flex justify-between items-center py-6 ">

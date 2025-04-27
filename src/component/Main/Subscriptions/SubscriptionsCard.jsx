@@ -6,13 +6,15 @@ import { FaCheckCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
+import { useDeleteSubscriptionMutation, useGetAllSubscriptionsQuery } from "../../../redux/features/subscription/subscriptionApi";
 
 const SubscriptionsCard = ({ item, index }) => {
-  const [deleteProduct] = useDeleteProductMutation();
-  const { id, title, amount, features = [] } = item;
+  const { data: subscriptions = [], refetch   } = useGetAllSubscriptionsQuery();
+  const [deleteSubscription] = useDeleteSubscriptionMutation();
+  const { id, title, amount, limitation,features = [] } = item;
 
     // Show confirmation modal
-  const showDeleteConfirm = (productId) => {
+  const showDeleteConfirm = (id) => {
     Modal.confirm({
       title: "Are you sure you want to delete this item?",
       content: "This action cannot be undone.",
@@ -20,18 +22,19 @@ const SubscriptionsCard = ({ item, index }) => {
       okType: "danger",
       cancelText: "No",
       centered: true, // Centers the modal
-      onOk: () => handleDelete(productId), // Delete item if confirmed
+      onOk: () => handleDelete(id), // Delete item if confirmed
     });
   };
 
-  const handleDelete = async (productId) => {
+  const handleDelete = async (id) => {
     try {
-      const res = await deleteProduct(productId);
+      const res = await deleteSubscription(id);
       if (res.error) {
-        toast.error("Failed to delete product");
+        toast.error("Failed to delete subscription");
         return;
       }
-      toast.success("Product deleted successfully");
+      toast.success("subscription deleted successfully");
+      await refetch(); 
     } catch (error) {
       toast.error("Something went wrong");
     }
@@ -47,7 +50,7 @@ const SubscriptionsCard = ({ item, index }) => {
 
       <div className="p-5 space-y-2 text-center">
         <div className="flex items-center py-2 justify-center font-bold text-xl">
-          {amount}$ <br />Per Month
+          {amount}$ <br />Per {limitation}
         </div>
         {features.map((feature, idx) => (
           <h1 key={idx} className="flex items-center py-1">

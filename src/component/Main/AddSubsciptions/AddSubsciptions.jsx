@@ -1,15 +1,18 @@
 import { Form } from "antd";
-import { useRef, useState } from "react";
-import { FaPlus } from "react-icons/fa6";
+
 import { IoChevronBack } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useAddProductMutation } from "../../../redux/features/product/productApi";
+
 import CustomInput from "../../../utils/CustomInput";
-import { useCreateSubscriptionMutation } from "../../../redux/features/subscription/subscriptionApi";
+import {
+  useCreateSubscriptionMutation,
+  useGetAllSubscriptionsQuery,
+} from "../../../redux/features/subscription/subscriptionApi";
 
 const AddSubsciptions = () => {
   const [createSubscription, { isLoading }] = useCreateSubscriptionMutation();
+  const { refetch } = useGetAllSubscriptionsQuery();
 
   const [form] = Form.useForm(); // Ant Design form instance
   const navigate = useNavigate();
@@ -34,6 +37,7 @@ const AddSubsciptions = () => {
       } else {
         toast.success(response.data.message);
         form.resetFields();
+        await refetch();
         navigate("/subscriptions"); // Go back to subscriptions list
       }
     } catch (error) {
