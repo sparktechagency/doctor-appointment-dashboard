@@ -3,7 +3,6 @@ import LogoImage from "../../../assets/auth/Logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Checkbox } from "antd";
 import { HiOutlineLockClosed, HiOutlineMail } from "react-icons/hi";
-import CustomButton from "../../../utils/CustomButton";
 import CustomInput from "../../../utils/CustomInput";
 import { useLoginMutation } from "../../../redux/features/auth/authApi";
 import { toast } from "sonner";
@@ -18,11 +17,13 @@ const SignIn = () => {
     const { email, password } = values;
     try {
       const res = await login({ email, password });
+      console.log(res.data.data.attributes?.tokens?.access?.token)
       if (res.error) {
         toast.error(res.error.data.message);
         console.log(res.error.data.message);
       }
       if (res.data) {
+        sessionStorage.setItem("token", (res.data.data.attributes?.tokens?.access?.token));
         dispatch(
           loggedUser({
             token: res.data.data.attributes?.tokens?.access?.token,
