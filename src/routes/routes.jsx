@@ -30,6 +30,10 @@ import Chat from '../page/Chat/Chat'
 import LaboratoryTestRequest from "../page/LaboratoryTestRequest/LaboratoryTestRequest";
 import AdminRoutes from "./AdminRoutes";
 import CreateMember from "../component/Main/TeamMember/CreateMember";
+import EditMembers from "../component/Main/TeamMember/EditMembers";
+
+
+
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -97,7 +101,8 @@ const router = createBrowserRouter([
         element: <CreateMember />,
       },
       {
-        path: "teammember/edit-item/:id",
+        path: "/teammember/edit-item/:id",
+        element:<EditMembers/>
         
       },
       {

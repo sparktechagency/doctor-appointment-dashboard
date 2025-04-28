@@ -5,10 +5,11 @@ import { Modal } from "antd"; // Import Ant Design's Modal component
 import { toast } from "sonner";
 import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
 import { getBaseURL } from "../../../redux/baseApi/baseURL";
+import { useDeleteMemberMutation } from "../../../redux/features/teams/teamsApi";
 
 
 const TeamMemberCard = ({ item }) => {
-  const [deleteProduct] = useDeleteProductMutation();
+  const [deleteMember] = useDeleteMemberMutation();
   const { id, fullName,  profileImage,designation} = item;
 // console.log("item card is called",item)
 
@@ -26,8 +27,10 @@ const TeamMemberCard = ({ item }) => {
   };
 
   const handleDelete = async (productId) => {
+    
+    console.log("delete team is called")
     try {
-      const res = await deleteProduct(productId);
+      const res = await deleteMember(productId);
       if (res.error) {
         toast.error("Failed to delete product");
         return;
