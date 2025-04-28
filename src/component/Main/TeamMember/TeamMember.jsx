@@ -1,8 +1,9 @@
 import { FaPlus } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { useGetAllProductsQuery } from "../../../redux/features/product/productApi";
+
 import TeamMemberCard from "./TeamMemberCard";
+import { useGetAllTeamsQuery } from "../../../redux/features/teams/teamsApi";
 
 const TeamMember = () => {
   const dataSource = [
@@ -63,7 +64,8 @@ const TeamMember = () => {
     isLoading,
     isError,
     error,
-  } = useGetAllProductsQuery();
+  } = useGetAllTeamsQuery();
+  // console.log("team info is called",allItems)
   let content = null;
   if (isLoading) {
     content = <h1>Loading....</h1>;
@@ -73,7 +75,7 @@ const TeamMember = () => {
         Something went wrong
       </h3>
     );
-  } else if (!allItems?.length) {
+  } else if (!allItems?.results?.length) {
     content = (
       <div className="w-full h-full text-center py-5   flex flex-col justify-center items-center">
         <img
@@ -87,7 +89,7 @@ const TeamMember = () => {
   } else {
     content = (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 ">
-        {dataSource?.map((item, i) => (
+        {allItems?.results?.map((item, i) => (
           <TeamMemberCard key={i} item={item} />
         ))}
       </div>
@@ -102,7 +104,7 @@ const TeamMember = () => {
             <IoChevronBack className="text-2xl" /> My Team Member
           </h1>
         </Link>
-        <Link to={"#"}>
+        <Link to={"creatteammember"}>
           <button className="px-8 py-3  text-white bg-secondary flex justify-center items-center gap-1 rounded text-sm">
             <FaPlus />
             Add Member

@@ -4,10 +4,13 @@ import { Link } from "react-router-dom";
 import { Modal } from "antd"; // Import Ant Design's Modal component
 import { toast } from "sonner";
 import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
+import { getBaseURL } from "../../../redux/baseApi/baseURL";
+
 
 const TeamMemberCard = ({ item }) => {
   const [deleteProduct] = useDeleteProductMutation();
-  const { id, name,  image} = item;
+  const { id, fullName,  profileImage,designation} = item;
+// console.log("item card is called",item)
 
   // Show confirmation modal
   const showDeleteConfirm = (productId) => {
@@ -36,11 +39,11 @@ const TeamMemberCard = ({ item }) => {
   };
 
   return (
-    <div className="w-full rounded-lg border shadow-sm p-2  bg-primary">
+    <div className="w-full rounded-lg border shadow-sm p-2  bg-gray-200">
       {/* Image Handling with Centered Fallback */}
       <div className="mx-auto flex justify-center items-center overflow-hidden w-[100%] h-[230px] rounded-lg bg-gray-100">
         <img
-          src={image?.url || "/images/default.png"}
+          src={`${getBaseURL()}${profileImage}`}
           alt={name || "Product Image"}
           className=" w-full h-full"
         />
@@ -49,10 +52,10 @@ const TeamMemberCard = ({ item }) => {
       {/* Item Name */}
       <div className="mt-4 space-y-1 ">
         <h1 className="font-semibold text-lg">
-          {name || "Unnamed Item"}
+          {fullName || "Unnamed Item"}
         </h1>
         <h1 className="text-gray-800">
-        Board-certified Psychiatrist
+       { designation||"Board-certified Psychiatrist"}
         </h1>
       </div>
 
