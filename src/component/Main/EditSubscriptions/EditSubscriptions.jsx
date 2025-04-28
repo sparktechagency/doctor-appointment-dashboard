@@ -1,74 +1,57 @@
 import { Form } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { FaMinus, } from "react-icons/fa6";
+
 import { IoChevronBack } from "react-icons/io5";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import {
-    useGetProductByIdQuery,
-    useUpdateProductMutation,
-} from "../../../redux/features/product/productApi";
+
 import CustomInput from "../../../utils/CustomInput";
+import { useGetAllSubscriptionsQuery, useUpdateSubscriptionMutation } from "../../../redux/features/subscription/subscriptionApi";
 
 const EditSubscriptions = () => {
-  const [imageFile, setImageFile] = useState(null);
-  const [ setImageUrl] = useState(null);
-  const fileInputRef = useRef(null); // Reference to hidden file input
-  const [updateItem, { isLoading }] = useUpdateProductMutation();
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { id } = useParams(); // Get the item id from the route
-  const { data: product } = useGetProductByIdQuery(id, {
-    skip: !id,
-  });
-
-  useEffect(() => {
-    if (product) {
-      // Pre-fill the form with the current item data
-      form.setFieldsValue({
-        productName: product?.name,
-        price: product?.price,
-        weight: product?.weight,
-      });
-      setImageUrl(`${imageBaseUrl}${product.image?.url}`); // Set existing image URL if available
-    }
-  }, [product, form]);
-
-  // Handle image change (preview the image)
-  const handleImageChange = (event) => {
-    const file = event.target.files && event.target.files[0];
-    if (file) {
-      const newImageUrl = URL.createObjectURL(file);
-      setImageFile(file);
-      setImageUrl(newImageUrl); // Set the image URL for preview
-    }
-  };
-
-  
+  const  {id}  = useParams();
+  // console.log("the post id is",id)
+  const { data: subscriptions = [], refetch } = useGetAllSubscriptionsQuery();
+  const [updateSubscription,{isLoading }] = useUpdateSubscriptionMutation();
+  const subscription = subscriptions.find((item) => item.id === id);
+  // console.log(subscription)
+  // Prefill form when subscription is found
+  if (subscription && !form.getFieldValue("title")) {
+    form.setFieldsValue({
+      title: subscription.title,
+      limitation: subscription.limitation,
+      stripePriceId: subscription.stripePriceId,
+      days: subscription.days,
+      amount: subscription.amount,
+      features: subscription.features?.join(", "), // join features array as comma separated
+    });
+  }
 
   const onFinish = async (values) => {
-    const formdata = new FormData();
-    formdata.append("name", values.productName);
-    formdata.append("price", values.price);
-    formdata.append("weight", values.weight);
-    if (imageFile) {
-      formdata.append("image", imageFile); // Add the new image if it's changed
-    }
+    const payload = {
+      title: values.title,
+      limitation: values.limitation,
+      stripePriceId: values.stripePriceId,
+      days: Number(values.days),
+      amount: Number(values.amount),
+      features: values.features?.split(",").map((item) => item.trim()),
+    };
 
     try {
-      const response = await updateItem({ id, formdata });
+      const response = await updateSubscription({ id, payload });
+      // console.log(payload)
+      await refetch()
       if (response.error) {
         toast.error(response.error.data.message);
       } else {
         toast.success(response.data.message);
-        setImageFile(null);
-        setImageUrl(null);
         form.resetFields();
+        await refetch();
         navigate("/subscriptions");
       }
     } catch (error) {
-      console.error("Error updating item:", error);
+      console.error("Error updating subscription:", error);
       toast.error("Something went wrong");
     }
   };
@@ -77,73 +60,94 @@ const EditSubscriptions = () => {
     <div className="w-full">
       {/* Header */}
       <div className="flex gap-4 items-center my-6">
-        <Link to={"/subscriptions"}>
+        <Link to="/subscriptions">
           <IoChevronBack className="size-6" />
         </Link>
-        <h1 className="text-2xl font-semibold">Edit subscriptions</h1>
+        <h1 className="text-2xl font-semibold">Edit Subscription</h1>
       </div>
 
-      
-
-      {/* Hidden File Input */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleImageChange}
-        accept="image/*"
-        style={{ display: "none" }} // Hidden input
-      />
-
-      {/* Form Section */}
+      {/* Form */}
       <Form form={form} layout="vertical" onFinish={onFinish} className="mt-5">
-        
-          {/* Product Name */}
-          <Form.Item
-            label="Subscriptions  Name"
-            name="productName"
-            rules={[
-              { required: true, message: "Please enter the product name!" },
-            ]}
-            className="w-[90%]"
-          >
-            <CustomInput className="bg-white border-secondary" placeholder="Type name" />
-          </Form.Item>
+        <Form.Item
+          label="Subscription Title"
+          name="title"
+          rules={[{ required: true, message: "Please enter title!" }]}
+          className="w-[90%]"
+        >
+          <CustomInput
+            className="bg-white border-secondary"
+            placeholder="Type title"
+          />
+        </Form.Item>
 
-          {/* Price */}
-          <Form.Item
-            label="Subscriptions Price"
-            name="price"
-            rules={[{ required: true, message: "Please enter the price!" }]}
-            className="w-[90%]"
-          >
-            <CustomInput className="bg-white border-secondary" type="number" placeholder="Type price" />
-          </Form.Item>
-        
+        <Form.Item
+          label="Limitation"
+          name="limitation"
+          rules={[{ required: true, message: "Please enter limitation!" }]}
+          className="w-[90%]"
+        >
+          <CustomInput
+            className="bg-white border-secondary"
+            placeholder="Type limitation (e.g. monthly)"
+          />
+        </Form.Item>
 
-        {/* Weight */}
-        <div className="flex">
-          <Form.Item
-            label=""
-            name=""
-            rules={[{ required: true, message: "Please enter the weight!" }]}
-            className="w-[90%]"
-          >
-            <CustomInput className="bg-white border-secondary" type="" />
-          </Form.Item>
-          <div className="bg-secondary w-10 h-10 rounded-full ml-5 p-3 text-white">
-          <FaMinus />
-          </div>
-        </div>
+        <Form.Item
+          label="Stripe Price ID"
+          name="stripePriceId"
+          rules={[{ required: true, message: "Please enter Stripe Price ID!" }]}
+          className="w-[90%]"
+        >
+          <CustomInput
+            className="bg-white border-secondary"
+            placeholder="Type stripe price ID"
+          />
+        </Form.Item>
 
-        {/* Submit Button */}
-        <button loading={isLoading} border className="w-[90%] bg-secondary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none">
-         Add fields
-        </button>
+        <Form.Item
+          label="Days"
+          name="days"
+          rules={[{ required: true, message: "Please enter days!" }]}
+          className="w-[90%]"
+        >
+          <CustomInput
+            type="number"
+            className="bg-white border-secondary"
+            placeholder="Number of days"
+          />
+        </Form.Item>
 
+        <Form.Item
+          label="Amount"
+          name="amount"
+          rules={[{ required: true, message: "Please enter amount!" }]}
+          className="w-[90%]"
+        >
+          <CustomInput
+            type="number"
+            className="bg-white border-secondary"
+            placeholder="Type amount"
+          />
+        </Form.Item>
 
-         {/* Submit Button */}
-         <button loading={isLoading} border className="mt-12  bg-secondary px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
-         Update
+        <Form.Item
+          label="Features"
+          name="features"
+          rules={[{ required: true, message: "Please enter features!" }]}
+          className="w-[90%]"
+        >
+          <CustomInput
+            className="bg-white border-secondary"
+            placeholder="Comma-separated features (e.g. Feature1, Feature2)"
+          />
+        </Form.Item>
+
+        <button
+        type="submit"
+          disabled={isLoading}
+          className="w-[90%] mt-5 bg-secondary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none"
+        >
+          {isLoading ? "Updating..." : "Update Subscription"}
         </button>
       </Form>
     </div>

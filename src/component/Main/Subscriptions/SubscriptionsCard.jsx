@@ -6,14 +6,21 @@ import { FaCheckCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
-import { useDeleteSubscriptionMutation, useGetAllSubscriptionsQuery } from "../../../redux/features/subscription/subscriptionApi";
-
+import {
+  useDeleteSubscriptionMutation,
+  useGetAllSubscriptionsQuery,
+} from "../../../redux/features/subscription/subscriptionApi";
+import { useNavigate } from "react-router-dom";
 const SubscriptionsCard = ({ item, index }) => {
-  const { data: subscriptions = [], refetch   } = useGetAllSubscriptionsQuery();
+  const navigate = useNavigate();
+  const { data: subscriptions = [], refetch } = useGetAllSubscriptionsQuery();
   const [deleteSubscription] = useDeleteSubscriptionMutation();
-  const { id, title, amount, limitation,features = [] } = item;
-
-    // Show confirmation modal
+  const { id, title, amount, limitation, features = [] } = item;
+  const handleEditClick = () => {
+    // sessionStorage.setItem("editSubscriptionId", id); // Store id in sessionStorage
+    navigate(`/subscriptions/edit-item/${id}`); // Navigate without id in URL
+  };
+  // Show confirmation modal
   const showDeleteConfirm = (id) => {
     Modal.confirm({
       title: "Are you sure you want to delete this item?",
@@ -34,7 +41,7 @@ const SubscriptionsCard = ({ item, index }) => {
         return;
       }
       toast.success("subscription deleted successfully");
-      await refetch(); 
+      await refetch();
     } catch (error) {
       toast.error("Something went wrong");
     }
@@ -50,7 +57,8 @@ const SubscriptionsCard = ({ item, index }) => {
 
       <div className="p-5 space-y-2 text-center">
         <div className="flex items-center py-2 justify-center font-bold text-xl">
-          {amount}$ <br />Per {limitation}
+          {amount}$ <br />
+          Per {limitation}
         </div>
         {features.map((feature, idx) => (
           <h1 key={idx} className="flex items-center py-1">
@@ -67,11 +75,13 @@ const SubscriptionsCard = ({ item, index }) => {
         >
           Delete
         </button>
-        <Link to={`/subscriptions/edit-item/${id}`}>
-          <button className="px-7 py-2 bg-white rounded text-sm text-primary">
-            Edit
-          </button>
-        </Link>
+
+        <button
+          onClick={handleEditClick}
+          className="px-7 py-2 bg-white rounded text-sm text-primary"
+        >
+          Edit
+        </button>
       </div>
     </div>
   );

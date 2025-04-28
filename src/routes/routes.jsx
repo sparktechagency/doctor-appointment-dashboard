@@ -76,7 +76,7 @@ const router = createBrowserRouter([
         element: <AddSubsciptionsPage  />,
       },
       {
-        path: "subscriptions/edit-item/:id",
+        path: "subscriptions/edit-item/:id",  // Remove the duplicate "subscriptions"
         element: <EditSubscriptionsitems />,
       },
       {

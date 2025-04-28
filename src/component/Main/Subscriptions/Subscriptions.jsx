@@ -6,7 +6,7 @@ import { useGetAllSubscriptionsQuery } from "../../../redux/features/subscriptio
 
 const Subscriptions = () => {
   const { data: subscriptions = [], isLoading  } = useGetAllSubscriptionsQuery();
-  console.log(subscriptions)
+  // console.log(subscriptions)
   if (isLoading) {
     return <div>Loading...</div>;
   }
