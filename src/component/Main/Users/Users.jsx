@@ -286,6 +286,28 @@ const Users = () => {
         onCancel={() => setIsModalOpen(false)}
         footer={null}
         centered
+ styles={{
+    header: {
+      borderBottom: 'none',
+      paddingBottom: 0,
+    },
+    mask: {
+      backdropFilter: 'blur(3px)',
+    },
+    // This is the key part for the close button
+    close: {
+      background: '#77C4FE', // Your desired background color
+      color: 'black', // Icon color
+      top: 10,
+      insetInlineEnd: 10,
+    },
+  }}
+   closeIcon={
+    <span className="flex items-center justify-center w-10 h-10 bg-red-500 rounded-tr-lg rounded-bl-2xl ">
+      ×
+    </span>
+  
+  }
       >
         <div className="text-black bg-white">
           <img

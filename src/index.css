@@ -18,3 +18,24 @@
 .ant-select-focused .ant-select-selector {
   outline: none !important; /* Ensures no outline on focus */
 }
+
+.ant-modal .ant-modal-close{
+
+ position: absolute;
+    top: 0px;
+    inset-inline-end: -5px;
+    z-index: 1010;
+    padding: 0;
+    color: white;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    background: transparent;
+    border-radius: 4px;
+    width: 50px;
+    height: 32px;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+}
