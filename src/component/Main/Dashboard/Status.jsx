@@ -10,7 +10,7 @@ const Status = () => {
     console.log(data)
   return (
     <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
-    <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
+    <div className="flex items-center justify-between p-5 rounded-lg bg-[#77C4FE] w-full">
       <div className="size-16 p-3 flex justify-center items-center">
         <img src={OrganizationImage} alt="logo" className="w-[64px]  h-[40px]  mb-5" />
       </div>
@@ -21,7 +21,7 @@ const Status = () => {
         <h1 className="text-gray-200">Total Patient</h1>
       </div>
     </div>
-    <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
+    <div className="flex items-center justify-between p-5 rounded-lg bg-[#77C4FE] w-full">
       <div className="size-16 p-3 flex justify-center items-center">
         <img src={Frame1} alt="logo" className="w-[64px]  h-[40px]  mb-5" />
       </div>
@@ -32,7 +32,7 @@ const Status = () => {
         <h1 className="text-gray-200">Total Earnings</h1>
       </div>
     </div>
-    <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
+    <div className="flex items-center justify-between p-5 rounded-lg bg-[#77C4FE] w-full">
       <div className="size-16 p-3 flex justify-center items-center">
         <img src={Frame2} alt="logo" className="w-[64px]  h-[40px]  mb-5" />
       </div>
@@ -43,7 +43,7 @@ const Status = () => {
         <h1 className="text-gray-200">Daily affirmation</h1>
       </div>
     </div>
-    <div className="flex items-center justify-between p-5 rounded-lg bg-secondary w-full">
+    <div className="flex items-center justify-between p-5 rounded-lg bg-[#77C4FE] w-full">
       <div className="size-16 p-3 flex justify-center items-center">
         <img src={Frame3} alt="logo" className="w-[64px]  h-[40px]  mb-5" />
       </div>

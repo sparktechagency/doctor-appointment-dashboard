@@ -121,7 +121,7 @@ const RecentTransactions = () => {
           components: {
             Table: {
               colorBgContainer: "",
-              colorFillAlter: "#3780f9", // Table header background color
+              colorFillAlter: "#77C4FE", // Table header background color
               colorTextHeading: "#ffffff", // Header text color for contrast 
             }
           }

@@ -81,7 +81,7 @@ const IncomeGraphChart = () => {
           />
           <YAxis />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="income" barSize={20} fill="#3780f9" />
+          <Bar dataKey="income" barSize={20} fill="#77C4FE" />
         </BarChart>
       </ResponsiveContainer>
     </section>

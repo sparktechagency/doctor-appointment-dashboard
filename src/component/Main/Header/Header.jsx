@@ -11,7 +11,7 @@ const Header = ({ toggleSidebar }) => {
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <div className="w-[99%] p-2 mx-2  flex justify-between items-center text-white sticky top-0 left-0 z-10 bg-secondary rounded-md">
+    <div className="w-[99%] p-2 mx-2  flex justify-between items-center text-white sticky top-0 left-0 z-10 bg-[#77C4FE] rounded-md">
       <div className="flex items-center gap-3  py-1 px-3  rounded">
         {/* Hamburger menu for mobile */}
         <button

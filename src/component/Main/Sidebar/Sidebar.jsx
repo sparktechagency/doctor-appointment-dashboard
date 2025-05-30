@@ -74,8 +74,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   return (
     <div>
       {/* Desktop Sidebar */}
-      <div className="hidden md:block w-[350px] h-full bg-secondary fixed overflow-y-scroll">
-        <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-secondary">
+      <div className="hidden md:block w-[350px] h-full bg-[#77C4FE] fixed overflow-y-scroll">
+        <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-[#77C4FE]">
           <img src={LogoImage} alt="logo" className="w-46 h-24 mb-5" />
         </div>
         <ul className="w-full flex flex-col gap-3 mt-[15px]">
@@ -85,7 +85,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               to={item.path}
               className={({ isActive }) =>
                 isActive
-                  ? "bg-primary px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
+                  ? "bg-[#77C4FE] px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
                   : "px-10 py-4 flex items-center gap-3 text-[#FFFFFF]"
               }
             >
@@ -105,11 +105,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
       {/* Mobile Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-secondary shadow-lg transform ${
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-[#77C4FE] shadow-lg transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out md:hidden`}
       >
-        <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-secondary">
+        <div className="flex flex-col justify-center items-center pt-5 gap-2 text-white bg-[#77C4FE]">
         <img src={LogoImage} alt="logo" className="w-46 h-24 mb-5" />
         </div>
         <ul className="w-full flex flex-col gap-3">

@@ -13,12 +13,12 @@ const AppointmentSection = () => {
               <MdKeyboardArrowLeft /> Appointment
             </h1>
             <Form layout="inline" className="flex space-x-4">
-              <button className=" flex justify-center items-center bg-secondary text-white px-3 py-2 rounded-md">
+              <button className=" flex justify-center items-center bg-[#77C4FE] text-white px-3 py-2 rounded-md">
                 <FaArrowRightArrowLeft className="size-5" />
                 <p className="px-2">Today’s Apt</p>
               </button>
               <Link to="/appointmentlist">
-                <button className="flex justify-center items-center bg-secondary text-white px-3 py-2 rounded-md">
+                <button className="flex justify-center items-center bg-[#77C4FE] text-white px-3 py-2 rounded-md">
                   <FaArrowRightArrowLeft className="size-5" />
                   <p className="px-2">All Apt</p>
                 </button>
