@@ -246,7 +246,7 @@ const Users = () => {
             <Input placeholder="User name" />
           </Item>
           <Item>
-            <button className=" size-8 rounded-full flex justify-center items-center bg-primary text-white">
+            <button className=" size-8 rounded-full flex justify-center items-center bg-[#77C4FE] text-white">
               <IoIosSearch className="size-5" />
             </button>
           </Item>
@@ -255,12 +255,12 @@ const Users = () => {
       <ConfigProvider
         theme={{
           token: {
-            colorBgContainer: "#fff",
+            colorBgContainer: "#D5EDFF",
             colorPrimary: "#1890ff", // Custom primary color
           },
           components: {
             Table: {
-              headerBg: "#3780f9",
+              headerBg: "#77C4FE",
               headerColor: "white",
               headerBorderRadius: 2,
             },
@@ -270,7 +270,7 @@ const Users = () => {
         <Table
           // loading={isFetching}
           pagination={{
-            position: ["bottomCenter"],
+            position: ["end"],
             current: currentPage,
             onChange: setCurrentPage,
           }}
