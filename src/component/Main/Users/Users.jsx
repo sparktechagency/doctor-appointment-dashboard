@@ -310,12 +310,12 @@ const Users = () => {
   }
       >
         <div className="text-black bg-white">
-          <img
+          {/* Main Content  <img
             className="size-28 mx-auto rounded-full"
             src={`${imageBaseUrl}${user?.image}`}
             alt=""
 
-          />
+          />*/}
           <h1 className="text-center text-2xl font-semibold my-2">
             User Details
           </h1>

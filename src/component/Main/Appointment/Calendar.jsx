@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-
+import { MdKeyboardArrowRight } from "react-icons/md";
 const months = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
@@ -39,17 +39,29 @@ const CustomCalendar = () => {
 
   return (
     <div className="p-6 w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
-      <div className="flex justify-between items-center w-full mb-6">
-        <button onClick={prevMonth} className="bg-secondary text-white py-2 px-3 rounded flex items-center transition duration-300">
-          <FaArrowLeft className="mr-2" /> 
-        </button>
-        <h2 className="text-2xl font-bold text-gray-700">{`${months[currentMonth]}`}</h2>
-        <button onClick={nextMonth} className="bg-secondary text-white py-2 px-3 rounded flex items-center transition duration-300">
-          <FaArrowRight className="ml-2" />
-        </button>
-      </div>
+    <div className="flex justify-center items-center w-full mb-6 border-b-2">
+ 
+  
+<div className="flex justify-center items-center w-full mb-6 ">
 
-      <div className="grid grid-cols-7 gap-2 w-full mb-4 text-gray-600 font-semibold">
+    <div className="flex flex-cols-2 justify-center items-center mx-auto">
+      <h2 className="text-2xl font-bold text-gray-700">{months[currentMonth]}</h2>
+      <p className="text-gray-600 pt-1 pl-2">{currentYear}</p>
+    </div>
+ 
+  
+  <div className="flex justify-end ">
+    <button 
+      onClick={nextMonth} 
+      className="text-gray-700 py-2 px-3 rounded flex items-center transition duration-300"
+    >
+      <MdKeyboardArrowRight className="size-5" />
+    </button>
+  </div>
+</div>
+
+</div>
+      <div className="grid grid-cols-7 gap-2 w-full  mb-4 text-gray-600 font-semibold text-sm">
         {daysOfWeek.map((dayName) => (
           <div key={dayName} className="text-center">{dayName}</div>
         ))}
@@ -59,10 +71,10 @@ const CustomCalendar = () => {
         {calendarDays.map((day, index) => (
           <div
             key={index}
-            className={`flex items-center justify-center border border-gray-100 p-4
+            className={`flex items-center justify-center border border-gray-100 px-4 py-8 pb-[3rem]
               ${index >= 18 && index <= 22 && index!== 19 && index!== 21? "bg-blue-300" : ""}
                ${index === 19 || index === 20 || index === 21 ? "bg-green-200" : ""}
-              ${index % 7 === 0 ? "bg-red-100" : index % 7 === 6 ? "bg-blue-100" : "bg-white"}
+              ${index % 7 === 0 ? "bg-white-100" : index % 7 === 6 ? "bg-blue-100" : "bg-white"}
               ${index >= 18 && index <= 22 && index !== 19 && index !== 21 ? "bg-blue-300" : ""}}
             `}
           >
