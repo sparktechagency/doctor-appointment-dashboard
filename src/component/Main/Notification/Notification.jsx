@@ -35,9 +35,9 @@ const Notification = () => {
 
       <div className="space-y-4 ">
         {paginatedNotifications.map((item) => (
-          <div key={item.id} className=" rounded-md p-4 flex items-center space-x-4 border border-secondary">
-            <div className="text-secondary border border-secondary rounded-full p-2">
-              <IoMdNotificationsOutline size={30} />
+          <div key={item.id} className=" rounded-md p-4 flex items-center space-x-4 border border-[#77C4FE]">
+            <div className="text-[#77C4FE] border border-[#77C4FE] rounded-full p-2">
+              <IoMdNotificationsOutline className="text-[#77C4FE]" size={30} />
             </div>
             <div>
               <p className="font-semibold">{item.message}</p>
@@ -54,6 +54,7 @@ const Notification = () => {
           total={notifications.length}
           pageSize={pageSize}
           onChange={onPageChange}
+          className="border-[#77C4FE]"
         />
       </div>
     </div>
