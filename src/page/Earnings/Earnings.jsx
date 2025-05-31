@@ -286,28 +286,34 @@ const Earnings = () => {
   return (
     <section className="px-2 mt-5">
       <div className=" rounded-lg ">
-        <div className="md:flex justify-between items-center  py-5">
-          <h1 className="text-xl font-semibold flex items-center "><MdKeyboardArrowLeft /> Earning List</h1>
-          <Form layout="inline" className="flex space-x-4">
-            <button className=" flex justify-center items-center bg-secondary text-white px-3 py-2 rounded-md">
+        <div className="md:flex justify-start  items-center">
+          <div className=" w-64">   
+
+            <h1 className="text-xl font-semibold flex items-center "><MdKeyboardArrowLeft /> Earning List</h1>
+          </div>
+          <div className="flex-none p-5">
+                 <Form layout="inline" className=" space-x-4">
+            <button className=" flex justify-center items-center bg-[#77C4FE] text-white px-3 py-2 rounded-md">
                 <FaArrowRightArrowLeft  className="size-5" />
                 <p className="px-2"> Today’s Earning $3230</p>
             </button>
-            <button className=" flex justify-center items-center bg-secondary text-white px-3 py-2 rounded-md">
+            <button className=" flex justify-center items-center bg-[#77C4FE] text-white px-3 py-2 rounded-md">
                 <FaArrowRightArrowLeft  className="size-5" />
                 <p className="px-2">All Earning $5230</p>
             </button>
           </Form>
+          </div>
+     
         </div>
         <ConfigProvider
           theme={{
             token: {
-              colorBgContainer: "#fff",
+              colorBgContainer: "#D5EDFF",
               colorPrimary: "#1890ff", // Custom primary color
             },
             components: {
               Table: {
-                headerBg: "#3780f9",
+                headerBg: "#77C4FE",
                 headerColor: "white",
                 headerBorderRadius: 2,
               },
@@ -319,7 +325,7 @@ const Earnings = () => {
             className="shadow-sm"
             dataSource={dataSource}
             columns={columns}
-            pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+            pagination={{ pageSize: 8, position: ["end"] }}
             scroll={{ x: 800 }} 
           />
         </ConfigProvider>
