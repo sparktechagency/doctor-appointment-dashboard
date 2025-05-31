@@ -220,13 +220,13 @@ const AppointmentList = () => {
             onFinish={onFinish}
           >
             <Item>
-              <DatePicker placeholder="Date" onChange={handleDate} />
+              <DatePicker placeholder="Date" className="" onChange={handleDate} />
             </Item>
             <Item name="username">
               <Input placeholder="User name" />
             </Item>
             <Item>
-              <button className=" size-8 rounded-full flex justify-center items-center bg-secondary text-white">
+              <button className=" size-8 rounded-full flex justify-center items-center bg-[#77C4FE] text-white">
                 <IoIosSearch className="size-5" />
               </button>
             </Item>
@@ -235,12 +235,12 @@ const AppointmentList = () => {
         <ConfigProvider
           theme={{
             token: {
-              colorBgContainer: "#fff",
+              colorBgContainer: "#D5EDFF",
               colorPrimary: "#1890ff", // Custom primary color
             },
             components: {
               Table: {
-                headerBg: "#3780f9",
+                headerBg: "#77C4FE",
                 headerColor: "white",
                 headerBorderRadius: 2,
               },

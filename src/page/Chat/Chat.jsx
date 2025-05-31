@@ -10,7 +10,8 @@ import {
     FiVideo,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
-  
+import about3 from "../../assets/search.svg"
+  import SearchOutlined from "@ant-design/icons"
   const members = [
     {
       id: 1,
@@ -85,12 +86,16 @@ import { Link } from "react-router-dom";
     <div className="w-full lg:w-1/4 p-2 py-3">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 bg-white">
-        <h2 className="text-2xl font-bold text-primary">Message</h2>
-        <input
-          className="border border-gray-300 focus:border-primary rounded-full px-4 py-2 text-sm outline-none shadow-sm transition duration-200"
-          type="text"
-          placeholder="Search members..."
-        />
+        <h2 className="text-2xl font-bold text-[#77C4FE]">Message</h2>
+        <button className="h-8 w-8 rounded-full bg-[#F3F3F3] flex justify-center items-center text-gray-700"> <img
+              src={about3}
+              alt="search"
+             
+              width={20}
+              height={20}
+             
+            /></button>
+      
       </div>
   
       {/* Members List */}
@@ -120,7 +125,7 @@ import { Link } from "react-router-dom";
               {/* Last Active & Notification Badge */}
               <div className="flex flex-col items-center ml-2">
                 <p className="text-gray-400 text-xs mb-1">{member.lastActive}</p>
-                <div className="bg-primary text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+                <div className="bg-[#77C4FE] text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
                   2
                 </div>
               </div>
@@ -174,7 +179,7 @@ import { Link } from "react-router-dom";
         <div className="space-y-4">
           <MessageBubble
             message="Hello, I’d like to book an appointment with Dr. Smith."
-            sender="Patient"
+            sender="Floyd Miles"
             position="left"
           />
           <MessageBubble
@@ -184,7 +189,7 @@ import { Link } from "react-router-dom";
           />
           <MessageBubble
             message="I’m available on Monday, around 10 AM."
-            sender="Patient"
+            sender="Floyd Miles"
             position="left"
           />
           <MessageBubble
@@ -230,18 +235,22 @@ import { Link } from "react-router-dom";
   );
   
   const MessageBubble = ({ message, sender, position }) => (
-    <div className={`flex ${position === "right" ? "justify-end" : ""}`}>
+   
+    <div className={`flex ${position === "right" ? "justify-end" : ""}`}> <div className={`flex ${position === "right" ? "flex flex-col justify-end items-end" : "flex flex-col justify-end"}`}>
       <div
         className={`max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg shadow-sm ${
           position === "right"
-            ? "bg-secondary text-white rounded-br-none"
+            ? "bg-[#D5EDFF] text-black rounded-br-none"
             : "bg-[#EDE9E9] text-black rounded-bl-none"
         }`}
       >
         <p className="text-sm">{message}</p>
-        <p className="text-xs text-gray-400 mt-1">{sender}</p>
-      </div>
-    </div>
+      
+         
+    
+    </div> <div className="flex flex-row"><p className="text-sm text-gray-800 mt-1 px-2">{sender}</p> 
+    <p className="text-sm text-[#77C4FE] mt-1 float-end">10:42 P.m</p>
+      </div> </div></div>
   );
   
   export default Chat;
