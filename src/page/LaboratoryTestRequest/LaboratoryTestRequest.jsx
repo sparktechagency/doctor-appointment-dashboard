@@ -91,7 +91,7 @@ const LaboratoryTestRequest = () => {
             { required: true, message: "Please enter the patient's name" }
           ]}
         >
-          <CustomInput className="bg-white border-secondary" placeholder="Enter patient name" />
+          <CustomInput className="bg-white border-[#77C4FE]" placeholder="Enter patient name" />
         </Form.Item>
 
         <Form.Item
@@ -100,7 +100,7 @@ const LaboratoryTestRequest = () => {
           rules={[{ required: true, message: "Please select the test type" }]}
         >
           <CustomSelect
-            className="bg-white border-secondary"
+            className="bg-white border-[#77C4FE]"
             placeholder={"Select test type"}
             options={items}
           />
@@ -112,14 +112,14 @@ const LaboratoryTestRequest = () => {
           rules={[{ required: true, message: "Please select the test date" }]}
         >
           <CustomDatePicker
-            className="bg-white border-secondary" 
+            className="bg-white border-[#77C4FE]" 
             placeholder="Select test date"
           />
         </Form.Item>
 
         <Form.Item label="Notes" name="notes">
           <CustomInput
-            className="bg-white border-secondary"
+            className="bg-white border-[#77C4FE]"
             isTextArea
             placeholder="Enter additional notes"
           />
@@ -129,7 +129,7 @@ const LaboratoryTestRequest = () => {
           <Button
             type="primary"
             htmlType="submit"
-            className="bg-primary text-white"
+            className="bg-[#77C4FE] text-white"
           >
             Submit Request
           </Button>
