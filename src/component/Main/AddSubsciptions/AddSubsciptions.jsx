@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAddProductMutation } from "../../../redux/features/product/productApi";
 import CustomInput from "../../../utils/CustomInput";
+import { FaMinus } from "react-icons/fa";
 
 const AddSubsciptions = () => {
   const [imageFile, setImageFile] = useState(null);
@@ -84,7 +85,7 @@ const AddSubsciptions = () => {
           ]}
           className="w-[90%]"
         >
-          <CustomInput className="bg-white border-secondary" placeholder="Type name" />
+          <CustomInput className="bg-[#D5EDFF] border-[#77C4FE]" placeholder="Type name" />
         </Form.Item>
 
         {/* Price */}
@@ -94,7 +95,7 @@ const AddSubsciptions = () => {
           rules={[{ required: true, message: "Please enter the price!" }]}
           className="w-[90%]"
         >
-          <CustomInput className="bg-white border-secondary" type="number" placeholder="Type price" />
+          <CustomInput className="bg-[#D5EDFF] border-[#77C4FE]" type="number" placeholder="Type price" />
         </Form.Item>
 
         {/* Weight */}
@@ -105,10 +106,10 @@ const AddSubsciptions = () => {
             rules={[{ required: true, message: "Please enter the weight!" }]}
             className="w-[90%]"
           >
-            <CustomInput className="bg-white border-secondary" type="" />
+            <CustomInput className="bg-[#D5EDFF] border-[#77C4FE]" type="" />
           </Form.Item>
-          <div className="bg-secondary w-10 h-10 rounded-full ml-5 p-3 text-white">
-            <FaPlus />
+          <div className="bg-[#77C4FE] w-10 h-10 rounded-full ml-5 p-3 text-white">
+            <FaMinus/>
           </div>
         </div>
 
@@ -116,15 +117,17 @@ const AddSubsciptions = () => {
         <button
           loading={isLoading}
           border
-          className="w-[90%] bg-secondary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none"
+          className="w-[90%] bg-[#D5EDFF] border border-[#77C4FE] px-5 py-2 flex justify-center items-center gap-5 text-gray-800 rounded-md "
         >
-          Add Subscriptions
+          <FaPlus className="h-6 w-6 rounded-full bg-[#77C4FE] text-white" />  Add Field
         </button>
-
-        {/* Submit Button */}
-        <button loading={isLoading} border className="mt-12  bg-secondary px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
-         Save
+          <div className="float-end mr-[10rem]">
+               {/* Submit Button */}
+        <button loading={isLoading} border className="mt-12  bg-[#77C4FE] px-14 py-3 flex  items-center gap-5 text-white rounded-md border-none">
+         Update
         </button>
+          </div>
+     
       </Form>
     </div>
   );

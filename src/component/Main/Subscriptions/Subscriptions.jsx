@@ -44,7 +44,7 @@ const Subscriptions = () => {
           <MdKeyboardArrowLeft /> Subscriptions
         </h1>
         <Link to={`/subscriptions/add-item`}>
-          <button className="px-8 py-3 bg-secondary text-white flex justify-center items-center gap-1 rounded text-sm">
+          <button className="px-8 py-3 bg-[#77C4FE] text-white flex justify-center items-center gap-1 rounded text-sm">
             <FaPlus />
             Add Subscriptions
           </button>
