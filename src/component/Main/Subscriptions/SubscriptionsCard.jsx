@@ -40,45 +40,54 @@ const SubscriptionsCard = ({ item, index }) => {
   return (
     <div
   className={`w-full rounded-lg border shadow-sm ${
-    item.id === 1 || index === 0 ? 'bg-primary text-white' : 'bg-primary text-white'
+    item.id === 1 || index === 0 ? 'bg-[#77C4FE] text-white' : 'bg-[#D5EDFF] text-[#32526B]'
   }`}
 >
   {/* Image Handling with Centered Fallback */}
   <div className="mx-auto rounded-md flex justify-center items-center p-8">
-    <p className="font-bold text-xl">{name || "Unnamed Item"}</p>
+    <p className="font-bold text-4xl">{name || "Unnamed Item"}</p>
   </div>
 
-  <div className="bg-gray-500 w-full h-[1px] shadow-2xl"></div>
+  <div className="bg-white w-full h-[1px] shadow-2xl"></div>
 
   {/* Item Name */}
-  <div className="p-5 space-y-2 text-center">
+  <div className="p-5 flex flex-col  justify-center space-y-2 text-center">
     <div className="flex items-center py-2 justify-center font-bold text-xl">
-      {amount}$ <br />Per Month
+      <div className=" relative flex flex-col-1">
+        <p className="text-[3.25rem] font-[3.25rem] p-2 mb-5"> {amount}</p>  
+        <div className="flex flex-col ">
+          
+          <div className=" flex flex-col  justify-start items-start"><span className="">$ </span>
+            <span className="text-md">Per Month</span> </div>
+         
+       
+        </div>
+     
+      
+      </div>
+     
+     
     </div>
-    <h1 className="flex items-center py-1">
-      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-primary'} mr-3`} />
+    <h1 className="flex justify-center py-1">
+      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-[#6CB2E7]'} mr-3`} />
       {subTitle1}
     </h1>
-    <h1 className="flex items-center py-1">
-      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-primary'} mr-3`} />
+    <h1 className="flex justify-center py-1">
+      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-[#6CB2E7]'} mr-3`} />
       {subTitle2}
     </h1>
-    <h1 className="flex items-center py-1">
-      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-primary'} mr-3`} />
+    <h1 className="flex  justify-center py-1">
+      <FaCheckCircle className={`${index === 0 ? 'text-white' : 'text-[#6CB2E7]'} mr-3`} />
       {subTitle3}
     </h1>
-    <h1 className="flex items-center py-1">
+    <h1 className="flex justify-center  py-1">
       <FaCheckCircle className={`${index === 0 ? 'text-gray-300' : 'text-gray-300'} mr-3`} />
       {subTitle4}
     </h1>
-    <h1 className="flex items-center py-1">
+    <h1 className="flex items-center justify-center py-1">
       <FaCheckCircle className={`${index === 0 ? 'text-gray-300' : 'text-gray-300'} mr-3`} />
       {subTitle5}
-    </h1>
-  </div>
-
-  {/* Action Buttons */}
-  <div className="flex justify-between items-center md:gap-5 mt-4 p-2">
+    </h1><div className="flex justify-center mx-auto items-center md:gap-5 mt-4 p-2">
     <button
       onClick={() => showDeleteConfirm(id)}
       className={`px-6 py-2 border border-white rounded text-sm `}
@@ -91,6 +100,10 @@ const SubscriptionsCard = ({ item, index }) => {
       </button>
     </Link>
   </div>
+  </div>
+
+  {/* Action Buttons */}
+  
 </div>
 
   );

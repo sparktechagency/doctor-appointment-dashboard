@@ -18,7 +18,7 @@ const CustomButton = ({
           type="default"
           htmlType="submit"
           loading={loading}
-          className="w-full bg-primary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none"
+          className="w-full bg-[#77C4FE] px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none"
           size="large"
           style={{
             display: "flex",

@@ -18,7 +18,10 @@ const productApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Products"],
-      transformResponse: (response) => response?.data?.attributes?.results,
+      transformResponse: (response) => {
+        console.log('Get All Products Response:', response); // Log full response
+        return response?.data?.attributes?.results;
+      },
     }),
     getProductById: builder.query({
       query: (id) => ({
