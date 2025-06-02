@@ -67,7 +67,7 @@ const NewPassword = () => {
             ]}
           >
             <CustomInput
-              className="bg-white border-secondary"
+              className="bg-[#F1F9FF] border-[#77C4FE]"
               isPassword
               type="password"
               placeholder="Password"
@@ -93,7 +93,7 @@ const NewPassword = () => {
             ]}
           >
             <CustomInput
-              className="bg-white border-secondary"
+              className="bg-[#F1F9FF] border-[#77C4FE]"
               isPassword
               type="password"
               placeholder="Confirm Password"
@@ -108,7 +108,7 @@ const NewPassword = () => {
             <button
               type="submit"
               loading={isLoading}
-              className="w-full bg-primary text-xl text-white p-2 rounded-md"
+              className="w-full bg-[#77C4FE] text-xl text-white p-2 rounded-md"
               border={true}
             >
               Update Password

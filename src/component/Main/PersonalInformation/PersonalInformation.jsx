@@ -17,19 +17,15 @@ const PersonalInformation = () => {
           </Link>
           <h1 className="text-2xl font-semibold">Personal Information</h1>
         </div>
-        <Link to="/edit-personal-info">
-          <button className="px-8 py-3 bg-secondary text-white rounded-lg">
-            Edit Profile
-          </button>
-        </Link>
+        
       </div>
 
       {/* Profile Information */}
       <div className="w-3/4 mx-auto">
         {/* Profile Picture */}
-        <div className="flex justify-start items-center  gap-5">
+        <div className="flex justify-between items-center  gap-5">
           <div className="flex justify-around items-center gap-10">
-          <div className="w-[130px] h-[130px] rounded-full bg-secondary">
+          <div className="w-[130px] h-[130px] rounded-full bg-[#D9D9D9]">
             <img
               className="size-32 rounded-full mx-auto"
               src={`${imageBaseUrl}${user?.image?.url}`}
@@ -41,12 +37,20 @@ const PersonalInformation = () => {
               {user?.role}
             </span>
           </div>
+          <div className="float-end">
+              <Link to="/edit-personal-info">
+          <button className="  px-8 py-3 bg-[#77C4FE] text-white rounded-lg">
+            Edit Profile
+          </button>
+        </Link>
+          </div>
+        
         </div>
 
         {/* Personal Details */}
         <form className="full  space-y-6">
           <div className="space-y-3">
-            <label className="block text-sm font-semibold">Name</label>
+            <label className="block text-sm font-semibold">Full name</label>
             <input
               type="text"
               defaultValue={user?.fullName}
@@ -63,15 +67,7 @@ const PersonalInformation = () => {
               className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
             />
           </div>
-          <div className="space-y-3">
-            <label className="block text-sm font-semibold">Phone Number</label>
-            <input
-              type="text"
-              defaultValue={user?.phone}
-              readOnly
-              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
-            />
-          </div>
+        
           <div className="space-y-3">
             <label className="block text-sm font-semibold">Address</label>
             <input
@@ -80,8 +76,16 @@ const PersonalInformation = () => {
               readOnly
               className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
             />
+          </div>  <div className="space-y-3">
+            <label className="block text-sm font-semibold">Contact number</label>
+            <input
+              type="text"
+              defaultValue={user?.phone}
+              readOnly
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
+            />
           </div>
-          <button className="px-8 py-3 bg-secondary text-white rounded-lg w-full">
+          <button className="px-8 py-3 bg-[#77C4FE ] text-white rounded-lg w-full">
             Save
           </button>
         </form>

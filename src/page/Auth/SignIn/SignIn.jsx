@@ -83,7 +83,7 @@ const SignIn = () => {
             ]}
           >
             <CustomInput
-              className="bg-white border-secondary"
+              className="bg-[#F1F9FF] border-[#77C4FE]"
               type="email"
               icon={HiOutlineMail}
               placeholder={"Email"}
@@ -101,7 +101,7 @@ const SignIn = () => {
             ]}
           >
             <CustomInput
-              className="bg-white border-secondary"
+              className="bg-[#F1F9FF] border-[#77C4FE]"
               type="password"
               icon={HiOutlineLockClosed}
               placeholder={"Password"}
@@ -110,7 +110,7 @@ const SignIn = () => {
           </Form.Item>
 
           <div className="flex justify-between items-center">
-            <Form.Item name="remember" valuePropName="checked" noStyle>
+            <Form.Item name="remember" valuePropName="checked" className="bg-[#77C4FE] " noStyle>
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
             <Link to="/auth/forget-password">Forgot password?</Link>
@@ -120,7 +120,7 @@ const SignIn = () => {
             <button
               type="submit"
               loading={isLoading}
-              className="w-full bg-primary text-xl text-white p-2 rounded-md"
+              className="w-full bg-[#77C4FE] text-xl text-white p-2 rounded-md"
               border={true}
             >
               Sign In

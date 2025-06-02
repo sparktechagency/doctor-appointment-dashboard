@@ -84,6 +84,10 @@ const router = createBrowserRouter([
         path: "/about",
         element: <AboutProfilePage />,
       },
+       {
+        path: "personal-info",
+        element: <PersonalInformationPage />,
+      },
       {
         path: "/teammember",
         element: <TeamMemberPage />,
@@ -100,14 +104,7 @@ const router = createBrowserRouter([
         path: "/editInformation",
         element: <EditInformationPage />,
       },
-      {
-        path: "personal-info",
-        element: <PersonalInformationPage />,
-      },
-      {
-        path: "edit-personal-info",
-        element: <EditPersonalInformationPage />,
-      },
+     
       {
         path: "/notification",
         element: <Notification />,
@@ -115,6 +112,14 @@ const router = createBrowserRouter([
       {
         path: "settings",
         element: <SettingsPage />,
+      },
+       {
+        path: "settings/personal-info",
+        element: <PersonalInformationPage />,
+      },
+      {
+        path: "settings/edit-personal-info",
+        element: <EditPersonalInformationPage />,
       },
       {
         path: "settings/privacy-policy",

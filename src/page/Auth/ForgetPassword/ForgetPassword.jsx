@@ -80,12 +80,12 @@ const ForgetPassword = () => {
               },
             ]}
           >
-            <CustomInput className="bg-white border-secondary" icon={HiOutlineMail} placeholder="Email" />
+            <CustomInput className="bg-[#F1F9FF] border-[#77C4FE]" icon={HiOutlineMail} placeholder="Email" />
           </Form.Item>
 
           {/* CustomButton for submit */}
           <Form.Item>
-            <button type="submit" loading={isLoading} className="w-full bg-primary text-xl text-white p-2 rounded-md" border={true}>
+            <button type="submit" loading={isLoading} className="w-full bg-[#77C4FE]  text-xl text-white p-2 rounded-md" border={true}>
               Send OTP
             </button>
           </Form.Item>

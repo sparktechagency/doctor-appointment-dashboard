@@ -79,7 +79,7 @@ const Otp = () => {
             margin: "0 0.5rem",
             fontSize: "2rem",
             fontWeight: "bold",
-            borderBottom: "1px solid #3780f9",
+            borderBottom: "1px solid #77C4FE",
             textAlign: "center",
             outline: "none"
           }}
@@ -92,7 +92,7 @@ const Otp = () => {
           <button
             type="submit"
             loading={isLoading}
-            className="w-full bg-primary text-xl text-white p-2 rounded-md"
+            className="w-full bg-[#77C4FE] text-xl text-white p-2 rounded-md"
             border={true}
           >
             Verify
@@ -100,7 +100,7 @@ const Otp = () => {
         </div>
         <div className="flex justify-between items-center my-4">
           <h1>Didn’t receive code?</h1>
-          <button onClick={handleResendPassword} className="text-[#0d28e0]">
+          <button onClick={handleResendPassword} className="">
             Resend
           </button>
         </div>

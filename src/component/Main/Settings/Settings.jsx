@@ -31,6 +31,10 @@ const Settings = () => {
     console.log(`switch to ${checked}`);
   };
   const settingsItem = [
+     {
+      title: "Personal Information",
+      path: "personal-info",
+    },
     {
       title: "Change password",
       path: "change-password",
@@ -169,7 +173,7 @@ const Settings = () => {
       {settingsItem.map((setting, index) => (
         <div
           key={index}
-          className="w-full p-4 mb-2 text-sm rounded-lg bg-secondary text-white  flex items-center justify-between cursor-pointer "
+          className="w-full p-4 mb-2 text-sm rounded-lg bg-[#D5EDFF] text-black  flex items-center justify-between cursor-pointer hover:bg-white hover:border border-[#77C4FE] "
           onClick={() => handleNavigate(setting.path)}
         >
           <h2>{setting.title}</h2>
