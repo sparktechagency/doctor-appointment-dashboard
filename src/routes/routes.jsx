@@ -28,6 +28,8 @@ import EditInformationPage from "../page/EditInformation/EditInformation.";
 import TeamMemberPage from "../page/TeamMember/TeamMemberpage";
 import Chat from '../page/Chat/Chat'
 import LaboratoryTestRequest from "../page/LaboratoryTestRequest/LaboratoryTestRequest";
+import Faq from "../component/Main/Faq/Faq";
+import AddFaqPage from "../page/AddFaq/AddFaq";
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -46,10 +48,24 @@ const router = createBrowserRouter([
       {
         path: "users",
         element: <UsersPage />,
+        
       },
       {
         path: "/appointment",
         element: <Appointment />,
+      },
+       {
+        path: "/faq",
+        element: <Faq />,
+
+      },
+      {
+        path: "faq/add-faq",
+        element: <AddFaqPage  />,
+      },
+      {
+        path: "faq/edit-faq/:id",
+        element: <EditSubscriptionsitems />,
       },
       {
         path: "/appointmentlist",

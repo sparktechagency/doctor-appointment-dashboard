@@ -10,7 +10,8 @@ import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import LogoImage from "../../../assets/auth/Logo.png";
 import { logoutUser } from "../../../redux/features/auth/authSlice";
-
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 
 
 const sidebarItems = [
@@ -54,6 +55,11 @@ const sidebarItems = [
     path: "/about",
     name: "About Profile",
     icon: <IoPersonOutline className="size-8" />, // About Profile icon updated
+  },
+  {
+    path: "/Faq",
+    name: "Faq",
+    icon: <AiOutlineInfoCircle className="size-8 " />, // About Profile icon updated
   },
   {
     path: "/settings",
