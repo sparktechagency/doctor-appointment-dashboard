@@ -23,7 +23,7 @@ const NewPassword = () => {
       }
       if (res.data) {
         toast.success(res.data.message);
-        navigate("/auth/login");
+        navigate("/auth");
       }
     } catch (error) {
       toast.error("Something went wrong");

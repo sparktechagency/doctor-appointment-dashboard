@@ -1,150 +1,202 @@
-import { Form } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { FaMinus, } from "react-icons/fa6";
+import { Form, Select } from "antd";
+import { useEffect, useState } from "react";
+import { FaPlus, FaMinus } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import {
-    useGetProductByIdQuery,
-    useUpdateProductMutation,
-} from "../../../redux/features/product/productApi";
 import CustomInput from "../../../utils/CustomInput";
+import { 
+  useUpdateSubscriptionMutation,
+  useGetSubscriptionByIdQuery 
+} from "../../../redux/features/subscription/subscriptionApi";
+
+
+const { Option } = Select;
 
 const EditSubscriptions = () => {
-  const [imageFile, setImageFile] = useState(null);
-  const [ setImageUrl] = useState(null);
-  const fileInputRef = useRef(null); // Reference to hidden file input
-  const [updateItem, { isLoading }] = useUpdateProductMutation();
+  const [features, setFeatures] = useState([]);
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { id } = useParams(); // Get the item id from the route
-  const { data: product } = useGetProductByIdQuery(id, {
-    skip: !id,
-  });
+  const { id } = useParams();
+  console.log(id)
+  // RTK Query hooks
+  const { data: subscriptionData, isLoading: isSubscriptionLoading } = useGetSubscriptionByIdQuery(id);
+  const [updateSubscription, { isLoading: isUpdating }] = useUpdateSubscriptionMutation();
 
+  // Initialize form with subscription data
   useEffect(() => {
-    if (product) {
-      // Pre-fill the form with the current item data
+    if (subscriptionData) {
+      const subscription = subscriptionData;
       form.setFieldsValue({
-        productName: product?.name,
-        price: product?.price,
-        weight: product?.weight,
+        title: subscription?.title,
+        limitation: subscription?.limitation,
+        stripePriceId: subscription?.stripePriceId,
+        days: subscription?.days,
+        amount: subscription?.amount,
       });
-      setImageUrl(`${imageBaseUrl}${product.image?.url}`); // Set existing image URL if available
+      setFeatures(subscription?.features || []);
     }
-  }, [product, form]);
+  }, [subscriptionData, form]);
 
-  // Handle image change (preview the image)
-  const handleImageChange = (event) => {
-    const file = event.target.files && event.target.files[0];
-    if (file) {
-      const newImageUrl = URL.createObjectURL(file);
-      setImageFile(file);
-      setImageUrl(newImageUrl); // Set the image URL for preview
-    }
+  const handleAddFeature = () => {
+    setFeatures([...features, ""]);
   };
 
-  
+  const handleRemoveFeature = (index) => {
+    const newFeatures = [...features];
+    newFeatures.splice(index, 1);
+    setFeatures(newFeatures);
+  };
+
+  const handleUpdateFeature = (index, value) => {
+    const newFeatures = [...features];
+    newFeatures[index] = value;
+    setFeatures(newFeatures);
+  };
 
   const onFinish = async (values) => {
-    const formdata = new FormData();
-    formdata.append("name", values.productName);
-    formdata.append("price", values.price);
-    formdata.append("weight", values.weight);
-    if (imageFile) {
-      formdata.append("image", imageFile); // Add the new image if it's changed
-    }
+    const subscriptionData = {
+      ...values,
+      features: features.filter(f => f.trim() !== ""), // Remove empty features
+    };
 
     try {
-      const response = await updateItem({ id, formdata });
-      if (response.error) {
-        toast.error(response.error.data.message);
-      } else {
-        toast.success(response.data.message);
-        setImageFile(null);
-        setImageUrl(null);
-        form.resetFields();
-        navigate("/subscriptions");
-      }
+      const response = await updateSubscription({ id, ...subscriptionData }).unwrap();
+      toast.success(response.message);
+      navigate("/subscriptions");
     } catch (error) {
-      console.error("Error updating item:", error);
-      toast.error("Something went wrong");
+      console.error("Error updating subscription:", error);
+      toast.error(error.data?.message || "Failed to update subscription");
     }
   };
 
+  if (isSubscriptionLoading) {
+    return <div>Loading subscription data...</div>;
+  }
+
   return (
-    <div className="w-full">
+    <div className="w-full p-6">
       {/* Header */}
       <div className="flex gap-4 items-center my-6">
-        <Link to={"/subscriptions"}>
+        <Link to="/subscriptions">
           <IoChevronBack className="size-6" />
         </Link>
-        <h1 className="text-2xl font-semibold">Edit subscriptions</h1>
+        <h1 className="text-2xl font-semibold">Edit Subscription</h1>
       </div>
-
-      
-
-      {/* Hidden File Input */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleImageChange}
-        accept="image/*"
-        style={{ display: "none" }} // Hidden input
-      />
 
       {/* Form Section */}
       <Form form={form} layout="vertical" onFinish={onFinish} className="mt-5">
-        
-          {/* Product Name */}
-          <Form.Item
-            label="Subscriptions  Name"
-            name="productName"
-            rules={[
-              { required: true, message: "Please enter the product name!" },
-            ]}
-            className="w-[90%]"
-          >
-            <CustomInput className="bg-white border-secondary" placeholder="Type name" />
-          </Form.Item>
+        {/* Plan Title */}
+        <Form.Item
+          label="Subscription Name"
+          name="title"
+          rules={[{ required: true, message: "Please enter the name!" }]}
+          className="w-[40%]"
+        >
+          <CustomInput 
+            className="bg-[#D5EDFF] border-[#77C4FE]" 
+            placeholder="Type name" 
+          />
+        </Form.Item>
 
-          {/* Price */}
-          <Form.Item
-            label="Subscriptions Price"
-            name="price"
-            rules={[{ required: true, message: "Please enter the price!" }]}
-            className="w-[90%]"
+        {/* Billing Cycle */}
+        <Form.Item
+          label="Billing Cycle"
+          name="limitation"
+          rules={[{ required: true, message: "Please select billing cycle!" }]}
+          className="w-[40%]"
+        >
+          <Select 
+            placeholder="Select billing cycle"
+            className="bg-[#D5EDFF] border-[#77C4FE]"
           >
-            <CustomInput className="bg-white border-secondary" type="number" placeholder="Type price" />
-          </Form.Item>
-        
+            <Option value="weekly">Weekly</Option>
+            <Option value="monthly">Monthly</Option>
+            <Option value="annual">Annual</Option>
+          </Select>
+        </Form.Item>
 
-        {/* Weight */}
-        <div className="flex">
-          <Form.Item
-            label=""
-            name=""
-            rules={[{ required: true, message: "Please enter the weight!" }]}
-            className="w-[90%]"
+        {/* Stripe Price ID */}
+        <Form.Item
+          label="Stripe Price ID"
+          name="stripePriceId"
+          rules={[{ required: true, message: "Please enter Stripe Price ID!" }]}
+          className="w-[40%]"
+        >
+          <CustomInput 
+            className="bg-[#D5EDFF] border-[#77C4FE]" 
+            placeholder="e.g. price_1RHHeV2KNq3x4TpgquEYM1mc" 
+          />
+        </Form.Item>
+
+        {/* Duration (Days) */}
+        <Form.Item
+          label="Duration (Days)"
+          name="days"
+          rules={[{ required: true, message: "Please enter duration in days!" }]}
+          className="w-[40%]"
+        >
+          <CustomInput 
+            className="bg-[#D5EDFF] border-[#77C4FE]" 
+            type="number" 
+            placeholder="e.g. 30 for monthly" 
+          />
+        </Form.Item>
+
+        {/* Amount */}
+        <Form.Item
+          label="Amount"
+          name="amount"
+          rules={[{ required: true, message: "Please enter the amount!" }]}
+          className="w-[40%]"
+        >
+          <CustomInput 
+            className="bg-[#D5EDFF] border-[#77C4FE]" 
+            type="number" 
+            step="0.01"
+            placeholder="e.g. 39.99" 
+          />
+        </Form.Item>
+
+        {/* Features */}
+        <div className="w-[40%]">
+          <label className="ant-form-item-label">Features</label>
+          {features.map((feature, index) => (
+            <div key={index} className="flex items-center mb-2">
+              <CustomInput
+                value={feature}
+                onChange={(e) => handleUpdateFeature(index, e.target.value)}
+                className="bg-[#D5EDFF] border-[#77C4FE] flex-1 mr-2"
+                placeholder="Enter feature"
+              />
+              <div 
+                className="bg-[#77C4FE] w-10 h-10 rounded-full p-3 text-white flex items-center justify-center cursor-pointer"
+                onClick={() => handleRemoveFeature(index)}
+              >
+                <FaMinus/>
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={handleAddFeature}
+            className="w-full bg-[#D5EDFF] border border-[#77C4FE] px-5 py-2 flex justify-center items-center gap-5 text-gray-800 rounded-md mt-2"
           >
-            <CustomInput className="bg-white border-secondary" type="" />
-          </Form.Item>
-          <div className="bg-secondary w-10 h-10 rounded-full ml-5 p-3 text-white">
-          <FaMinus />
-          </div>
+            <FaPlus className="h-6 w-6 rounded-full bg-[#77C4FE] text-white" />
+            Add Feature
+          </button>
         </div>
 
         {/* Submit Button */}
-        <button loading={isLoading} border className="w-[90%] bg-secondary px-5 py-2 flex justify-center items-center gap-5 text-white rounded-md border-none">
-         Add fields
-        </button>
-
-
-         {/* Submit Button */}
-         <button loading={isLoading} border className="mt-12  bg-secondary px-5 py-2 flex  items-center gap-5 text-white rounded-md border-none">
-         Update
-        </button>
+        <div className="float-end mr-[10rem]">
+          <button 
+            type="submit"
+            disabled={isUpdating}
+            className="mt-12 bg-[#77C4FE] px-14 py-3 flex items-center gap-5 text-white rounded-md border-none"
+          >
+            {isUpdating ? "Updating..." : "Update"}
+          </button>
+        </div>
       </Form>
     </div>
   );

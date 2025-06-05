@@ -1,116 +1,68 @@
 import { FaPlus } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { useGetAllProductsQuery } from "../../../redux/features/product/productApi";
+import { useGetAllTeamMembersQuery } from "../../../redux/features/product/teamApi";
 import TeamMemberCard from "./TeamMemberCard";
 
-const TeamMember = () => {
-  const dataSource = [
-    {
-      id: "1",
-      name: "Blissful Retreat",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "2",
-      name: "Soothing Spa",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "3",
-      name: "Deluxe Wellness",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "4",
-      name: "Herbal Healing",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "5",
-      name: "Mindful Meditation",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "6",
-      name: "Ultimate Relaxation",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "7",
-      name: "Rejuvenation Escape",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "8",
-      name: "Calm & Serenity",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "9",
-      name: "Tranquil Moments",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-    {
-      id: "10",
-      name: "Peaceful Sanctuary",
-      image: { url: "https://i.ibb.co/N6YSYxW/Rectangle-34624144.png" },
-    },
-  ];
 
+const TeamMember = () => {
   const {
-    data: allItems,
+    data: products,
     isLoading,
     isError,
     error,
-  } = useGetAllProductsQuery();
+  } = useGetAllTeamMembersQuery();
+
   let content = null;
+
   if (isLoading) {
-    content = <h1>Loading....</h1>;
-  } else if (isError && error) {
+    content = <div>loading</div>;
+  } else if (isError) {
     content = (
-      <h3 className="font-semibold text-rose-500 text-center py-5">
-        Something went wrong
-      </h3>
+      <div className="font-semibold text-rose-500 text-center py-5">
+        {error?.data?.message || "Something went wrong"}
+      </div>
     );
-  } else if (!allItems?.length) {
+  } else if (!products?.length) {
     content = (
-      <div className="w-full h-full text-center py-5   flex flex-col justify-center items-center">
+      <div className="w-full h-full text-center py-5 flex flex-col justify-center items-center">
         <img
           src="/src/assets/nodata/not-data.svg"
           alt="No results"
-          className="w-[256px] mx-auto h-[256px] mb-4"
+          className="w-[256px] h-[256px] mb-4"
         />
-        <h2 className="text-xl font-bold mb-2">No Items Found</h2>
+        <h2 className="text-xl font-bold mb-2">No Products Found</h2>
       </div>
     );
   } else {
     content = (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 ">
-        {dataSource?.map((item, i) => (
-          <TeamMemberCard key={i} item={item} />
+            <div className="max-w-6xl ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <TeamMemberCard key={product.id} product={product} />
         ))}
+        </div>
       </div>
     );
   }
+
   return (
-    <>
-      <div className="w-full flex justify-between items-center py-6">
-        <Link to={"/about"}>
-          <h1 className="text-2xl font-semibold flex items-center">
-            {" "}
-            <IoChevronBack className="text-2xl" /> My Team Member
-          </h1>
+    <div className="container mx-auto px-4 py-6">
+      <div className="flex justify-between items-center mb-6">
+        <Link to="/about" className="flex items-center gap-2">
+          <IoChevronBack className="text-2xl" />
+          <h1 className="text-2xl font-semibold">My Team Member</h1>
         </Link>
-        <Link to={"#"}>
-          <button className="px-8 py-3  text-white bg-secondary flex justify-center items-center gap-1 rounded text-sm">
-            <FaPlus />
-            Add Member
-          </button>
+        <Link
+          to="/products/add"
+          className="px-4 py-2 bg-secondary text-white rounded flex items-center gap-2"
+        >
+          <FaPlus />
+          <span>Add Member</span>
         </Link>
       </div>
       {content}
-    </>
+    </div>
   );
 };
 

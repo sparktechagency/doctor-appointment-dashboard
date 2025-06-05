@@ -1,91 +1,80 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-// import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import { Modal } from "antd"; // Import Ant Design's Modal component
+import { Modal } from "antd";
 import { toast } from "sonner";
-import { useDeleteProductMutation } from "../../../redux/features/product/productApi";
+import { useDeleteTeamMemberMutation } from "../../../redux/features/product/teamApi";
 
-const TeamMemberCard = ({ item }) => {
-  const [deleteProduct] = useDeleteProductMutation();
-  const { id, name,  image} = item;
+const TeamMemberCard = ({ product }) => {
+  const [deleteProduct] = useDeleteTeamMemberMutation();
 
-  // Show confirmation modal
   const showDeleteConfirm = (productId) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this item?",
-      content: "This action cannot be undone.",
-      okText: "Yes",
+      title: "Delete Product",
+      content: "Are you sure you want to delete this product?",
+      okText: "Delete",
       okType: "danger",
-      cancelText: "No",
-      centered: true, // Centers the modal
-      onOk: () => handleDelete(productId), // Delete item if confirmed
+      cancelText: "Cancel",
+      centered: true,
+      onOk: async () => {
+        try {
+          await deleteProduct(productId).unwrap();
+          toast.success("Product deleted successfully");
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to delete product");
+        }
+      },
     });
   };
 
-  const handleDelete = async (productId) => {
-    try {
-      const res = await deleteProduct(productId);
-      if (res.error) {
-        toast.error("Failed to delete product");
-        return;
-      }
-      toast.success("Product deleted successfully");
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  };
+const IMAGE_BASE_URL = 'http://10.0.60.18:6060'
+  const imageUrl = product?.profileImage
+    ? `${IMAGE_BASE_URL}${product.profileImage}`
+    : `${IMAGE_BASE_URL}${product.profileImage}`;
 
+console.log("product",product)
   return (
-    <div className="w-full rounded-lg border shadow-sm p-2  bg-primary">
-      {/* Image Handling with Centered Fallback */}
-      <div className="mx-auto flex justify-center items-center overflow-hidden w-[100%] h-[230px] rounded-lg bg-gray-100">
+    <div className="bg-[#D5EDFF] rounded-lg shadow-md overflow-hidden border border-gray-200">
+      <div className="h-55 p-1 bg-[#D5EDFF] flex items-center justify-center overflow-hidden">
         <img
-          src={image?.url || "/images/default.png"}
-          alt={name || "Product Image"}
-          className=" w-full h-full"
+          src={imageUrl }
+          alt={product?.name}
+          className="relative bg-[#D5EDFF] rounded-t-2xl overflow-hidden"
         />
       </div>
 
-      {/* Item Name */}
-      <div className="mt-4 space-y-1 ">
-        <h1 className="font-semibold text-lg">
-          {name || "Unnamed Item"}
-        </h1>
-        <h1 className="text-gray-800">
-        Board-certified Psychiatrist
-        </h1>
-      </div>
+      <div className="p-4">
+        <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+        <p className="text-gray-600 text-sm mb-3">
+          {product.description || "No description available"}
+        </p>
 
-      {/* Action Buttons */}
-      <div className="flex justify-between items-center mt-3">
-        <button
-          onClick={() => showDeleteConfirm(id)}
-          className="px-4 py-2 border border-primary text-primary rounded text-sm transition duration-200"
-        >
-          Delete
-        </button>
-
-        <Link to={`/teammember/edit-item/${id}`}>
-          <button className="px-4 py-2 bg-primary text-white rounded text-sm transition duration-200">
+        <div className="flex justify-between">
+        
+          <Link
+            to={`/products/edit/${product.id}`}
+            className="px-6 py-1 bg-[#77C4FE] text-white rounded hover:bg-primary-dark transition"
+          >
             Edit
+          </Link>  <button
+            onClick={() => showDeleteConfirm(product.id)}
+            className="px-6 py-1 border border-[#77C4FE] text-[#77C4FE] rounded hover:bg-red-50 transition"
+          >
+            Delete
           </button>
-        </Link>
+        </div>
       </div>
-
     </div>
   );
 };
 
-// PropTypes for type checking
 TeamMemberCard.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    name: PropTypes.string,
-    price: PropTypes.number,
+  product: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string,
     image: PropTypes.shape({
       url: PropTypes.string,
     }),
-    weight: PropTypes.number,
   }).isRequired,
 };
 

@@ -4,7 +4,7 @@ import { FaPlus } from "react-icons/fa6";
 import { IoChevronBack } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useAddProductMutation } from "../../../redux/features/product/productApi";
+import { useAddTeamMemberMutation } from "../../../redux/features/product/teamApi";
 import CustomInput from "../../../utils/CustomInput";
 import { FaMinus } from "react-icons/fa";
 
@@ -12,7 +12,7 @@ const AddFaq = () => {
   const [imageFile, setImageFile] = useState(null);
   const [setImageUrl] = useState(null);
   const fileInputRef = useRef(null); // To reference the hidden file input
-  const [addItem, { isLoading }] = useAddProductMutation();
+  const [addItem, { isLoading }] = useAddTeamMemberMutation();
   const [form] = Form.useForm(); // Ant Design form instance
   const navigate = useNavigate();
 
