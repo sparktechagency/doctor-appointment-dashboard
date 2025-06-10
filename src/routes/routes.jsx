@@ -30,6 +30,7 @@ import Chat from '../page/Chat/Chat'
 import LaboratoryTestRequest from "../page/LaboratoryTestRequest/LaboratoryTestRequest";
 import Faq from "../component/Main/Faq/Faq";
 import AddFaqPage from "../page/AddFaq/AddFaq";
+import EditFaq from "../component/Main/EditFaq/EditFaq";
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -65,7 +66,7 @@ const router = createBrowserRouter([
       },
       {
         path: "faq/edit-faq/:id",
-        element: <EditSubscriptionsitems />,
+        element: <EditFaq />,
       },
       {
         path: "/appointmentlist",
@@ -117,7 +118,7 @@ const router = createBrowserRouter([
         element: <AddInformationPage />,
       },
       {
-        path: "/editInformation",
+        path: "/editInformation/:id",
         element: <EditInformationPage />,
       },
      

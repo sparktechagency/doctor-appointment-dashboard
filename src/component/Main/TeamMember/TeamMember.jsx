@@ -54,7 +54,7 @@ const TeamMember = () => {
           <h1 className="text-2xl font-semibold">My Team Member</h1>
         </Link>
         <Link
-          to="/products/add"
+          to="/addInformation"
           className="px-4 py-2 bg-secondary text-white rounded flex items-center gap-2"
         >
           <FaPlus />

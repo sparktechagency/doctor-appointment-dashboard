@@ -51,7 +51,7 @@ console.log("product",product)
         <div className="flex justify-between">
         
           <Link
-            to={`/products/edit/${product.id}`}
+            to={`/editInformation/${product.id}`}
             className="px-6 py-1 bg-[#77C4FE] text-white rounded hover:bg-primary-dark transition"
           >
             Edit

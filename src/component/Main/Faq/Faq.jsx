@@ -1,73 +1,85 @@
 import { FaPlus } from "react-icons/fa";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { useGetFaqsQuery } from "../../../redux/features/faq/faqApi";
+import { Skeleton } from "antd";
 
-import { AiOutlineDelete } from "react-icons/ai";
-import { AiOutlineForm } from "react-icons/ai";
 const FaqPage = () => {
-  const faqItems = [
-    {
-      id: 1,
-      question: "Can I see who reads my email campaigns?",
-      answer:
-        "Lorem ipsum dolor sit amet consectetur. Ultrices sit feugiat venenatis habitant mattis viverra elementum purus volutpat. Lacus eu molestie pulvinar rhoncus integer pede elementum. Pretium sit fringilla massa tristique cursus commodo leo. Aliquet viverra amet sit porta elementum et pellentesque posuere...",
-    },
-    {
-      id: 2,
-      question: "Can I see who reads my email campaigns?",
-      answer:
-        "Lorem ipsum dolor sit amet consectetur. Ultrices sit feugiat venenatis habitant mattis viverra elementum purus volutpat. Lacus eu molestie pulvinar rhoncus integer pede elementum. Pretium sit fringilla massa tristique cursus commodo leo. Aliquet viverra amet sit porta elementum et pellentesque posuere...",
-    },
-    {
-      id: 3,
-      question: "Can I see who reads my email campaigns?",
-      answer:
-        "Lorem ipsum dolor sit amet consectetur. Ultrices sit feugiat venenatis habitant mattis viverra elementum purus volutpat. Lacus eu molestie pulvinar rhoncus integer pede elementum. Pretium sit fringilla massa tristique cursus commodo leo. Aliquet viverra amet sit porta elementum et pellentesque posuere...",
-    },
-  ]
+  const { data: faqData, isLoading, isError } = useGetFaqsQuery();
 
+  if (isLoading) {
+    return (
+      <div className="w-full p-6">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-2">
+            <MdKeyboardArrowLeft className="text-2xl" />
+            <Skeleton.Input active size="large" style={{ width: 100 }} />
+          </div>
+          <Skeleton.Button active shape="round" style={{ width: 120 }} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map((item) => (
+            <Skeleton active paragraph={{ rows: 4 }} key={item} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return <div>Error loading FAQs</div>;
+  }
+
+  const faqItems = faqData?.data?.attributes.results || [];
+console.log(faqItems)
   return (
-    <>
-      <div className="w-full flex justify-between items-center py-6 ">
+    <div className="w-full p-6">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-semibold flex items-center">
-          <MdKeyboardArrowLeft /> FAQ
+          <MdKeyboardArrowLeft className="text-2xl" /> FAQ
         </h1>
-        <Link to={`/faq/add-faq`}>
+        <Link to="/faq/add-faq">
           <button className="px-8 py-3 bg-[#77C4FE] text-white flex justify-center items-center gap-1 rounded text-sm">
             <FaPlus />
             Add FAQ
           </button>
         </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto">
-     {faqItems.map((item) => (
-          <div key={item.id} className="bg-white border border-gray-200 shadow-sm rounded-md">
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {faqItems.map((item) => (
+          <div 
+            key={item.id} 
+            className="bg-white border border-gray-200 shadow-sm rounded-md hover:shadow-md transition-shadow"
+          >
             <div className="p-4">
               <div className="flex items-start justify-between mb-3">
-                <h3 className="text-sm font-medium text-gray-900 leading-tight pr-2">{item.question}</h3>
-                <div className="flex gap-1 flex-shrink-0">
-                  <button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
-                  >
-                   <AiOutlineDelete />
-                  </button>
-                  <button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
-                  >
-                   <AiOutlineForm />
+                <h3 className="text-sm font-medium text-gray-900 leading-tight pr-2">
+                  {item.question}
+                </h3>
+                <div className="flex gap-2 flex-shrink-0">
+                  <Link to={`/faq/edit-faq/${item.id}`}>
+                    <button className="h-6 w-6 p-0 text-blue-500 hover:text-blue-600 hover:bg-blue-50 rounded flex items-center justify-center">
+                      <AiOutlineEdit />
+                    </button>
+                  </Link>
+                  <button className="h-6 w-6 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 rounded flex items-center justify-center">
+                    <AiOutlineDelete />
                   </button>
                 </div>
               </div>
-              <p className="text-xs text-gray-600 leading-relaxed">{item.answer}</p>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                {item.answer}
+              </p>
+              <div className="mt-2 text-xs text-gray-400">
+                {new Date(item.createdAt).toLocaleDateString()}
+              </div>
             </div>
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

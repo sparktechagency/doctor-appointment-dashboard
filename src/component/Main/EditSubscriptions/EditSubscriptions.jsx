@@ -22,7 +22,7 @@ const EditSubscriptions = () => {
   // RTK Query hooks
   const { data: subscriptionData, isLoading: isSubscriptionLoading } = useGetSubscriptionByIdQuery(id);
   const [updateSubscription, { isLoading: isUpdating }] = useUpdateSubscriptionMutation();
-
+console.log(subscriptionData)
   // Initialize form with subscription data
   useEffect(() => {
     if (subscriptionData) {

@@ -2,11 +2,11 @@ import { baseApi } from "../../baseApi/baseApi";
 
 const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    addTeamMember: builder.mutation({
-      query: (formdata) => ({
-        url: "/team/member",
+    createTeamMember: builder.mutation({
+      query: (data) => ({
+        url: "/team/create-member",
         method: "POST",
-        body: formdata,
+        body: data,
       }),
       invalidatesTags: ["Teams"],
     }),
@@ -22,9 +22,6 @@ const teamApi = baseApi.injectEndpoints({
         return {
           url: `team/member/all?${queryString}`,
           method: "GET",
-          headers: {
-            'Content-Type': 'application/json',
-          },
         };
       },
       providesTags: ["Teams"],
@@ -33,16 +30,18 @@ const teamApi = baseApi.injectEndpoints({
     getTeamMemberById: builder.query({
       query: (id) => ({
         url: `/team/member/${id}`,
-        method: "GET",
+        method: "GET",  headers: {
+          'Content-Type': 'application/json'
+        },
       }),
       providesTags: ["Teams"],
-      transformResponse: (response) => response?.data?.attributes,
+      transformResponse: (response) => response?.data?.attributes.team,
     }),
     updateTeamMember: builder.mutation({
-      query: ({ id, formdata }) => ({
+      query: ({ id, data }) => ({
         url: `/team/member/${id}`,
-        method: "PATCH",
-        body: formdata,
+        method: "PUT",
+        body: data,
       }),
       invalidatesTags: ["Teams"],
     }),
@@ -57,9 +56,9 @@ const teamApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useAddTeamMemberMutation,
+  useCreateTeamMemberMutation,
   useGetAllTeamMembersQuery,
-  useDeleteTeamMemberMutation,
-  useUpdateTeamMemberMutation,
   useGetTeamMemberByIdQuery,
+  useUpdateTeamMemberMutation,
+  useDeleteTeamMemberMutation,
 } = teamApi;

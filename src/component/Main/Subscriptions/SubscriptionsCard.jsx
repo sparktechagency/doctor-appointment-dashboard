@@ -40,7 +40,7 @@ const SubscriptionsCard = ({ subscription, index }) => {
 
   return (
     <div
-      className={`w-full rounded-lg border shadow-sm ${
+      className={`w-1/4 mb-5  rounded-2xl border shadow-sm ${
         index === 0 ? 'bg-[#77C4FE] text-white' : 'bg-[#D5EDFF] text-[#32526B]'
       }`}
     >
@@ -56,26 +56,28 @@ const SubscriptionsCard = ({ subscription, index }) => {
         {/* Price Display */}
         <div className="flex items-center py-2 justify-center font-bold text-xl">
           <div className="relative flex">
-            <p className="text-[3.25rem] p-2 mb-5">${amount}</p>  
+            <p className="text-[3.25rem] p-2 mb-5">{amount}</p>  
             <div className="flex flex-col justify-start items-start">
+                  <p className="">$</p>  
               <span className="text-md">{getPeriodText()}</span>
             </div>
           </div>
         </div>
 
-        {/* Features List */}
-        <div className="space-y-2">
-          {features?.map((feature, i) => (
-            <div key={i} className="flex items-center justify-center py-1">
-              <FaCheckCircle 
-                className={`mr-3 ${
-                  index === 0 ? 'text-white' : 'text-[#6CB2E7]'
-                }`} 
-              />
-              <span>{feature}</span>
-            </div>
-          ))}
-        </div>
+      {/* Features List */}
+{/* Features List */}
+<div className="flex flex-col items-start mx-auto space-y-3">
+  {features?.map((feature, i) => (
+    <div key={i} className="flex ">
+      <FaCheckCircle 
+        className={`${
+          index === 0 ? 'text-white' : 'text-[#6CB2E7]'
+        } mr-3`} 
+      />
+      <span>{feature}</span>
+    </div>
+  ))}
+</div>
 
         {/* Action Buttons */}
         <div className="flex justify-center mx-auto items-center gap-5 mt-4 p-2">

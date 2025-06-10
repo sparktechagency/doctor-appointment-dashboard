@@ -1,39 +1,67 @@
 import { Form } from "antd";
+import { useEffect } from "react";
 import { IoChevronBack } from "react-icons/io5";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import CustomInput from "../../../utils/CustomInput";
-import { useAddFaqMutation } from "../../../redux/features/faq/faqApi";
+import { 
+  useUpdateFaqMutation,
+  useGetFaqByIdQuery 
+} from "../../../redux/features/faq/faqApi";
 
-const AddFaq = () => {
+const EditFaq = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [addFaq, { isLoading }] = useAddFaqMutation();
+  const { id } = useParams();
+  
+  // RTK Query hooks
+  const { data: response, isLoading: isFaqLoading, isError } = useGetFaqByIdQuery(id);
+  const [updateFaq, { isLoading: isUpdating }] = useUpdateFaqMutation();
+
+  // Extract FAQ data from response
+  const faq = response?.[0];
+console.log(faq)
+  // Initialize form with FAQ data
+  useEffect(() => {
+    if (faq) {
+      form.setFieldsValue({
+        question: faq.question,
+        answer: faq.answer,
+      });
+    }
+  }, [faq, form]);
 
   const onFinish = async (values) => {
     try {
-      const response = await addFaq({
-        question: values.question,
-        answer: values.answer
+      const response = await updateFaq({
+        id,
+        ...values
       }).unwrap();
 
-      toast.success("FAQ added successfully");
-      form.resetFields();
-      navigate("/faqs"); // Adjust this route as needed
+      toast.success(response.message || "FAQ updated successfully");
+      navigate("/faq");
     } catch (error) {
-      console.error("Error adding FAQ:", error);
-      toast.error(error.data?.message || "Failed to add FAQ");
+      console.error("Error updating FAQ:", error);
+      toast.error(error.data?.message || "Failed to update FAQ");
     }
   };
 
+  if (isFaqLoading) {
+    return <div className="w-full p-6">Loading FAQ data...</div>;
+  }
+
+  if (isError) {
+    return <div className="w-full p-6">Error loading FAQ data</div>;
+  }
+
   return (
-    <div className="w-full">
+    <div className="w-full p-6">
       {/* Header */}
       <div className="flex gap-4 items-center my-6">
         <Link to="/faq">
           <IoChevronBack className="size-6" />
         </Link>
-        <h1 className="text-2xl font-semibold">Add FAQ</h1>
+        <h1 className="text-2xl font-semibold">Edit FAQ</h1>
       </div>
 
       {/* Form Section */}
@@ -68,10 +96,10 @@ const AddFaq = () => {
         <div className="flex justify-center mr-[10rem]">
           <button 
             type="submit"
-            disabled={isLoading}
+            disabled={isUpdating}
             className="mt-12 bg-[#77C4FE] px-14 py-3 flex items-center gap-5 text-white rounded-md border-none"
           >
-            {isLoading ? "Saving..." : "Save"}
+            {isUpdating ? "Updating..." : "Update"}
           </button>
         </div>
       </Form>
@@ -79,4 +107,4 @@ const AddFaq = () => {
   );
 };
 
-export default AddFaq;
+export default EditFaq;
