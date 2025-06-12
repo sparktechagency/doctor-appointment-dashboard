@@ -17,6 +17,13 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: "/auth/change-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
     logout: builder.mutation({
       query: () => ({
         url: "/logout",
@@ -44,6 +51,27 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getPrivacyPolicy: builder.query({
+      query: (data) => ({
+        url: "/info/privacy-policy",
+        method: "GET",
+        body: data,
+      }),
+    }),
+    getTermsCondition: builder.query({
+      query: (data) => ({
+        url: "/info/terms-condition",
+        method: "GET",
+        body: data,
+      }),
+    }),
+    getAboutUs: builder.query({
+      query: (data) => ({
+        url: "/info/about-us",
+        method: "GET",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -52,6 +80,6 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useForgotPasswordMutation,
-  useVerifyEmailMutation,
-  useResetPasswordMutation,
+  useVerifyEmailMutation,useGetPrivacyPolicyQuery,useGetTermsConditionQuery, useGetAboutUsQuery,
+  useResetPasswordMutation,  useChangePasswordMutation,
 } = authApi;

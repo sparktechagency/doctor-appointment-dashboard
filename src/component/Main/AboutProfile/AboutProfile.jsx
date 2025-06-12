@@ -2,9 +2,16 @@ import { Card, Form } from "antd";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 const { Meta } = Card;
 
 const AboutProfile = () => {
+    const { user } = useSelector((state) => state.auth);
+    console.log(user)
+
+  const  imageBaseUrl = 'http://10.0.60.18:6060'
+ const profileImageUrl = `${imageBaseUrl}${user?.profileImage}`;
+
   return (
     <div>
       <section className="px-2 mt-5">
@@ -35,12 +42,11 @@ const AboutProfile = () => {
             <img
             className="rounded-md "
               alt="example"
-              src="https://cdn.pixabay.com/photo/2022/09/08/15/16/cute-7441224_640.jpg"
+              src={profileImageUrl}
             />
             <div className="py-5">
             <Meta
-              title="Dr. Evans Onwubiko 
-"
+              title={user.fullName}
               description="MD, MPH, FAPA"
             />
             </div>

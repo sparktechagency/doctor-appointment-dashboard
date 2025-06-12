@@ -1,159 +1,109 @@
-import { Form } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { IoCameraOutline, IoChevronBack } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
+
+import { IoChevronBack } from "react-icons/io5";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import { updateUser } from "../../../redux/features/auth/authSlice";
-import { useUpdateUserMutation } from "../../../redux/features/profile/profileApi";
-import CustomButton from "../../../utils/CustomButton";
-import CustomInput from "../../../utils/CustomInput";
+import { logoutUser } from "../../../redux/features/auth/authSlice"; // Import your logout action
 
 const EditPersonalInfo = () => {
   const { user } = useSelector((state) => state.auth);
-  const [form] = Form.useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [updateProfileInfo, { isLoading }] = useUpdateUserMutation();
 
-  const [imageFile, setImageFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(
-    user?.image ? `${imageBaseUrl}${user.image.url}` : null
-  );
-  const fileInputRef = useRef(null);
-
-  useEffect(() => {
-    if (user) {
-      form.setFieldsValue({
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-      });
-    }
-  }, [user, form]);
-
-  const handleImageChange = (event) => {
-    const file = event.target.files && event.target.files[0];
-    if (file) {
-      const newImageUrl = URL.createObjectURL(file);
-      setImageFile(file); // Store file to send on update
-      setImageUrl(newImageUrl); // Show preview
-    }
+  const handleLogout = () => {
+    dispatch(logoutUser()); // Dispatch the logout action
+    navigate('/auth'); // Redirect to login page
   };
 
-  const handleDivClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click(); // Open file dialog
-    }
-  };
-
-  const onFinish = async (values) => {
-    const formdata = new FormData();
-    formdata.append("fullName", values.fullName);
-    formdata.append("email", values.email);
-    formdata.append("phone", values.phone);
-    if (imageFile) {
-      formdata.append("image", imageFile); // Add image if updated
-    }
-
-    try {
-      const response = await updateProfileInfo(formdata);
-      if (response.error) {
-        toast.error(response.error.data.message);
-      }
-      if (response.data) {
-        dispatch(updateUser({ user: response?.data?.attributes }));
-        console.log(response.data);
-        toast.success("Profile updated successfully!");
-        navigate("/personal-info");
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Something went wrong while updating your profile.");
-    }
-  };
-
-  console.log(`${imageBaseUrl}${user?.image?.url}`);
   return (
     <div className="w-full">
       {/* Back Button and Title */}
       <div className="flex justify-between items-center">
         <div className="flex gap-4 items-center my-6">
-          <Link to="/personal-info">
+          <Link to="/">
             <IoChevronBack className="text-2xl" />
           </Link>
-          <h1 className="text-2xl font-semibold">Edit Information</h1>
+          <h1 className="text-2xl font-semibold">Personal Information</h1>
         </div>
       </div>
 
       {/* Profile Information */}
-      <div className="w-full max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+      <div className="w-3/4 mx-auto">
         {/* Profile Picture */}
-        <div className="flex justify-center items-center flex-col">
-          <div onClick={handleDivClick} className="cursor-pointer mb-4 ">
-            {imageUrl ? (
+        <div className="flex justify-between items-center gap-5">
+          <div className="flex justify-around items-center gap-10">
+            <div className="w-[130px] h-[130px] rounded-full bg-[#D9D9D9]">
               <img
-                className="w-32 h-32 rounded-full object-cover mx-auto border-4 border-[#D5EDFF]"
-                src={imageUrl}
-                alt="Profile Preview"
+                className="size-32 rounded-full mx-auto"
+                src={`${imageBaseUrl}${user?.image?.url}`}
+                alt=""
               />
-            ) : (
-              <div className="bg-secondary p-10 text-white flex flex-col items-center rounded-full ">
-                <IoCameraOutline size={40} />
-                <span className="text-sm">Upload Image</span>
-              </div>
-            )}
-          </div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-            accept="image/*"
-            style={{ display: "none" }}
-          />
-          <div className="mt-2 text-center">
-            <span className="text-gray-500 text-sm">Profile</span>
-            <div className="text-lg font-semibold uppercase mt-1 text-secondary">
-              {user?.role || "User Role"}
             </div>
+            <span className="mt-2 text-gray-500">Profile</span>
+            <span className="text-lg font-semibold uppercase">
+              {user?.role}
+            </span>
+          </div>
+          <div className="float-end flex gap-4">
+            <Link to="/edit-personal-info">
+              <button className="px-8 py-3 bg-[#77C4FE] text-white rounded-lg">
+                Edit Profile
+              </button>
+            </Link>
+            <button 
+              onClick={handleLogout}
+              className="px-8 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Logout
+            </button>
           </div>
         </div>
 
-        {/* Edit Form */}
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          className="w-full col-span-full md:col-span-9 space-y-6 mt-10"
-        >
-          {/* Full Name */}
-          <Form.Item label="Full Name" name="fullName">
-            <CustomInput className="bg-white border-secondary" placeholder="Enter your full name" />
-          </Form.Item>
-
-          {/* Email */}
-          <Form.Item label="Email" name="email">
-            <CustomInput className="bg-white border-secondary" placeholder="Enter your email" />
-          </Form.Item>
-
-          {/* Phone Number */}
-          <Form.Item label="Phone Number" name="phone">
-            <CustomInput className="bg-white border-secondary" type="number" placeholder="Enter your phone number" />
-          </Form.Item>
-          {/* Address */}
-          <Form.Item label="Address" name="address">
-            <CustomInput className="bg-white border-secondary" type="number" placeholder="Enter your phone number" />
-          </Form.Item>
-
-          {/* Submit Button */}
-          <button loading={isLoading} className="w-full p-2 rounded-md text-white bg-secondary">
-            Update Information 
+        {/* Personal Details */}
+        <form className="full space-y-6 mt-6">
+          <div className="space-y-3">
+            <label className="block text-sm font-semibold">Full name</label>
+            <input
+              type="text"
+              defaultValue={user?.fullName}
+              readOnly
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
+            />
+          </div>
+          <div className="space-y-3">
+            <label className="block text-sm font-semibold">Email</label>
+            <input
+              type="email"
+              defaultValue={user?.email}
+              readOnly
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
+            />
+          </div>
+          <div className="space-y-3">
+            <label className="block text-sm font-semibold">Address</label>
+            <input
+              type="text"
+              defaultValue={user?.Address}
+              readOnly
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
+            />
+          </div>
+          <div className="space-y-3">
+            <label className="block text-sm font-semibold">Contact number</label>
+            <input
+              type="text"
+              defaultValue={user?.phoneNumber}
+              readOnly
+              className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
+            />
+          </div>
+          <button className="px-8 py-3 bg-[#77C4FE] text-white rounded-lg w-full">
+            Save
           </button>
-        </Form>
+        </form>
       </div>
     </div>
   );
 };
 
-export default EditPersonalInfo;
+export default EditPersonalInfo ;

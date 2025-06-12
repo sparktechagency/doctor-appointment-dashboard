@@ -8,6 +8,7 @@ import Otp from "../page/Auth/Otp/Otp";
 import NewPassword from "../page/Auth/NewPassword/NewPassword";
 import PersonalInformationPage from "../page/PersonalInformation/PersonalInformationPage";
 import SettingsPage from "../page/Settings/SettingsPage";
+import ChangePasswordpage from "../page/Settings/ChangePasswordpage";
 import PrivacyPolicyPage from "../page/PrivacyPolicy/PrivacyPolicyPage";
 import TermsconditionPage from "../page/TermsCondition/TermsconditionPage";
 import AboutUsPage from "../page/AboutUs/AboutUsPage";
@@ -130,12 +131,16 @@ const router = createBrowserRouter([
         path: "settings",
         element: <SettingsPage />,
       },
+      {
+        path: "settings/changepassword",
+        element: <ChangePasswordpage />,
+      },
        {
         path: "settings/personal-info",
         element: <PersonalInformationPage />,
       },
       {
-        path: "settings/edit-personal-info",
+        path: "edit-personal-info",
         element: <EditPersonalInformationPage />,
       },
       {

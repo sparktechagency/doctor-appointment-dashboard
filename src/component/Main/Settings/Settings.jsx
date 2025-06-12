@@ -4,6 +4,7 @@ import { Button, Form, Input, Modal, Switch } from "antd";
 import { useState } from "react";
 import { HiOutlineLockClosed } from "react-icons/hi";
 import { MdKeyboardArrowRight } from "react-icons/md";
+
 import OTPInput from "react-otp-input";
 // import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +38,7 @@ const Settings = () => {
     },
     {
       title: "Change password",
-      path: "change-password",
+      path: "changepassword",
     },
     {
       title: "Privacy Policy",

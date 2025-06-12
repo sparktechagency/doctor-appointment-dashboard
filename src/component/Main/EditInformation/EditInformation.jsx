@@ -16,7 +16,7 @@ const EditInformation = () => {
   const { data: teamMember, isLoading: isTeamMemberLoading } = useGetTeamMemberByIdQuery(id);
   const [updateTeamMember, { isLoading }] = useUpdateTeamMemberMutation();
   const { user } = useSelector((state) => state.auth);
-
+console.log("user",user)
   const [form] = Form.useForm();
   const [educationForm] = Form.useForm();
   const [experienceForm] = Form.useForm();

@@ -40,7 +40,7 @@ const SubscriptionsCard = ({ subscription, index }) => {
 
   return (
     <div
-      className={`w-1/4 mb-5  rounded-2xl border shadow-sm ${
+      className={`mx-auto mb-5  rounded-2xl border shadow-sm ${
         index === 0 ? 'bg-[#77C4FE] text-white' : 'bg-[#D5EDFF] text-[#32526B]'
       }`}
     >

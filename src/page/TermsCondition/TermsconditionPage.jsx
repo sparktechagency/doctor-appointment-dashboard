@@ -1,43 +1,66 @@
-
-
 import { IoChevronBack } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import { TbEdit } from "react-icons/tb";
-import CustomButton from "../../utils/CustomButton";
+import { Link } from "react-router-dom";
+import { useGetTermsConditionQuery } from "../../redux/features/auth/authApi";
+import { Spin, Alert } from "antd";
 
 const TermsconditionPage = () => {
+  const { data, isLoading, isError } = useGetTermsConditionQuery();
+
+  // Extract the terms content from the API response
+  const termsContent = data?.data?.attributes?.[0]?.content || "";
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Alert
+          message="Error"
+          description="Failed to load terms & conditions"
+          type="error"
+          showIcon
+        />
+      </div>
+    );
+  }
+
   return (
-    <section className="w-full h-full min-h-screen">
+    <section className="w-full h-full min-h-screen px-4 py-6">
       <div className="flex justify-between items-center py-5">
         <div className="flex gap-4 items-center">
           <Link to="/settings">
             <IoChevronBack className="text-2xl" />
           </Link>
-          <h1 className="text-2xl font-semibold">Terms of Conditions</h1>
+          <h1 className="text-2xl font-semibold">Terms & Conditions</h1>
         </div>
         <Link to={'/settings/edit-terms-conditions/11'}>
-          <button className="flex items-center justify-center p-2 rounded-md bg-secondary text-white">
+          <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-secondary text-white hover:bg-secondary-dark transition-colors">
             <TbEdit className="size-5" />
             <span>Edit</span>
           </button>
         </Link>
       </div>
-      {/* Your privacy policy content goes here */}
-      <div>
-        <h1>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam minus
-          distinctio veritatis quisquam. Perspiciatis aliquam numquam eligendi
-          praesentium aut reiciendis sequi officiis nihil nemo, hic sed nam
-          consectetur ipsam, facere, molestiae harum. Quidem sunt voluptatum
-          deserunt dignissimos necessitatibus quasi modi doloribus culpa odio
-          libero magnam numquam rerum velit harum nobis perferendis assumenda at
-          aliquid earum, reiciendis odit reprehenderit. Soluta, odit quae?
-          Nesciunt culpa sunt blanditiis aliquid animi, quidem nostrum sequi
-          temporibus. Eaque illum rerum rem nisi inventore repellat accusantium
-          quaerat, nulla, impedit, provident laboriosam animi? Magni esse porro
-          blanditiis. Alias cupiditate amet eos quaerat culpa delectus, eligendi
-          est aliquam impedit.
-        </h1>
+
+      {/* Terms & Conditions Content */}
+      <div className="bg-white rounded-lg shadow-sm p-6 mt-4">
+        {termsContent ? (
+          <div className="prose max-w-none">
+            {termsContent.split('\n\n').map((paragraph, index) => (
+              <p key={index} className="mb-4 text-gray-700">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">No terms & conditions content available.</p>
+        )}
       </div>
     </section>
   );
