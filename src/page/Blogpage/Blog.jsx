@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Form, Button, Table, Tag, Space, Input, Select } from "antd";
-import { useListBlogQuery } from "../../redux/features/blog/blogApi";
+import { Form, Button, Table, Tag, Space, Input, Select, Popconfirm, message } from "antd";
+import { useListBlogQuery, useDeleteBlogMutation } from "../../redux/features/blog/blogApi";
 import CreateBlogPage from "./CreateBlog";
 
 const { Search } = Input;
@@ -14,6 +14,7 @@ const BlogPage = () => {
     sortBy: "createdAt:desc"
   });
   const [searchParams, setSearchParams] = useState({});
+  const [deleteBlog] = useDeleteBlogMutation();
 
   // Fetch blog data with pagination and search params
   const { data: blogData, isLoading, isFetching } = useListBlogQuery({
@@ -22,6 +23,16 @@ const BlogPage = () => {
     sortBy: pagination.sortBy,
     ...searchParams
   });
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteBlog(id).unwrap();
+      message.success('Blog deleted successfully');
+    } catch (err) {
+      message.error('Failed to delete blog');
+      console.error('Error deleting blog:', err);
+    }
+  };
 
   const handleTableChange = (pagination, filters, sorter) => {
     setPagination({
@@ -117,6 +128,23 @@ const BlogPage = () => {
       key: "createdAt",
       sorter: true,
       render: (date) => new Date(date).toLocaleDateString()
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <Popconfirm
+            title="Are you sure to delete this blog?"
+            onConfirm={() => handleDelete(record.slug)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="link" danger>Delete</Button>
+          </Popconfirm>
+           
+        </Space>
+      ),
     }
   ];
 
@@ -124,9 +152,9 @@ const BlogPage = () => {
     <div className="p-5">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Blog Management</h2>
-      
       </div>
-  <CreateBlogPage />
+      <CreateBlogPage />
+      
       <div className="flex gap-4 mb-6">
         <Search
           placeholder="Search blogs..."
