@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Form, Button, Table, Tag, Space, Input, Select, Popconfirm, message } from "antd";
 import { useListBlogQuery, useDeleteBlogMutation } from "../../redux/features/blog/blogApi";
 import CreateBlogPage from "./CreateBlog";
-
+import UpdateBlogPage from "./UpdateBlogPage";
 const { Search } = Input;
 const { Option } = Select;
 
@@ -15,7 +15,8 @@ const BlogPage = () => {
   });
   const [searchParams, setSearchParams] = useState({});
   const [deleteBlog] = useDeleteBlogMutation();
-
+  const [selectedBlogSlug, setSelectedBlogSlug] = useState(null);
+const [updateModalVisible, setUpdateModalVisible] = useState(false);
   // Fetch blog data with pagination and search params
   const { data: blogData, isLoading, isFetching } = useListBlogQuery({
     page: pagination.current,
@@ -42,7 +43,15 @@ const BlogPage = () => {
         : 'createdAt:desc'
     });
   };
+  const handleUpdate = (slug) => {
+    setSelectedBlogSlug(slug);
+    setUpdateModalVisible(true);
+  };
 
+  const handleUpdateSuccess = () => {
+    setUpdateModalVisible(false);
+    setSelectedBlogSlug(null);
+  };
   const handleSearch = (value) => {
     setSearchParams({
       ...searchParams,
@@ -134,6 +143,9 @@ const BlogPage = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
+          <Button type="link" onClick={() => handleUpdate(record.slug)}>
+            Edit
+          </Button>
           <Popconfirm
             title="Are you sure to delete this blog?"
             onConfirm={() => handleDelete(record.slug)}
@@ -154,7 +166,12 @@ const BlogPage = () => {
         <h2 className="text-2xl font-semibold">Blog Management</h2>
       </div>
       <CreateBlogPage />
-      
+       <UpdateBlogPage
+        slug={selectedBlogSlug}
+        visible={updateModalVisible}
+        onCancel={() => setUpdateModalVisible(false)}
+        onSuccess={handleUpdateSuccess}
+      />
       <div className="flex gap-4 mb-6">
         <Search
           placeholder="Search blogs..."
