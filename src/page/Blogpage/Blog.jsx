@@ -146,6 +146,10 @@ const [updateModalVisible, setUpdateModalVisible] = useState(false);
           <Button type="link" onClick={() => handleUpdate(record.slug)}>
             Edit
           </Button>
+        
+          <Button type="link" href={`/blogs/${record.slug}`} onClick={() => handleUpdate(record.slug)}>
+            View
+          </Button>
           <Popconfirm
             title="Are you sure to delete this blog?"
             onConfirm={() => handleDelete(record.slug)}

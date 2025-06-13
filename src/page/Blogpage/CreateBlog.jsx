@@ -22,8 +22,13 @@ const CreateBlogPage = () => {
       formData.append('category', values.category);
       formData.append('isPublished', values.isPublished);
       
-      // Append tags as array
-      values.tags.forEach(tag => formData.append('tags', tag));
+      // Append tags as JSON string if backend expects it that way
+      if (values.tags && values.tags.length > 0) {
+        formData.append('tags', JSON.stringify(values.tags));
+      }
+      
+      // Alternative: Append tags as array (choose one approach based on backend requirements)
+      // values.tags.forEach(tag => formData.append('tags[]', tag));
       
       // Append cover image if exists
       if (fileList.length > 0 && fileList[0].originFileObj) {
@@ -41,7 +46,7 @@ const CreateBlogPage = () => {
         message.error(response.message || 'Failed to create blog');
       }
     } catch (err) {
-      message.error('Failed to create blog');
+      message.error(err.data?.message || 'Failed to create blog');
       console.error('Error creating blog:', err);
     }
   };
@@ -128,6 +133,8 @@ const CreateBlogPage = () => {
             mode="tags"
             placeholder="Select tags or type to add new"
             tokenSeparators={[',']}
+            // Add this to ensure proper tag formatting
+            getPopupContainer={trigger => trigger.parentNode}
           >
             <Option value="javascript">JavaScript</Option>
             <Option value="react">React</Option>

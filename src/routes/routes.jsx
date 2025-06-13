@@ -30,6 +30,7 @@ import TeamMemberPage from "../page/TeamMember/TeamMemberpage";
 import Chat from '../page/Chat/Chat'
 import LaboratoryTestRequest from "../page/LaboratoryTestRequest/LaboratoryTestRequest";
 import BlogPage from "../page/Blogpage/Blog";
+import BlogDetail from "../page/Blogpage/BlogDetail";
 import Faq from "../component/Main/Faq/Faq";
 import AddFaqPage from "../page/AddFaq/AddFaq";
 import EditFaq from "../component/Main/EditFaq/EditFaq";
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
       {
         path: "/blog",
         element: <BlogPage />,
+      },
+        {
+        path: "/blogs/:slug",
+        element: <BlogDetail />,
       },
       {
         path: "subscriptions",

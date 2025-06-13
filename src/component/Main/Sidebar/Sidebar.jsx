@@ -12,7 +12,7 @@ import LogoImage from "../../../assets/auth/Logo.png";
 import { logoutUser } from "../../../redux/features/auth/authSlice";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-
+import { FaBlog } from "react-icons/fa";
 
 const sidebarItems = [
   {
@@ -64,7 +64,7 @@ const sidebarItems = [
     {
     path: "/blog",
     name: "Blog",
-    icon: <AiOutlineInfoCircle className="size-8 " />, // About Profile icon updated
+    icon: <FaBlog  className="size-8 " />, // About Profile icon updated
   },
   {
     path: "/settings",
