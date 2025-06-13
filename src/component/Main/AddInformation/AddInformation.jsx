@@ -1,4 +1,3 @@
-
 import { Button, Form, Input, Modal, Radio, Select, DatePicker, Upload, message } from "antd";
 import { UploadOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
@@ -57,71 +56,115 @@ const AddInformation = () => {
       description: ach.description || "",
     })) || []
   );
-  const [profileImage, setProfileImage] = useState(user?.profileImage || null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(user?.profileImage || null);
+  const [uploading, setUploading] = useState(false);
 
   // State for modals
   const [isEducationModalVisible, setIsEducationModalVisible] = useState(false);
   const [isExperienceModalVisible, setIsExperienceModalVisible] = useState(false);
   const [isAchievementModalVisible, setIsAchievementModalVisible] = useState(false);
 
+  // Custom upload function for profile image
+  const handleImageUpload = async (options) => {
+    const { file, onSuccess, onError } = options;
+    
+    try {
+      setUploading(true);
+      
+      // Store the file object and create a preview URL
+      setProfileImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setProfileImagePreview(previewUrl);
+      
+      onSuccess({ url: previewUrl }, file);
+      message.success(`${file.name} file ready for upload`);
+    } catch (error) {
+      setUploading(false);
+      onError(error);
+      message.error(`${file.name} file upload failed.`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   // Handle main form submission
   const onFinish = async (values) => {
     try {
-      const teamMemberData = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        fullName: `${values.firstName} ${values.lastName}`,
-        designation: values.designation,
-        specialties: values.specialties,
-        about: values.about,
-        callingCode: values.callingCode || "+880",
-        phoneNumber: parseInt(values.phoneNumber, 10),
-        email: values.email,
-        profileImage: profileImage || "/Uploads/users/user.png",
-        media: {
-          facebook: values.facebook,
-          instagram: values.instagram,
-          linkedin: values.linkedin,
-          X: values.X,
-        },
-        degrees: educationItems.map((item) => ({
-          school: item.institution,
-          degree: item.degree,
-          subject: item.field,
-          grade: item.grade,
-          startDate: item.startDate,
-          endDate: item.endDate,
-          skills: item.skills,
-          status: item.status,
-          description: item.description,
-        })),
-        experience: experienceItems.map((item) => ({
-          title: item.position,
-          employmentType: item.employmentType,
-          company: item.company,
-          location: item.location,
-          startDate: item.startDate,
-          endDate: item.endDate,
-          description: item.description,
-          skills: item.skills,
-          status: item.status,
-        })),
-        achievements: achievementItems.map((item) => ({
-          title: item.award,
-          description: item.description,
-          date: item.date,
-          status: item.status,
-        })),
-      };
+      const formData = new FormData();
+      
+      // Append all text fields
+      formData.append('firstName', values.firstName);
+      formData.append('lastName', values.lastName);
+      formData.append('designation', values.designation);
+      formData.append('specialties', values.specialties);
+      formData.append('about', values.about);
+      formData.append('callingCode', values.callingCode || "+880");
+      formData.append('phoneNumber', values.phoneNumber);
+      formData.append('email', values.email);
+      
+      // Append media links
+      formData.append('media[facebook]', values.facebook || '');
+      formData.append('media[instagram]', values.instagram || '');
+      formData.append('media[linkedin]', values.linkedin || '');
+      formData.append('media[X]', values.X || '');
+      
+      // Append profile image if exists
+      if (profileImageFile) {
+        formData.append('profileImage', profileImageFile);
+      } else {
+        formData.append('profileImage', profileImagePreview || "/Uploads/users/user.png");
+      }
+      
+      // Append education items
+      educationItems.forEach((item, index) => {
+        formData.append(`degrees[${index}][school]`, item.institution);
+        formData.append(`degrees[${index}][degree]`, item.degree);
+        formData.append(`degrees[${index}][subject]`, item.field);
+        formData.append(`degrees[${index}][grade]`, item.grade);
+        formData.append(`degrees[${index}][startDate]`, item.startDate);
+        formData.append(`degrees[${index}][endDate]`, item.endDate || '');
+        formData.append(`degrees[${index}][status]`, item.status);
+        formData.append(`degrees[${index}][description]`, item.description);
+        item.skills.forEach((skill, skillIndex) => {
+          formData.append(`degrees[${index}][skills][${skillIndex}]`, skill);
+        });
+      });
+      
+      // Append experience items
+      experienceItems.forEach((item, index) => {
+        formData.append(`experience[${index}][title]`, item.position);
+        formData.append(`experience[${index}][employmentType]`, item.employmentType);
+        formData.append(`experience[${index}][company]`, item.company);
+        formData.append(`experience[${index}][location]`, item.location);
+        formData.append(`experience[${index}][startDate]`, item.startDate);
+        formData.append(`experience[${index}][endDate]`, item.endDate || '');
+        formData.append(`experience[${index}][status]`, item.status);
+        formData.append(`experience[${index}][description]`, item.description);
+        item.skills.forEach((skill, skillIndex) => {
+          formData.append(`experience[${index}][skills][${skillIndex}]`, skill);
+        });
+      });
+      
+      // Append achievement items
+      achievementItems.forEach((item, index) => {
+        formData.append(`achievements[${index}][title]`, item.award);
+        formData.append(`achievements[${index}][description]`, item.description);
+        formData.append(`achievements[${index}][date]`, item.date);
+        formData.append(`achievements[${index}][status]`, item.status);
+      });
 
-      const response = await createTeamMember(teamMemberData).unwrap();
+      // Make the API call with FormData
+      const response = await createTeamMember(formData).unwrap();
+      
       if (response.code === 201) {
         message.success("Team member created successfully!");
         form.resetFields();
         setEducationItems([]);
         setExperienceItems([]);
         setAchievementItems([]);
-        setProfileImage(null);
+        setProfileImageFile(null);
+        setProfileImagePreview(null);
       } else {
         message.error(response.message || "Failed to create team member");
       }
@@ -210,23 +253,32 @@ const AddInformation = () => {
     message.success("Achievement deleted successfully!");
   };
 
-  // Handle image upload
-  const uploadProps = {
-    name: "file",
-    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76", // Replace with your actual upload endpoint
-    headers: {
-      authorization: "authorization-text",
+  // Upload props for profile image
+ const uploadProps = {
+    name: 'profileImage',
+    multiple: false,
+    showUploadList: false,
+    customRequest: handleImageUpload,
+    accept: 'image/*',
+    beforeUpload: (file) => {
+      const isImage = file.type.startsWith('image/');
+      if (!isImage) {
+        message.error('You can only upload image files!');
+        return Upload.LIST_IGNORE;
+      }
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        message.error('Image must be smaller than 5MB!');
+        return Upload.LIST_IGNORE;
+      }
+      return isImage && isLt5M;
     },
     onChange(info) {
-      if (info.file.status === "done") {
-        // In a real app, the server response should provide the image path
-        setProfileImage(info.file.response?.url || URL.createObjectURL(info.file.originFileObj));
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
+      if (info.file.status === 'uploading') {
+        setUploading(true);
+        return;
       }
     },
-    showUploadList: false,
   };
 
   return (
@@ -244,18 +296,24 @@ const AddInformation = () => {
       {/* Profile Information */}
       <div className="w-full max-w-4xl mx-auto">
         {/* Profile Picture */}
-        <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8">
+    <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8">
           <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 w-full">
             <div className="w-32 h-32 rounded-full bg-[#D9D9D9] overflow-hidden">
               <img
                 className="w-full h-full object-cover"
-                src={profileImage || "https://via.placeholder.com/128"}
+                src={profileImagePreview || "https://via.placeholder.com/128"}
                 alt="Profile"
               />
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-5">
               <Upload {...uploadProps}>
-                <Button icon={<UploadOutlined />}>Upload Photo</Button>
+                <Button 
+                  icon={<UploadOutlined />} 
+                  loading={uploading}
+                  disabled={uploading}
+                >
+                  Upload Photo
+                </Button>
               </Upload>
               <span className="text-lg font-semibold uppercase">{user?.role || "User"}</span>
             </div>
@@ -522,18 +580,18 @@ const AddInformation = () => {
             ))}
           </div>
 
-          <Form.Item className="flex justify-end mt-8">
+       <Form.Item className="flex justify-end mt-8">
             <Button
               type="primary"
               htmlType="submit"
               className="px-8 py-3 h-auto"
               loading={isLoading}
+              disabled={uploading}
             >
               Save Profile
             </Button>
           </Form.Item>
         </Form>
-
         {/* Education Modal */}
         <Modal
           title="Add Education"
@@ -695,7 +753,7 @@ const AddInformation = () => {
         </Modal>
 
         {/* Achievement Modal */}
-        <Modal
+         <Modal
           title="Add Achievement"
           open={isAchievementModalVisible}
           onCancel={() => setIsAchievementModalVisible(false)}

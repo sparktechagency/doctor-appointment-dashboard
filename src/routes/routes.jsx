@@ -29,6 +29,7 @@ import EditInformationPage from "../page/EditInformation/EditInformation.";
 import TeamMemberPage from "../page/TeamMember/TeamMemberpage";
 import Chat from '../page/Chat/Chat'
 import LaboratoryTestRequest from "../page/LaboratoryTestRequest/LaboratoryTestRequest";
+import BlogPage from "../page/Blogpage/Blog";
 import Faq from "../component/Main/Faq/Faq";
 import AddFaqPage from "../page/AddFaq/AddFaq";
 import EditFaq from "../component/Main/EditFaq/EditFaq";
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: "/laboratory-test-request",
         element: <LaboratoryTestRequest />,
+      },
+      {
+        path: "/blog",
+        element: <BlogPage />,
       },
       {
         path: "subscriptions",
