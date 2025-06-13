@@ -17,22 +17,32 @@ const faqApi = baseApi.injectEndpoints({
       query: () => "/faq",
       providesTags: ["Faqs"],
     }),
-getFaqById: builder.query({
-  query: (id) => ({
-    url: `/faq/${id}`,
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }),
-  transformResponse: (response) => response.data.attributes,
-  providesTags: (result, error, id) => [{ type: 'Faqs', id }],
-}),
+    getFaqById: builder.query({
+      query: (id) => ({
+        url: `/faq/${id}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }),
+      transformResponse: (response) => response.data.attributes,
+      providesTags: (result, error, id) => [{ type: 'Faqs', id }],
+    }),
     updateFaq: builder.mutation({
       query: ({ id, ...faqData }) => ({
         url: `/faq/${id}`,
         method: "PATCH",
         body: faqData,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }),
+      invalidatesTags: ["Faqs"],
+    }),
+    deleteFaq: builder.mutation({
+      query: (id) => ({
+        url: `/faq/${id}`,
+        method: "DELETE",
         headers: {
           'Content-Type': 'application/json'
         }
@@ -47,4 +57,5 @@ export const {
   useGetFaqsQuery,
   useGetFaqByIdQuery,
   useUpdateFaqMutation,
+  useDeleteFaqMutation,
 } = faqApi;

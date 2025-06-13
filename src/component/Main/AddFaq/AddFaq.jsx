@@ -19,7 +19,7 @@ const AddFaq = () => {
 
       toast.success("FAQ added successfully");
       form.resetFields();
-      navigate("/faqs"); // Adjust this route as needed
+      navigate("/faq"); // Adjust this route as needed
     } catch (error) {
       console.error("Error adding FAQ:", error);
       toast.error(error.data?.message || "Failed to add FAQ");

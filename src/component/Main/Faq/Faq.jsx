@@ -2,11 +2,32 @@ import { FaPlus } from "react-icons/fa";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import { useGetFaqsQuery } from "../../../redux/features/faq/faqApi";
-import { Skeleton } from "antd";
+import { useGetFaqsQuery, useDeleteFaqMutation } from "../../../redux/features/faq/faqApi";
+import { Skeleton, message, Modal } from "antd";
 
 const FaqPage = () => {
-  const { data: faqData, isLoading, isError } = useGetFaqsQuery();
+  const { data: faqData, isLoading, isError, refetch } = useGetFaqsQuery();
+  const [deleteFaq] = useDeleteFaqMutation();
+
+  const handleDelete = async (id) => {
+    Modal.confirm({
+      title: 'Are you sure you want to delete this FAQ?',
+      content: 'This action cannot be undone',
+      okText: 'Yes, delete it',
+      okType: 'danger',
+      cancelText: 'No, cancel',
+      onOk: async () => {
+        try {
+          await deleteFaq(id).unwrap();
+          message.success('FAQ deleted successfully');
+          refetch();
+        } catch (error) {
+          message.error('Failed to delete FAQ');
+          console.error('Delete error:', error);
+        }
+      },
+    });
+  };
 
   if (isLoading) {
     return (
@@ -32,7 +53,7 @@ const FaqPage = () => {
   }
 
   const faqItems = faqData?.data?.attributes.results || [];
-console.log(faqItems)
+
   return (
     <div className="w-full p-6">
       <div className="flex justify-between items-center mb-6">
@@ -64,7 +85,10 @@ console.log(faqItems)
                       <AiOutlineEdit />
                     </button>
                   </Link>
-                  <button className="h-6 w-6 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 rounded flex items-center justify-center">
+                  <button 
+                    onClick={() => handleDelete(item.id)}
+                    className="h-6 w-6 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 rounded flex items-center justify-center"
+                  >
                     <AiOutlineDelete />
                   </button>
                 </div>
