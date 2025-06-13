@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Modal } from "antd";
 import { toast } from "sonner";
 import { useDeleteTeamMemberMutation } from "../../../redux/features/product/teamApi";
-
+import { BASE_URL } from "../../../utils/constants";
 const TeamMemberCard = ({ product }) => {
   const [deleteProduct] = useDeleteTeamMemberMutation();
 
@@ -26,10 +26,10 @@ const TeamMemberCard = ({ product }) => {
     });
   };
 
-const IMAGE_BASE_URL = 'http://10.0.60.18:6060'
+
   const imageUrl = product?.profileImage
-    ? `${IMAGE_BASE_URL}${product.profileImage}`
-    : `${IMAGE_BASE_URL}${product.profileImage}`;
+    ? `${BASE_URL }${product.profileImage}`
+    : `${BASE_URL }${product.profileImage}`;
 
 console.log("product",product)
   return (

@@ -7,33 +7,33 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUpdateTeamMemberMutation, useGetTeamMemberByIdQuery } from "../../../redux/features/product/teamApi";
+import { BASE_URL } from "../../../utils/constants";
 import moment from "moment";
 
 const { Option } = Select;
 
-const EditInformation = () => {
+const UpdateTeamForm = () => {
   const { id } = useParams();
   const { data: teamMember, isLoading: isTeamMemberLoading } = useGetTeamMemberByIdQuery(id);
   const [updateTeamMember, { isLoading }] = useUpdateTeamMemberMutation();
   const { user } = useSelector((state) => state.auth);
-console.log("user",user)
+
   const [form] = Form.useForm();
   const [educationForm] = Form.useForm();
   const [experienceForm] = Form.useForm();
   const [achievementForm] = Form.useForm();
 
-  // Initialize state with team member data
   const [educationItems, setEducationItems] = useState([]);
   const [experienceItems, setExperienceItems] = useState([]);
   const [achievementItems, setAchievementItems] = useState([]);
-  const [profileImage, setProfileImage] = useState(null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
-  // State for modals
   const [isEducationModalVisible, setIsEducationModalVisible] = useState(false);
   const [isExperienceModalVisible, setIsExperienceModalVisible] = useState(false);
   const [isAchievementModalVisible, setIsAchievementModalVisible] = useState(false);
 
-  // Load data when team member is fetched
   useEffect(() => {
     if (teamMember) {
       form.setFieldsValue({
@@ -51,7 +51,7 @@ console.log("user",user)
         X: teamMember.media?.X,
       });
 
-      setProfileImage(teamMember.profileImage);
+      setProfileImagePreview(teamMember.profileImage);
 
       setEducationItems(
         teamMember.degrees?.map((deg, index) => ({
@@ -95,9 +95,29 @@ console.log("user",user)
     }
   }, [teamMember, form]);
 
-  // Handle main form submission
+  const handleImageUpload = async (options) => {
+    const { file, onSuccess, onError } = options;
+    try {
+      setUploading(true);
+      setProfileImageFile(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+      onSuccess({ url: URL.createObjectURL(file) }, file);
+      message.success(`${file.name} file selected for upload`);
+    } catch (error) {
+      onError(error);
+      message.error(`${file.name} file upload failed.`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const onFinish = async (values) => {
     try {
+      const formData = new FormData();
+      if (profileImageFile) {
+        formData.append("profileImage", profileImageFile);
+      }
+
       const teamMemberData = {
         firstName: values.firstName,
         lastName: values.lastName,
@@ -108,7 +128,6 @@ console.log("user",user)
         callingCode: values.callingCode || "+880",
         phoneNumber: parseInt(values.phoneNumber, 10),
         email: values.email,
-        profileImage: profileImage || "/Uploads/users/user.png",
         media: {
           facebook: values.facebook,
           instagram: values.instagram,
@@ -121,7 +140,7 @@ console.log("user",user)
           subject: item.field,
           grade: item.grade,
           startDate: item.startDate,
-          endDate: item.endDate || null,
+          endDate: item.endDate,
           skills: item.skills,
           status: item.status,
           description: item.description,
@@ -132,7 +151,7 @@ console.log("user",user)
           company: item.company,
           location: item.location,
           startDate: item.startDate,
-          endDate: item.endDate || null,
+          endDate: item.endDate,
           description: item.description,
           skills: item.skills,
           status: item.status,
@@ -145,9 +164,13 @@ console.log("user",user)
         })),
       };
 
-      const response = await updateTeamMember({ id, data: teamMemberData }).unwrap();
+      formData.append("data", JSON.stringify(teamMemberData));
+
+      const response = await updateTeamMember({ id, data: formData }).unwrap();
       if (response.code === 200) {
         message.success("Team member updated successfully!");
+        setProfileImageFile(null);
+        setProfileImagePreview(response.data?.profileImage || profileImagePreview);
       } else {
         message.error(response.message || "Failed to update team member");
       }
@@ -156,7 +179,6 @@ console.log("user",user)
     }
   };
 
-  // Education form handlers
   const onEducationFinish = (values) => {
     const newId = Math.max(...educationItems.map((item) => item.id), 0) + 1;
     setEducationItems([
@@ -167,7 +189,7 @@ console.log("user",user)
         degree: values.degree,
         field: values.subject,
         grade: values.grade,
-        startDate: values.startDate ? moment(values.startDate).toISOString() : moment().toISOString(),
+        startDate: values.startDate ? moment(values.startDate).toISOString() : new Date().toISOString(),
         endDate: values.endDate ? moment(values.endDate).toISOString() : null,
         status: values.status,
         description: values.description,
@@ -179,7 +201,6 @@ console.log("user",user)
     message.success("Education added successfully!");
   };
 
-  // Experience form handlers
   const onExperienceFinish = (values) => {
     const newId = Math.max(...experienceItems.map((item) => item.id), 0) + 1;
     setExperienceItems([
@@ -190,7 +211,7 @@ console.log("user",user)
         position: values.position,
         employmentType: values.employmentType,
         location: values.location,
-        startDate: values.startDate ? moment(values.startDate).toISOString() : moment().toISOString(),
+        startDate: values.startDate ? moment(values.startDate).toISOString() : new Date().toISOString(),
         endDate: values.endDate ? moment(values.endDate).toISOString() : null,
         status: values.status,
         description: values.description,
@@ -202,7 +223,6 @@ console.log("user",user)
     message.success("Experience added successfully!");
   };
 
-  // Achievement form handlers
   const onAchievementFinish = (values) => {
     const newId = Math.max(...achievementItems.map((item) => item.id), 0) + 1;
     setAchievementItems([
@@ -210,7 +230,7 @@ console.log("user",user)
       {
         id: newId,
         award: values.award,
-        date: values.date ? moment(values.date).toISOString() : moment().toISOString(),
+        date: values.date ? moment(values.date).toISOString() : new Date().toISOString(),
         status: values.status,
         description: values.description,
       },
@@ -220,7 +240,6 @@ console.log("user",user)
     message.success("Achievement added successfully!");
   };
 
-  // Delete functions
   const deleteEducation = (id) => {
     setEducationItems(educationItems.filter((item) => item.id !== id));
     message.success("Education deleted successfully!");
@@ -236,22 +255,38 @@ console.log("user",user)
     message.success("Achievement deleted successfully!");
   };
 
-  // Handle image upload
+  const getFullImageUrl = (path) => {
+    if (!path) return "https://via.placeholder.com/128";
+    if (path.startsWith("http") || path.startsWith("blob:")) return path;
+    return `${BASE_URL}/${path.replace(/^\/+/, "")}`;
+  };
+
   const uploadProps = {
-    name: "file",
-    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76", // Replace with your actual upload endpoint
-    headers: {
-      authorization: "authorization-text",
+    name: "profileImage",
+    multiple: false,
+    showUploadList: false,
+    customRequest: handleImageUpload,
+    accept: "image/*",
+    beforeUpload: (file) => {
+      const isImage = file.type.startsWith("image/");
+      if (!isImage) {
+        message.error("You can only upload image files!");
+        return false;
+      }
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        message.error("Image must be smaller than 5MB!");
+        return false;
+      }
+      return true;
     },
     onChange(info) {
-      if (info.file.status === "done") {
-        setProfileImage(info.file.response?.url || URL.createObjectURL(info.file.originFileObj));
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
+      if (info.file.status === "uploading") {
+        setUploading(true);
+      } else {
+        setUploading(false);
       }
     },
-    showUploadList: false,
   };
 
   if (isTeamMemberLoading) {
@@ -260,43 +295,40 @@ console.log("user",user)
 
   return (
     <div className="w-full px-4 py-6">
-      {/* Back Button and Title */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <Link to="/about">
+          <Link to="/team">
             <IoChevronBack className="text-2xl" />
           </Link>
-          <h1 className="text-2xl font-semibold">Edit Team Member</h1>
+          <h1 className="text-2xl font-semibold">Update Team Member</h1>
         </div>
       </div>
 
-      {/* Profile Information */}
       <div className="w-full max-w-4xl mx-auto">
-        {/* Profile Picture */}
         <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8">
           <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 w-full">
             <div className="w-32 h-32 rounded-full bg-[#D9D9D9] overflow-hidden">
               <img
                 className="w-full h-full object-cover"
-                src={profileImage || "https://via.placeholder.com/128"}
+                src={getFullImageUrl(profileImagePreview)}
                 alt="Profile"
+                onError={(e) => {
+                  e.target.src = "https://via.placeholder.com/128";
+                }}
               />
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-5">
               <Upload {...uploadProps}>
-                <Button icon={<UploadOutlined />}>Upload Photo</Button>
+                <Button icon={<UploadOutlined />} loading={uploading} disabled={uploading}>
+                  Upload Photo
+                </Button>
               </Upload>
               <span className="text-lg font-semibold uppercase">{user?.role || "User"}</span>
             </div>
           </div>
         </div>
 
-        {/* Personal Details Form */}
-        <Form
-          form={form}
-          onFinish={onFinish}
-          layout="vertical"
-        >
+        <Form form={form} onFinish={onFinish} layout="vertical">
           <div className="flex flex-col md:flex-row gap-6 w-full">
             <Form.Item
               name="firstName"
@@ -323,7 +355,15 @@ console.log("user",user)
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input phone number!" }]}
             >
-              <Input addonBefore={<Form.Item name="callingCode" noStyle><Select defaultValue="+880"><Option value="+880">+880</Option></Select></Form.Item>} />
+              <Input
+                addonBefore={
+                  <Form.Item name="callingCode" noStyle>
+                    <Select defaultValue="+880">
+                      <Option value="+880">+880</Option>
+                    </Select>
+                  </Form.Item>
+                }
+              />
             </Form.Item>
             <Form.Item
               name="email"
@@ -344,20 +384,12 @@ console.log("user",user)
             >
               <Input />
             </Form.Item>
-            <Form.Item
-              name="specialties"
-              label="Specialties"
-              className="w-full md:w-1/2"
-            >
+            <Form.Item name="specialties" label="Specialties" className="w-full md:w-1/2">
               <Input />
             </Form.Item>
           </div>
 
-          <Form.Item
-            name="about"
-            label="About Me"
-            rules={[{ required: true, message: "Please input about information!" }]}
-          >
+          <Form.Item name="about" label="About Me">
             <TextArea rows={5} />
           </Form.Item>
 
@@ -379,7 +411,6 @@ console.log("user",user)
             </Form.Item>
           </div>
 
-          {/* Education Section */}
           <div className="space-y-4 mt-8">
             <div className="flex items-center justify-between">
               <div>
@@ -419,7 +450,9 @@ console.log("user",user)
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900">End Date</p>
-                      <p className="text-gray-600">{item.endDate ? moment(item.endDate).format("DD/MM/YYYY") : "N/A"}</p>
+                      <p className="text-gray-600">
+                        {item.endDate ? moment(item.endDate).format("DD/MM/YYYY") : "N/A"}
+                      </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -439,7 +472,6 @@ console.log("user",user)
             ))}
           </div>
 
-          {/* Experience Section */}
           <div className="space-y-4 mt-8">
             <div className="flex items-center justify-between">
               <div>
@@ -488,7 +520,9 @@ console.log("user",user)
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900">End Date</p>
-                      <p className="text-gray-600">{item.endDate ? moment(item.endDate).format("DD/MM/YYYY") : "N/A"}</p>
+                      <p className="text-gray-600">
+                        {item.endDate ? moment(item.endDate).format("DD/MM/YYYY") : "N/A"}
+                      </p>
                     </div>
                   </div>
                   <div>
@@ -502,7 +536,6 @@ console.log("user",user)
             ))}
           </div>
 
-          {/* Achievements Section */}
           <div className="space-y-4 mt-8">
             <div className="flex items-center justify-between">
               <div>
@@ -551,13 +584,13 @@ console.log("user",user)
               htmlType="submit"
               className="px-8 py-3 h-auto"
               loading={isLoading}
+              disabled={uploading}
             >
               Update Profile
             </Button>
           </Form.Item>
         </Form>
 
-        {/* Education Modal */}
         <Modal
           title="Add Education"
           open={isEducationModalVisible}
@@ -581,12 +614,12 @@ console.log("user",user)
               rules={[{ required: true, message: "Please select degree!" }]}
             >
               <Select placeholder="Select degree">
-                <Option value="Bachelor's Degree">Bachelor's Degree</Option>
-                <Option value="Master's Degree">Master's Degree</Option>
-                <Option value="PhD">PhD</Option>
-                <Option value="Associate Degree">Associate Degree</Option>
-                <Option value="Diploma">Diploma</Option>
-                <Option value="Certificate">Certificate</Option>
+                <Option value="bachelor">Bachelor's Degree</Option>
+                <Option value="master">Master's Degree</Option>
+                <Option value="phd">PhD</Option>
+                <Option value="associate">Associate Degree</Option>
+                <Option value="diploma">Diploma</Option>
+                <Option value="certificate">Certificate</Option>
               </Select>
             </Form.Item>
 
@@ -638,7 +671,6 @@ console.log("user",user)
           </Form>
         </Modal>
 
-        {/* Experience Modal */}
         <Modal
           title="Add Experience"
           open={isExperienceModalVisible}
@@ -717,7 +749,6 @@ console.log("user",user)
           </Form>
         </Modal>
 
-        {/* Achievement Modal */}
         <Modal
           title="Add Achievement"
           open={isAchievementModalVisible}
@@ -766,4 +797,4 @@ console.log("user",user)
   );
 };
 
-export default EditInformation;
+export default UpdateTeamForm;
