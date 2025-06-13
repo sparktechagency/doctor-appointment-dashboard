@@ -61,6 +61,11 @@ const sidebarItems = [
     name: "Faq",
     icon: <AiOutlineInfoCircle className="size-8 " />, // About Profile icon updated
   },
+    {
+    path: "/blog",
+    name: "Blog",
+    icon: <AiOutlineInfoCircle className="size-8 " />, // About Profile icon updated
+  },
   {
     path: "/settings",
     name: "Settings",
