@@ -34,6 +34,7 @@ import BlogDetail from "../page/Blogpage/BlogDetail";
 import Faq from "../component/Main/Faq/Faq";
 import AddFaqPage from "../page/AddFaq/AddFaq";
 import EditFaq from "../component/Main/EditFaq/EditFaq";
+import MemberDetails from "../component/Main/TeamMember/MemberDetails";
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -121,7 +122,12 @@ const router = createBrowserRouter([
         element: <TeamMemberPage />,
       },
       {
-        path: "teammember/edit-item/:id",
+        path: "/detailInformation/:id",
+         element: <MemberDetails />,
+        
+      },
+       {
+        path: "teammember/detail/:id",
         
       },
       {

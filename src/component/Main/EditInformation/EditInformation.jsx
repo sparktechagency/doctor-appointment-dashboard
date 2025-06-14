@@ -297,7 +297,7 @@ const UpdateTeamForm = () => {
     <div className="w-full px-4 py-6">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <Link to="/team">
+          <Link to="/about">
             <IoChevronBack className="text-2xl" />
           </Link>
           <h1 className="text-2xl font-semibold">Update Team Member</h1>

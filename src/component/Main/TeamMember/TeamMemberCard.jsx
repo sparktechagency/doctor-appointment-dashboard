@@ -4,58 +4,65 @@ import { Modal } from "antd";
 import { toast } from "sonner";
 import { useDeleteTeamMemberMutation } from "../../../redux/features/product/teamApi";
 import { BASE_URL } from "../../../utils/constants";
-const TeamMemberCard = ({ product }) => {
-  const [deleteProduct] = useDeleteTeamMemberMutation();
 
-  const showDeleteConfirm = (productId) => {
+const TeamMemberCard = ({ product }) => {
+  const [deleteTeamMember] = useDeleteTeamMemberMutation();
+
+  const showDeleteConfirm = (memberId) => {
     Modal.confirm({
-      title: "Delete Product",
-      content: "Are you sure you want to delete this product?",
+      title: "Delete Team Member",
+      content: "Are you sure you want to delete this team member?",
       okText: "Delete",
       okType: "danger",
       cancelText: "Cancel",
       centered: true,
       onOk: async () => {
         try {
-          await deleteProduct(productId).unwrap();
-          toast.success("Product deleted successfully");
+          await deleteTeamMember(memberId).unwrap();
+          toast.success("Team member deleted successfully");
         } catch (error) {
-          toast.error(error?.data?.message || "Failed to delete product");
+          toast.error(error?.data?.message || "Failed to delete team member");
         }
       },
     });
   };
 
-
   const imageUrl = product?.profileImage
-    ? `${BASE_URL }${product.profileImage}`
-    : `${BASE_URL }${product.profileImage}`;
+    ? `${BASE_URL}${product.profileImage}`
+    : "/default-profile.png";
 
-console.log("product",product)
   return (
     <div className="bg-[#D5EDFF] rounded-lg shadow-md overflow-hidden border border-gray-200">
-      <div className="h-55 p-1 bg-[#D5EDFF] flex items-center justify-center overflow-hidden">
+      {/* Image container with fixed size */}
+      <div className="w-full h-48 bg-[#D5EDFF] flex items-center justify-center overflow-hidden">
         <img
-          src={imageUrl }
-          alt={product?.name}
-          className="relative bg-[#D5EDFF] rounded-t-2xl overflow-hidden"
+          src={imageUrl}
+          alt={product?.fullName}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.currentTarget.src = "/default-profile.png";
+          }}
         />
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+        <Link to={`/detailInformation/${product.id}`}>
+          <h3 className="font-semibold text-lg mb-1 hover:text-blue-600 transition-colors">
+            {product.fullName}
+          </h3>
+        </Link>
         <p className="text-gray-600 text-sm mb-3">
-          {product.description || "No description available"}
+          {product.designation || "No description available"}
         </p>
 
         <div className="flex justify-between">
-        
           <Link
             to={`/editInformation/${product.id}`}
-            className="px-6 py-1 bg-[#77C4FE] text-white rounded hover:bg-primary-dark transition"
+            className="px-6 py-1 bg-[#77C4FE] text-white rounded hover:bg-blue-600 transition"
           >
             Edit
-          </Link>  <button
+          </Link>
+          <button
             onClick={() => showDeleteConfirm(product.id)}
             className="px-6 py-1 border border-[#77C4FE] text-[#77C4FE] rounded hover:bg-red-50 transition"
           >
@@ -70,11 +77,9 @@ console.log("product",product)
 TeamMemberCard.propTypes = {
   product: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    image: PropTypes.shape({
-      url: PropTypes.string,
-    }),
+    fullName: PropTypes.string.isRequired,
+    designation: PropTypes.string,
+    profileImage: PropTypes.string,
   }).isRequired,
 };
 

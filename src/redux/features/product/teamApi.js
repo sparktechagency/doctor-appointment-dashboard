@@ -35,7 +35,7 @@ const teamApi = baseApi.injectEndpoints({
         },
       }),
       providesTags: ["Teams"],
-      transformResponse: (response) => response?.data?.attributes.team,
+      transformResponse: (response) => response,
     }),
     updateTeamMember: builder.mutation({
       query: ({ id, data }) => ({
