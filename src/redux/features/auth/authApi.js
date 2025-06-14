@@ -72,6 +72,15 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    updateUser: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: `/users/self/update`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ['User'], // Optional: if you're using tags for caching
+    }),
+ 
   }),
 });
 
@@ -81,5 +90,5 @@ export const {
   useLogoutMutation,
   useForgotPasswordMutation,
   useVerifyEmailMutation,useGetPrivacyPolicyQuery,useGetTermsConditionQuery, useGetAboutUsQuery,
-  useResetPasswordMutation,  useChangePasswordMutation,
+  useResetPasswordMutation,  useChangePasswordMutation,useUpdateUserMutation,
 } = authApi;

@@ -3,14 +3,15 @@ import { FaArrowRightArrowLeft } from "react-icons/fa6";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { BASE_URL } from "../../../utils/constants";
 const { Meta } = Card;
 
 const AboutProfile = () => {
     const { user } = useSelector((state) => state.auth);
     console.log(user)
 
-  const  imageBaseUrl = 'http://10.0.60.18:6060'
- const profileImageUrl = `${imageBaseUrl}${user?.profileImage}`;
+  
+ const profileImageUrl = `${BASE_URL}${user?.profileImage}`;
 
   return (
     <div>
