@@ -1,10 +1,9 @@
-
-import { Button, Form, Input, Modal, Radio, Select, DatePicker, Upload, message } from "antd";
+import { Button, Form, Input, Modal, Radio, Select, DatePicker, Upload, message,Checkbox } from "antd";
 import { UploadOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { IoChevronBack } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUpdateTeamMemberMutation, useGetTeamMemberByIdQuery } from "../../../redux/features/product/teamApi";
 import { BASE_URL } from "../../../utils/constants";
@@ -14,6 +13,7 @@ const { Option } = Select;
 
 const UpdateTeamForm = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data: teamMember, isLoading: isTeamMemberLoading } = useGetTeamMemberByIdQuery(id);
   const [updateTeamMember, { isLoading }] = useUpdateTeamMemberMutation();
   const { user } = useSelector((state) => state.auth);
@@ -34,27 +34,37 @@ const UpdateTeamForm = () => {
   const [isExperienceModalVisible, setIsExperienceModalVisible] = useState(false);
   const [isAchievementModalVisible, setIsAchievementModalVisible] = useState(false);
 
+  // Helper function to get full image URL
+  const getFullImageUrl = (path) => {
+    if (!path) return "https://via.placeholder.com/128";
+    if (path.startsWith("http") || path.startsWith("blob:")) return path;
+    return `${BASE_URL}/${path}`;
+  };
+console.log
   useEffect(() => {
     if (teamMember) {
+      const memberData = teamMember.data?.attributes.team || teamMember;
+      
       form.setFieldsValue({
-        firstName: teamMember.firstName,
-        lastName: teamMember.lastName,
-        designation: teamMember.designation,
-        specialties: teamMember.specialties,
-        about: teamMember.about,
-        callingCode: teamMember.callingCode || "+880",
-        phoneNumber: teamMember.phoneNumber,
-        email: teamMember.email,
-        facebook: teamMember.media?.facebook,
-        instagram: teamMember.media?.instagram,
-        linkedin: teamMember.media?.linkedin,
-        X: teamMember.media?.X,
+        firstName: memberData.firstName,
+        lastName: memberData.lastName,
+        designation: memberData.designation,
+        specialties: memberData.specialties,
+        about: memberData.about,
+        callingCode: memberData.callingCode || "+880",
+        phoneNumber: memberData.phoneNumber,
+        email: memberData.email,
+        facebook: memberData.media?.facebook,
+        instagram: memberData.media?.instagram,
+        linkedin: memberData.media?.linkedin,
+        X: memberData.media?.X,
+        isAdmin: memberData.isAdmin || false
       });
 
-      setProfileImagePreview(teamMember.profileImage);
+      setProfileImagePreview(getFullImageUrl(memberData.profileImage));
 
       setEducationItems(
-        teamMember.degrees?.map((deg, index) => ({
+        memberData.degrees?.map((deg, index) => ({
           id: index + 1,
           institution: deg.school,
           degree: deg.degree,
@@ -69,7 +79,7 @@ const UpdateTeamForm = () => {
       );
 
       setExperienceItems(
-        teamMember.experience?.map((exp, index) => ({
+        memberData.experience?.map((exp, index) => ({
           id: index + 1,
           company: exp.company,
           position: exp.title,
@@ -84,7 +94,7 @@ const UpdateTeamForm = () => {
       );
 
       setAchievementItems(
-        teamMember.achievements?.map((ach, index) => ({
+        memberData.achievements?.map((ach, index) => ({
           id: index + 1,
           award: ach.title,
           date: ach.date,
@@ -100,8 +110,9 @@ const UpdateTeamForm = () => {
     try {
       setUploading(true);
       setProfileImageFile(file);
-      setProfileImagePreview(URL.createObjectURL(file));
-      onSuccess({ url: URL.createObjectURL(file) }, file);
+      const previewUrl = URL.createObjectURL(file);
+      setProfileImagePreview(previewUrl);
+      onSuccess({ url: previewUrl }, file);
       message.success(`${file.name} file selected for upload`);
     } catch (error) {
       onError(error);
@@ -114,10 +125,13 @@ const UpdateTeamForm = () => {
   const onFinish = async (values) => {
     try {
       const formData = new FormData();
+      
+      // Append profile image if a new one was selected
       if (profileImageFile) {
-        formData.append("profileImage", profileImageFile);
+        formData.append('profileImage', profileImageFile);
       }
 
+      // Prepare the team member data
       const teamMemberData = {
         firstName: values.firstName,
         lastName: values.lastName,
@@ -126,13 +140,14 @@ const UpdateTeamForm = () => {
         specialties: values.specialties,
         about: values.about,
         callingCode: values.callingCode || "+880",
-        phoneNumber: parseInt(values.phoneNumber, 10),
+        phoneNumber: values.phoneNumber,
         email: values.email,
+        isAdmin: values.isAdmin || false,
         media: {
-          facebook: values.facebook,
-          instagram: values.instagram,
-          linkedin: values.linkedin,
-          X: values.X,
+          facebook: values.facebook || '',
+          instagram: values.instagram || '',
+          linkedin: values.linkedin || '',
+          X: values.X || '',
         },
         degrees: educationItems.map((item) => ({
           school: item.institution,
@@ -164,21 +179,28 @@ const UpdateTeamForm = () => {
         })),
       };
 
-      formData.append("data", JSON.stringify(teamMemberData));
+      // Append the data to formData
+      formData.append('data', JSON.stringify(teamMemberData));
 
       const response = await updateTeamMember({ id, data: formData }).unwrap();
+      
       if (response.code === 200) {
         message.success("Team member updated successfully!");
-        setProfileImageFile(null);
-        setProfileImagePreview(response.data?.profileImage || profileImagePreview);
+        // Update the profile image preview if a new image was uploaded
+        if (profileImageFile) {
+          setProfileImagePreview(getFullImageUrl(response.data?.attributes?.profileImage));
+        }
+        navigate('/teammember'); // Redirect after successful update
       } else {
         message.error(response.message || "Failed to update team member");
       }
     } catch (error) {
+      console.error("Update error:", error);
       message.error(error.data?.message || "Failed to update team member");
     }
   };
 
+  // Education form handlers
   const onEducationFinish = (values) => {
     const newId = Math.max(...educationItems.map((item) => item.id), 0) + 1;
     setEducationItems([
@@ -201,6 +223,7 @@ const UpdateTeamForm = () => {
     message.success("Education added successfully!");
   };
 
+  // Experience form handlers
   const onExperienceFinish = (values) => {
     const newId = Math.max(...experienceItems.map((item) => item.id), 0) + 1;
     setExperienceItems([
@@ -223,6 +246,7 @@ const UpdateTeamForm = () => {
     message.success("Experience added successfully!");
   };
 
+  // Achievement form handlers
   const onAchievementFinish = (values) => {
     const newId = Math.max(...achievementItems.map((item) => item.id), 0) + 1;
     setAchievementItems([
@@ -255,12 +279,6 @@ const UpdateTeamForm = () => {
     message.success("Achievement deleted successfully!");
   };
 
-  const getFullImageUrl = (path) => {
-    if (!path) return "https://via.placeholder.com/128";
-    if (path.startsWith("http") || path.startsWith("blob:")) return path;
-    return `${BASE_URL}/${path.replace(/^\/+/, "")}`;
-  };
-
   const uploadProps = {
     name: "profileImage",
     multiple: false,
@@ -290,14 +308,14 @@ const UpdateTeamForm = () => {
   };
 
   if (isTeamMemberLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center py-10">Loading team member data...</div>;
   }
 
   return (
     <div className="w-full px-4 py-6">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <Link to="/about">
+          <Link to="/team">
             <IoChevronBack className="text-2xl" />
           </Link>
           <h1 className="text-2xl font-semibold">Update Team Member</h1>
@@ -310,7 +328,7 @@ const UpdateTeamForm = () => {
             <div className="w-32 h-32 rounded-full bg-[#D9D9D9] overflow-hidden">
               <img
                 className="w-full h-full object-cover"
-                src={getFullImageUrl(profileImagePreview)}
+                src={profileImagePreview}
                 alt="Profile"
                 onError={(e) => {
                   e.target.src = "https://via.placeholder.com/128";
@@ -411,6 +429,14 @@ const UpdateTeamForm = () => {
             </Form.Item>
           </div>
 
+          {/* Admin Checkbox */}
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <Form.Item name="isAdmin" valuePropName="checked" className="mb-0">
+              <Checkbox className="text-lg">Is Admin</Checkbox>
+            </Form.Item>
+          </div>
+
+          {/* Education Section */}
           <div className="space-y-4 mt-8">
             <div className="flex items-center justify-between">
               <div>
@@ -472,6 +498,7 @@ const UpdateTeamForm = () => {
             ))}
           </div>
 
+          {/* Experience Section */}
           <div className="space-y-4 mt-8">
             <div className="flex items-center justify-between">
               <div>
@@ -536,6 +563,7 @@ const UpdateTeamForm = () => {
             ))}
           </div>
 
+          {/* Achievements Section */}
           <div className="space-y-4 mt-8">
             <div className="flex items-center justify-between">
               <div>
@@ -591,6 +619,7 @@ const UpdateTeamForm = () => {
           </Form.Item>
         </Form>
 
+        {/* Education Modal */}
         <Modal
           title="Add Education"
           open={isEducationModalVisible}
@@ -671,6 +700,7 @@ const UpdateTeamForm = () => {
           </Form>
         </Modal>
 
+        {/* Experience Modal */}
         <Modal
           title="Add Experience"
           open={isExperienceModalVisible}
@@ -749,6 +779,7 @@ const UpdateTeamForm = () => {
           </Form>
         </Modal>
 
+        {/* Achievement Modal */}
         <Modal
           title="Add Achievement"
           open={isAchievementModalVisible}

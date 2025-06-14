@@ -18,7 +18,7 @@ const Subscriptions = () => {
           <Link to="/dashboard" className="mr-2">
             <MdKeyboardArrowLeft size={24} />
           </Link>
-          Subscriptions
+          Price
         </h1>
         <Link
           to="/subscriptions/add-item"

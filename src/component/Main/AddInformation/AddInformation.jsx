@@ -1,9 +1,9 @@
-import { Button, Form, Input, Modal, Radio, Select, DatePicker, Upload, message } from "antd";
+import { Button, Form, Input, Modal, Radio, Select, DatePicker, Upload, message, Checkbox  } from "antd";
 import { UploadOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { IoChevronBack } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCreateTeamMemberMutation } from "../../../redux/features/product/teamApi";
 import moment from "moment";
@@ -13,6 +13,7 @@ const { Option } = Select;
 const AddInformation = () => {
   const { user } = useSelector((state) => state.auth);
   const [form] = Form.useForm();
+    const navigate = useNavigate();
   const [educationForm] = Form.useForm();
   const [experienceForm] = Form.useForm();
   const [achievementForm] = Form.useForm();
@@ -102,7 +103,7 @@ const AddInformation = () => {
       formData.append('callingCode', values.callingCode || "+880");
       formData.append('phoneNumber', values.phoneNumber);
       formData.append('email', values.email);
-      
+       formData.append('isAdmin', values.isAdmin);
       // Append media links
       formData.append('media[facebook]', values.facebook || '');
       formData.append('media[instagram]', values.instagram || '');
@@ -165,6 +166,7 @@ const AddInformation = () => {
         setAchievementItems([]);
         setProfileImageFile(null);
         setProfileImagePreview(null);
+        navigate('/teammember'); 
       } else {
         message.error(response.message || "Failed to create team member");
       }
@@ -578,6 +580,15 @@ const AddInformation = () => {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="">
+             <Form.Item 
+          name="isAdmin"
+          valuePropName="checked"
+          initialValue={false}
+        >
+          <Checkbox>Is Admin</Checkbox>
+        </Form.Item>
           </div>
 
        <Form.Item className="flex justify-end mt-8">

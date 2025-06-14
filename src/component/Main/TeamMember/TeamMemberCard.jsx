@@ -47,7 +47,7 @@ const TeamMemberCard = ({ product }) => {
 
       <div className="p-4">
         <Link to={`/detailInformation/${product.id}`}>
-          <h3 className="font-semibold text-lg mb-1 hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-lg mb-1 hover:[#77C4FE] transition-colors">
             {product.fullName}
           </h3>
         </Link>
@@ -58,7 +58,7 @@ const TeamMemberCard = ({ product }) => {
         <div className="flex justify-between">
           <Link
             to={`/editInformation/${product.id}`}
-            className="px-6 py-1 bg-[#77C4FE] text-white rounded hover:bg-blue-600 transition"
+            className="px-6 py-1 bg-[#77C4FE] text-white rounded hover:bg-[#77C4FE] transition"
           >
             Edit
           </Link>
