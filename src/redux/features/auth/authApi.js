@@ -80,9 +80,18 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['User'], // Optional: if you're using tags for caching
     }),
- 
+ getUser: builder.query({
+  query: () => ({
+    url: `/users/self/in`,
+    method: "GET",
   }),
-});
+  providesTags: ['User'], // Changed from invalidatesTags to providesTags for queries
+})
+  }),
+
+
+  })
+
 
 export const {
   useLoginMutation,
@@ -90,5 +99,5 @@ export const {
   useLogoutMutation,
   useForgotPasswordMutation,
   useVerifyEmailMutation,useGetPrivacyPolicyQuery,useGetTermsConditionQuery, useGetAboutUsQuery,
-  useResetPasswordMutation,  useChangePasswordMutation,useUpdateUserMutation,
+  useResetPasswordMutation,  useChangePasswordMutation,useUpdateUserMutation,useGetUserQuery
 } = authApi;

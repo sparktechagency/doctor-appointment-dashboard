@@ -1,12 +1,12 @@
 import { IoChevronBack } from "react-icons/io5";
-import { useSelector, useDispatch } from "react-redux";
+import {  useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
 import { logoutUser } from "../../../redux/features/auth/authSlice";
 import { BASE_URL } from "../../../utils/constants";
-
+import { useGetUserQuery } from "../../../redux/features/auth/authApi";
 const PersonalInformation = () => {
-  const { user } = useSelector((state) => state.auth);
+    const [user, { isLoading }] = useGetUserQuery();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
