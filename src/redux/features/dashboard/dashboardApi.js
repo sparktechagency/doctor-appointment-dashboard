@@ -30,12 +30,80 @@ const dashboardApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response) => response?.data?.attributes?.results,
     }),
+    getAllUsers: builder.query({
+      query: (params = {}) => {
+        const queryParams = new URLSearchParams();
+        
+        if (params.date) {
+          queryParams.append('date', params.date);
+        }
+        if (params.userName) {
+          queryParams.append('userName', params.userName);
+        }
+        if (params.page) {
+          queryParams.append('page', params.page);
+        }
+        
+        return {
+          url: `admin/users?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
+      transformResponse: (response) => response?.data?.attributes,
+    }),
+ getAppointments: builder.query({
+      query: (params = {}) => {
+        const queryParams = new URLSearchParams();
+        
+        if (params.date) {
+          queryParams.append('date', params.date);
+        }
+        if (params.patientName) {
+          queryParams.append('patientName', params.patientName);
+        }
+        if (params.page) {
+          queryParams.append('page', params.page);
+        }
+        if (params.status) {
+          queryParams.append('status', params.status);
+        }
+        
+        return {
+          url: `appointment/admin/lists?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
+      transformResponse: (response) => response?.data?.attributes,
+    }),
+   getEarnings: builder.query({
+      query: (params = {}) => {
+        const queryParams = new URLSearchParams();
+        
+        if (params.date) {
+          queryParams.append('createdAt', params.date);
+        }
+        if (params.page) {
+          queryParams.append('page', params.page);
+        }
+        if (params.status) {
+          queryParams.append('status', params.status);
+        }
+        
+        return {
+          url: `admin/earnings?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
+      transformResponse: (response) => response?.data?.attributes,
+    }),
   }),
+  
 });
 
 export const { 
   useGetDashboardStatusQuery, 
   useGetIncomeRatioQuery,
   useGetUserRatioQuery,
-  useGetRecentAppointmentsQuery 
+  useGetRecentAppointmentsQuery,  useGetAppointmentsQuery,useGetEarningsQuery,
+  useGetAllUsersQuery
 } = dashboardApi;

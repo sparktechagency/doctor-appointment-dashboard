@@ -1,169 +1,54 @@
 import {
-    ConfigProvider,
-    DatePicker,
-    Form,
-    Input,
-    Modal,
-    Space,
-    Table,
+  ConfigProvider,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Space,
+  Table,
 } from "antd";
 import moment from "moment";
 import { useState } from "react";
 import { BsInfoCircle } from "react-icons/bs";
 import { IoIosSearch } from "react-icons/io";
-// import { useGetAllUsersQuery } from "../../../redux/features/user/userApi";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
+import { useGetAllUsersQuery } from "../../../redux/features/dashboard/dashboardApi";
 
 const { Item } = Form;
 
 const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [params, setParams] = useState([]);
   const [date, setDate] = useState("");
-  // const [allUser, setAllUser] = useState([]);
-  const [user, setUser] = useState(null);
-  // const { data, isFetching, isError, error } = useGetAllUsersQuery(params);
+  const [searchParams, setSearchParams] = useState({});
+  const [selectedUser, setSelectedUser] = useState(null);
+  
+  const { data: usersData, isFetching } = useGetAllUsersQuery({
+    ...searchParams,
+    page: currentPage
+  });
 
   const handleView = (record) => {
-    console.log(record);
-    setUser(record);
+    setSelectedUser(record);
     setIsModalOpen(true);
   };
 
-  const AllUserData = [
-    {
-      id: 1,
-      fullName: "John Doe",
-      email: "john.doe@example.com",
-      address_line1: "123 Main St, Springfield",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "123-456-7890",
-      createdAt: "2023-01-15T10:15:30Z",
-    },
-    {
-      id: 2,
-      fullName: "Jane Smith",
-      email: "jane.smith@example.com",
-      address_line1: "456 Oak St, Metropolis",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "987-654-3210",
-      createdAt: "2023-02-20T14:45:00Z",
-    },
-    {
-      id: 3,
-      fullName: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      address_line1: "789 Maple Ave, Gotham",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "456-123-7890",
-      createdAt: "2023-03-12T09:30:15Z",
-    },
-    {
-      id: 4,
-      fullName: "Bob Brown",
-      email: "bob.brown@example.com",
-      address_line1: "321 Elm St, Star City",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "321-654-0987",
-      createdAt: "2023-04-10T11:20:45Z",
-    },
-    {
-      id: 5,
-      fullName: "Cathy White",
-      email: "cathy.white@example.com",
-      address_line1: "654 Pine St, Central City",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "654-321-0987",
-      createdAt: "2023-05-15T13:30:50Z",
-    },
-    {
-      id: 6,
-      fullName: "David Green",
-      email: "david.green@example.com",
-      address_line1: "987 Birch St, Coast City",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "789-012-3456",
-      createdAt: "2023-06-20T08:15:10Z",
-    },
-    {
-      id: 7,
-      fullName: "Eva Black",
-      email: "eva.black@example.com",
-      address_line1: "135 Cedar St, Smallville",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "246-801-3579",
-      createdAt: "2023-07-25T16:45:30Z",
-    },
-    {
-      id: 8,
-      fullName: "Frank Blue",
-      email: "frank.blue@example.com",
-      address_line1: "246 Cherry St, Happy Town",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "135-790-8642",
-      createdAt: "2023-08-30T07:50:20Z",
-    },
-    {
-      id: 9,
-      fullName: "Grace Gray",
-      email: "grace.gray@example.com",
-      address_line1: "369 Willow St, Dreamland",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "852-963-7410",
-      createdAt: "2023-09-05T10:10:10Z",
-    },
-    {
-      id: 10,
-      fullName: "Hank Red",
-      email: "hank.red@example.com",
-      address_line1: "159 Maplewood St, Wonder City",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "963-852-7410",
-      createdAt: "2023-10-12T09:05:25Z",
-    },
-    {
-      id: 11,
-      fullName: "Frank Blue",
-      email: "frank.blue@example.com",
-      address_line1: "246 Cherry St, Happy Town",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "135-790-8642",
-      createdAt: "2023-08-30T07:50:20Z",
-    },
-    {
-      id: 12,
-      fullName: "Grace Gray",
-      email: "grace.gray@example.com",
-      address_line1: "369 Willow St, Dreamland",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "852-963-7410",
-      createdAt: "2023-09-05T10:10:10Z",
-    },
-    {
-      id: 13,
-      fullName: "Hank Red",
-      email: "hank.red@example.com",
-      address_line1: "159 Maplewood St, Wonder City",
-      image: { url: `${imageBaseUrl}/default.jpg` },
-      phone: "963-852-7410",
-      createdAt: "2023-10-12T09:05:25Z",
-    },
-  ];
+  const formatPhoneNumber = (phoneNumber, callingCode) => {
+    return callingCode ? `${callingCode} ${phoneNumber}` : phoneNumber;
+  };
 
-  const dataSource = AllUserData?.map((user, index) => ({
-    key: user.id,
-    si: index + 1,
+  const dataSource = usersData?.results?.map((user, index) => ({
+    key: user._id,
+    si: index + 1 + ((currentPage - 1) * 10),
     name: user?.fullName,
     email: user?.email,
     address: user?.address_line1,
-    image: user?.image?.url,
-    phone: user?.phone,
+    image: user?.profileImage,
+    phone: formatPhoneNumber(user?.phoneNumber, user?.callingCode),
     createdAt: user?.createdAt,
+    rawUserData: user
   }));
-
-  
 
   const columns = [
     {
@@ -175,6 +60,19 @@ const Users = () => {
       title: "User Name",
       dataIndex: "name",
       key: "name",
+      render: (text, record) => (
+        <div className="flex items-center">
+          <img
+            className="w-8 h-8 rounded-full mr-2"
+            src={`${imageBaseUrl}${record.image}`}
+            alt="avatar"
+            onError={(e) => {
+              e.target.src = "https://randomuser.me/api/portraits/men/1.jpg";
+            }}
+          />
+          {text}
+        </div>
+      ),
     },
     {
       title: "Email",
@@ -208,139 +106,132 @@ const Users = () => {
   ];
 
   const onFinish = (values) => {
-    let queryParams = [];
-    const { username } = values;
+    const params = {};
+    
     if (date) {
-      queryParams.push({ name: "date", value: date });
+      params.date = date;
     }
-    if (username) {
-      queryParams.push({ name: "userName", value: username });
+    if (values.username) {
+      params.userName = values.username;
     }
-    // setParams(queryParams);
+    
+    setSearchParams(params);
+    setCurrentPage(1);
   };
 
   const handleDate = (date, dateString) => {
     setDate(dateString);
   };
-  // useEffect(() => {
-  //   if (isError && error) {
-  //     setAllUser([]);
-  //   } else if (data) {
-  //     setAllUser(data?.data?.attributes?.user?.results);
-  //   }
-  // }, [data, isError, error]);
 
   return (
-    <section>
-      <div className="md:flex justify-between items-center ">
-        <h1 className="md:text-2xl font-semibold  py-2 flex items-center">< MdKeyboardArrowLeft/> Users List</h1>
-        <Form
-          className="flex px-3 py-[22px] justify-between items-center p-2 "
-          layout="inline"
-          onFinish={onFinish}
-        >
-          <Item>
-            <DatePicker placeholder="Date"  onChange={handleDate} />
-          </Item>
-          <Item name="username">
-            <Input placeholder="User name" />
-          </Item>
-          <Item>
-            <button className=" size-8 rounded-full flex justify-center items-center bg-[#77C4FE] text-white">
-              <IoIosSearch className="size-5" />
-            </button>
-          </Item>
-        </Form>
-      </div>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorBgContainer: "#D5EDFF",
-            colorPrimary: "#1890ff", // Custom primary color
-          },
-          components: {
-            Table: {
-              headerBg: "#77C4FE",
-              headerColor: "white",
-              headerBorderRadius: 2,
+    <section className="px-2 mt-5">
+      <div className="rounded-lg">
+        <div className="flex justify-between items-center py-5">
+          <h1 className="md:text-2xl font-semibold py-2 flex items-center">
+            <MdKeyboardArrowLeft /> Users List
+          </h1>
+          <Form
+            className="flex px-3 py-[22px] justify-between items-center p-2"
+            layout="inline"
+            onFinish={onFinish}
+          >
+            <Item>
+              <DatePicker placeholder="Date" onChange={handleDate} />
+            </Item>
+            <Item name="username">
+              <Input placeholder="User name" />
+            </Item>
+            <Item>
+              <button className="size-8 rounded-full flex justify-center items-center bg-[#77C4FE] text-white">
+                <IoIosSearch className="size-5" />
+              </button>
+            </Item>
+          </Form>
+        </div>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorBgContainer: "#D5EDFF",
+              colorPrimary: "#1890ff",
             },
-          },
-        }}
-      >
-        <Table
-          // loading={isFetching}
-          pagination={{
-            position: ["end"],
-            current: currentPage,
-            onChange: setCurrentPage,
+            components: {
+              Table: {
+                headerBg: "#77C4FE",
+                headerColor: "white",
+                headerBorderRadius: 2,
+              },
+            },
           }}
-          columns={columns}
-          dataSource={dataSource}
-          rowKey="id"
-          scroll={{ x: 800 }} 
-        />
-      </ConfigProvider>
+        >
+          <Table
+            loading={isFetching}
+            pagination={{
+              current: currentPage,
+              pageSize: usersData?.limit || 10,
+              total: usersData?.totalResults || 0,
+              onChange: setCurrentPage,
+              position: ["bottomCenter"]
+            }}
+            columns={columns}
+            dataSource={dataSource}
+            scroll={{ x: 800 }}
+          />
+        </ConfigProvider>
+      </div>
+
       <Modal
         open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
         centered
- styles={{
-    header: {
-      borderBottom: 'none',
-      paddingBottom: 0,
-    },
-    mask: {
-      backdropFilter: 'blur(3px)',
-    },
-    // This is the key part for the close button
-    close: {
-      background: '#77C4FE', // Your desired background color
-      color: 'black', // Icon color
-      top: 10,
-      insetInlineEnd: 10,
-    },
-  }}
-   closeIcon={
-    <span className="flex items-center justify-center w-10 h-10 bg-red-500 rounded-tr-lg rounded-bl-2xl ">
-      ×
-    </span>
-  
-  }
+        styles={{
+          header: {
+            borderBottom: 'none',
+            paddingBottom: 0,
+          },
+          mask: {
+            backdropFilter: 'blur(3px)',
+          },
+          close: {
+            background: '#77C4FE',
+            color: 'black',
+            top: 10,
+            insetInlineEnd: 10,
+          },
+        }}
+        closeIcon={
+          <span className="flex items-center justify-center w-10 h-10 bg-red-500 rounded-tr-lg rounded-bl-2xl">
+            ×
+          </span>
+        }
       >
         <div className="text-black bg-white">
-          {/* Main Content  <img
-            className="size-28 mx-auto rounded-full"
-            src={`${imageBaseUrl}${user?.image}`}
-            alt=""
-
-          />*/}
           <h1 className="text-center text-2xl font-semibold my-2">
             User Details
           </h1>
           <div className="p-5">
             <div className="flex justify-between py-3 border-b">
-              <p>User Name : </p>
-              <p>{user?.name || "N/A"}</p>
+              <p>User Name :</p>
+              <p>{selectedUser?.name || "N/A"}</p>
             </div>
             <div className="flex justify-between py-3 border-b">
-              <p>Email : </p>
-              <p>{user?.email || "N/A"}</p>
+              <p>Email :</p>
+              <p>{selectedUser?.email || "N/A"}</p>
             </div>
             <div className="flex justify-between py-3 border-b">
-              <p>Phone Number : </p>
-              <p>{user?.phone || "N/A"}</p>
+              <p>Phone Number :</p>
+              <p>{selectedUser?.phone || "N/A"}</p>
             </div>
             <div className="flex justify-between py-3 border-b">
-              <p>Address : </p>
-              <p>{user?.address || "N/A"}</p>
+              <p>Address :</p>
+              <p>{selectedUser?.address || "N/A"}</p>
             </div>
             <div className="flex justify-between py-3">
               <p>Joining Date :</p>
               <p>
-                {user?.createdAt
-                  ? moment(user.createdAt).format("DD MMM YYYY")
+                {selectedUser?.createdAt
+                  ? moment(selectedUser.createdAt).format("DD MMM YYYY")
                   : "N/A"}
               </p>
             </div>
