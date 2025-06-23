@@ -1,6 +1,6 @@
 import IncomeGraphChart from "../../component/Main/Dashboard/IncomeGraphChart";
 // import Piechart from "../../component/Main/Dashboard/Piechart";
-import RecentTransactions from "../../component/Main/Dashboard/RecentTransactions";
+import RecentAppoinment from "../../component/Main/Dashboard/RecentAppoinment";
 import Status from "../../component/Main/Dashboard/Status";
 import UserGraphChart from "../../component/Main/Dashboard/UserGraphchart";
 const DashboardHome = () => {
@@ -15,7 +15,7 @@ const DashboardHome = () => {
         </div>
         {/* <Piechart/> */}
         </div>
-        <RecentTransactions />
+        <RecentAppoinment/>
       </div>
     </section>
   );

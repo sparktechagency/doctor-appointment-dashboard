@@ -2,61 +2,30 @@ import { useState } from "react";
 import { Modal, Space, Table, ConfigProvider } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
+import {  useGetRecentAppointmentsQuery  } from "../../../redux/features/dashboard/dashboardApi";
 
 const RecentTransactions = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  const data = [
-    {
-      key: "1",
-      transactionId: "12345678",
-      PatientName: "Enrique",
-      Email: "example@gmail.com",
-      Phone: "01317597092",
-      date: "16 Apr 2024"
-    },
-    {
-      key: "2",
-      transactionId: "12345678",
-      PatientName: "Enrique",
-      Email: "example@gmail.com",
-      Phone: "01317597092",
-      date: "16 Apr 2024"
-    },
-    {
-      key: "3",
-      transactionId: "12345678",
-      PatientName: "Enrique",
-      Email: "example@gmail.com",
-      Phone: "01317597092",
-      date: "16 Apr 2024"
-    },
-    {
-      key: "4",
-      transactionId: "12345678",
-      PatientName: "Enrique",
-      Email: "example@gmail.com",
-      Phone: "01317597092",
-      date: "16 Apr 2024"
-    },
-    {
-      key: "5",
-      transactionId: "12345678",
-      PatientName: "Enrique",
-      Email: "example@gmail.com",
-      Phone: "01317597092",
-      date: "16 Apr 2024"
-    }
-    // {
-    //   key: "6",
-    //   transactionId: "12345679",
-    //   userName: "Enrique",
-    //   boxPackage: "John Doe",
-    //   amount: "$230",
-    //   date: "15 Apr 2024",
-    // },
-  ];
+  // Fetch appointments data using RTK Query
+  const { data: appointmentsData, isLoading } =  useGetRecentAppointmentsQuery ({
+    sortBy: "createdAt:desc"
+  });
+
+  // Transform the API data to match the table structure
+  const data = appointmentsData?.map((appointment, index) => ({
+    key: appointment._id || index,
+    transactionId: appointment.appointmentId,
+    PatientName: appointment.patientName,
+    Email: appointment.patientEmail,
+    Phone: appointment.patientPhone,
+    date: appointment.date,
+    status: appointment.status,
+    isPaid: appointment.isPaid,
+    paymentDetails: appointment.paymentDetails,
+    _id: appointment._id
+  })) || [];
 
   const showModal = (transaction) => {
     setSelectedTransaction(transaction);
@@ -95,6 +64,7 @@ const RecentTransactions = () => {
       key: "date",
       render: (text) => (text ? moment(text).format("DD MMM YYYY") : "N/A")
     },
+    
     {
       title: "Action",
       key: "action",
@@ -110,19 +80,19 @@ const RecentTransactions = () => {
   ];
 
   return (
-    <div className="w-full col-span-full md:col-span-6  rounded-lg  ">
-      <h2 className="font-semibold py-3 pl-5">Recent Transactions</h2>
+    <div className="w-full col-span-full md:col-span-6 rounded-lg">
+      <h2 className="font-semibold py-3 pl-5">Recent Appointments</h2>
       <ConfigProvider
         theme={{
           token: {
             colorBgContainer: "#3780f9",
-            colorPrimary: "" // Custom primary color
+            colorPrimary: ""
           },
           components: {
             Table: {
               colorBgContainer: "",
-              colorFillAlter: "#77C4FE", // Table header background color
-              colorTextHeading: "#ffffff", // Header text color for contrast 
+              colorFillAlter: "#77C4FE",
+              
             }
           }
         }}
@@ -132,6 +102,7 @@ const RecentTransactions = () => {
           dataSource={data}
           pagination={false}
           scroll={{ x: 800 }}
+          loading={isLoading}
         />
       </ConfigProvider>
 
@@ -145,20 +116,20 @@ const RecentTransactions = () => {
       >
         <div className="text-black p-2">
           <h1 className="text-center text-xl font-semibold my-2 text-gray-500">
-            Transaction Details
+            Appointment Details
           </h1>
           <div className="p-5">
             <div className="flex justify-between py-3 border-t-2 border-gray-400">
-              <p>Transaction ID :</p>
+              <p>Appointment ID:</p>
               <p>{selectedTransaction?.transactionId || "N/A"}</p>
             </div>
 
             <div className="flex justify-between py-3 border-t-2 border-gray-400">
-              <p>User name :</p>
+              <p>Patient name:</p>
               <p>{selectedTransaction?.PatientName || "N/A"}</p>
             </div>
             <div className="flex justify-between py-3 border-t-2 border-gray-400">
-              <p>Email :</p>
+              <p>Email:</p>
               <p>{selectedTransaction?.Email || "N/A"}</p>
             </div>
             <div className="flex justify-between py-3 border-t-2 border-gray-400">
@@ -171,6 +142,24 @@ const RecentTransactions = () => {
                 {selectedTransaction?.date
                   ? moment(selectedTransaction.date).format("DD MMM YYYY")
                   : "N/A"}
+              </p>
+            </div>
+            <div className="flex justify-between py-3 border-t-2 border-gray-400">
+              <p>Status:</p>
+              <p className={`px-2 py-1 rounded-full text-xs ${
+                selectedTransaction?.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                selectedTransaction?.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                'bg-red-100 text-red-800'
+              }`}>
+                {selectedTransaction?.status || "N/A"}
+              </p>
+            </div>
+            <div className="flex justify-between py-3 border-t-2 border-gray-400">
+              <p>Payment Status:</p>
+              <p className={`px-2 py-1 rounded-full text-xs ${
+                selectedTransaction?.isPaid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+              }`}>
+                {selectedTransaction?.isPaid ? "Paid" : "Unpaid"}
               </p>
             </div>
           </div>

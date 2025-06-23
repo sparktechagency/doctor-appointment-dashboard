@@ -9,7 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-// import { useGetIncomeRatioQuery } from "../../../redux/features/dashboard/dashboardApi";
+import { useGetIncomeRatioQuery } from "../../../redux/features/dashboard/dashboardApi";
 import { useState } from "react";
 import dayjs from "dayjs";
 
@@ -18,7 +18,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div className="custom-tooltip bg-white p-2 border border-gray-300 rounded shadow-lg">
         <p className="label font-semibold">{`Month: ${label}`}</p>
-        <p className="intro">{`Total Income: $${payload[0].value.toLocaleString()}`}</p>
+        <p className="intro">{`Total Income: $${payload[0].value.toFixed(2)}`}</p>
       </div>
     );
   }
@@ -26,27 +26,14 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const IncomeGraphChart = () => {
-  const incomeData = [
-    { month: "Jan", totalEarnings: 1500 },
-    { month: "Feb", totalEarnings: 2000 },
-    { month: "Mar", totalEarnings: 1800 },
-    { month: "Apr", totalEarnings: 2200 },
-    { month: "May", totalEarnings: 2500 },
-    { month: "June", totalEarnings: 2400 },
-    { month: "Jul", totalEarnings: 2100 },
-    { month: "Aug", totalEarnings: 2300 },
-    { month: "Sep", totalEarnings: 2600 },
-    { month: "Oct", totalEarnings: 2800 },
-    { month: "Nov", totalEarnings: 3000 },
-    { month: "Dec", totalEarnings: 3200 },
-  ];
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  // const { data: incomeData } = useGetIncomeRatioQuery(selectedYear);
+  const { data: incomeData } = useGetIncomeRatioQuery(selectedYear);
 
-  const chartData = incomeData?.map((monthData) => ({
+  // Format the data for the chart
+  const chartData = incomeData?.monthlyIncomeRatio?.map((monthData) => ({
     month: monthData.month,
     income: monthData.totalEarnings,
-  }));
+  })) || [];
 
   const handleDateChange = (date) => {
     if (date) {
@@ -55,7 +42,7 @@ const IncomeGraphChart = () => {
   };
 
   return (
-    <section className="w-full col-span-full md:col-span-4  px-5 rounded-lg bg-[#FFFFFF] shadow-md">
+    <section className="w-full col-span-full md:col-span-4 px-5 rounded-lg bg-[#FFFFFF] shadow-md">
       <div className="flex justify-between items-center py-3">
         <h1 className="font-semibold">Income Ratio</h1>
         <DatePicker
