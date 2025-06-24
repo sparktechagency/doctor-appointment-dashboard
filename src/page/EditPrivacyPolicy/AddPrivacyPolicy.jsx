@@ -1,4 +1,4 @@
-import { Form, message, Spin } from "antd";
+import { Form, message } from "antd";
 import { useEffect, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import ReactQuill from "react-quill";
@@ -14,23 +14,13 @@ const AddPrivacyPolicy = () => {
 
   useEffect(() => {
     if (privacyPolicyData) {
-      // Remove <p> tags from existing content
-      const rawContent = privacyPolicyData.content
-        ?.replace(/<p>/g, '')
-        ?.replace(/<\/p>/g, '') || "";
-      setContent(rawContent);
-      form.setFieldsValue({ content: rawContent });
+      setContent(privacyPolicyData.content || "");
     }
-  }, [privacyPolicyData, form]);
+  }, [privacyPolicyData]);
 
   const handleSubmit = async () => {
     try {
-      // Remove <p> tags before submitting
-      const cleanedContent = content
-        .replace(/<p>/g, '')
-        .replace(/<\/p>/g, '');
-      
-      await addPrivacyPolicy({ content: cleanedContent }).unwrap();
+      await addPrivacyPolicy({ content }).unwrap();
       message.success("Privacy Policy updated successfully");
     } catch (error) {
       message.error("Failed to update Privacy Policy");
@@ -38,17 +28,8 @@ const AddPrivacyPolicy = () => {
     }
   };
 
-  if (isLoading) return (
-    <div className="flex justify-center items-center min-h-screen">
-      <Spin size="large" />
-    </div>
-  );
-  
-  if (isError) return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="text-red-500">Error loading Privacy Policy</div>
-    </div>
-  );
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading Privacy Policy</div>;
 
   return (
     <section className="w-full h-full min-h-screen">
@@ -65,6 +46,7 @@ const AddPrivacyPolicy = () => {
       {/* Form Section */}
       <div className="w-full p-6 rounded-lg shadow-md bg-white">
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
+          {/* React Quill for Privacy Policy Content */}
           <Form.Item name="content">
             <ReactQuill
               value={content}
@@ -88,6 +70,7 @@ const AddPrivacyPolicy = () => {
             />
           </Form.Item>
 
+          {/* Update Button */}
           <div className="w-full flex justify-end mt-16">
             <button 
               type="submit" 

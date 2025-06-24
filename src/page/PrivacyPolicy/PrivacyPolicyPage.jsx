@@ -9,7 +9,8 @@ const PrivacyPolicyPage = () => {
 
   // Extract the privacy policy content from the API response
   const policyContent = data?.data?.attributes?.[0]?.content || "";
-
+const policyContentid = data?.data?.attributes?.[0]
+console.log(policyContentid)
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -40,12 +41,33 @@ const PrivacyPolicyPage = () => {
           </Link>
           <h1 className="text-2xl font-semibold">Privacy Policy</h1>
         </div>
-        <Link to={'/settings/edit-privacy-policy/11'}>
+
+         {policyContent ? (
+          <div className="prose max-w-none">
+          
+              <Link to={`/settings/edit-privacy-policy/${policyContentid._id}`}>
           <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-secondary text-white hover:bg-secondary-dark transition-colors">
             <TbEdit className="size-5" />
             <span>Edit</span>
           </button>
         </Link>
+          </div>
+
+        ) : (
+        <div>
+
+   
+          <Link to={`/settings/edit-privacy-policy/Add`}>
+          <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-secondary text-white hover:bg-secondary-dark transition-colors">
+            <TbEdit className="size-5" />
+            <span>Add</span>
+          </button>
+        </Link>
+      
+      
+          <p className="text-gray-500">No privacy policy content available.</p> </div>
+        )}
+         
       </div>
 
       {/* Privacy Policy Content */}

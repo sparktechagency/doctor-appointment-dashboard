@@ -157,7 +157,7 @@ const Users = () => {
             components: {
               Table: {
                 headerBg: "#77C4FE",
-                headerColor: "white",
+             
                 headerBorderRadius: 2,
               },
             },

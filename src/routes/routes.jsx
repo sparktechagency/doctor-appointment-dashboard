@@ -35,6 +35,7 @@ import Faq from "../component/Main/Faq/Faq";
 import AddFaqPage from "../page/AddFaq/AddFaq";
 import EditFaq from "../component/Main/EditFaq/EditFaq";
 import MemberDetails from "../component/Main/TeamMember/MemberDetails";
+import AddPrivacyPolicy from "../page/EditPrivacyPolicy/AddPrivacyPolicy";
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -162,6 +163,10 @@ const router = createBrowserRouter([
       {
         path: "settings/privacy-policy",
         element: <PrivacyPolicyPage />,
+      },
+       {
+        path: "/settings/edit-privacy-policy/Add",
+        element: <AddPrivacyPolicy />,
       },
       {
         path: "/settings/edit-privacy-policy/:id",

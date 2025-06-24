@@ -57,6 +57,23 @@ const authApi = baseApi.injectEndpoints({
         method: "GET",
         body: data,
       }),
+    
+    }),
+    addPrivacyPolicy: builder.mutation({
+      query: (data) => ({
+        url: "/info/privacy-policy",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ['PrivacyPolicy'],
+    }),
+    updatePrivacyPolicy: builder.mutation({
+      query: (data) => ({
+        url: "/info/privacy-policy",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ['PrivacyPolicy'],
     }),
     getTermsCondition: builder.query({
       query: (data) => ({
@@ -64,6 +81,7 @@ const authApi = baseApi.injectEndpoints({
         method: "GET",
         body: data,
       }),
+       invalidatesTags: ['TermsCondition'],
     }),
     getAboutUs: builder.query({
       query: (data) => ({
@@ -72,13 +90,13 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
-    updateUser: builder.mutation({
-      query: ({ id, ...data }) => ({
+   updateUser: builder.mutation({
+      query: (data) => ({
         url: `/users/self/update`,
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ['User'], // Optional: if you're using tags for caching
+      invalidatesTags: ["User"],
     }),
  getUser: builder.query({
   query: () => ({
@@ -98,6 +116,7 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useForgotPasswordMutation,
-  useVerifyEmailMutation,useGetPrivacyPolicyQuery,useGetTermsConditionQuery, useGetAboutUsQuery,
+  useVerifyEmailMutation,useGetPrivacyPolicyQuery,useGetTermsConditionQuery, useGetAboutUsQuery,  useAddPrivacyPolicyMutation,
+  useUpdatePrivacyPolicyMutation,
   useResetPasswordMutation,  useChangePasswordMutation,useUpdateUserMutation,useGetUserQuery
 } = authApi;

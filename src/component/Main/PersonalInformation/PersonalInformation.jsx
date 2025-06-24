@@ -2,17 +2,31 @@ import { IoChevronBack } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
-import { logoutUser } from "../../../redux/features/auth/authSlice"; // Import your logout action
+import { logoutUser } from "../../../redux/features/auth/authSlice";
+import { useGetUserQuery, useLogoutMutation } from "../../../redux/features/auth/authApi"; // Import the hooks
 
 const PersonalInformation = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [logoutApi] = useLogoutMutation();
+  const { data: userData, isLoading, isError } = useGetUserQuery();
 
-  const handleLogout = () => {
-    dispatch(logoutUser()); // Dispatch the logout action
-    navigate('/auth'); // Redirect to login page
+  // Use userData from the query if available, otherwise fall back to Redux user
+  const currentUser = userData?.data?.attributes?.user || user;
+
+  const handleLogout = async () => {
+    try {
+      await logoutApi().unwrap();
+      dispatch(logoutUser());
+      navigate('/auth');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading user data</div>;
 
   return (
     <div className="w-full">
@@ -34,13 +48,13 @@ const PersonalInformation = () => {
             <div className="w-[130px] h-[130px] rounded-full bg-[#D9D9D9]">
               <img
                 className="size-32 rounded-full mx-auto"
-                src={`${imageBaseUrl}${user?.image?.url}`}
+                src={`${imageBaseUrl}${currentUser?.profileImage}`}
                 alt=""
               />
             </div>
             <span className="mt-2 text-gray-500">Profile</span>
             <span className="text-lg font-semibold uppercase">
-              {user?.role}
+              {currentUser?.role}
             </span>
           </div>
           <div className="float-end flex gap-4">
@@ -64,7 +78,7 @@ const PersonalInformation = () => {
             <label className="block text-sm font-semibold">Full name</label>
             <input
               type="text"
-              defaultValue={user?.fullName}
+              defaultValue={currentUser?.fullName}
               readOnly
               className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
             />
@@ -73,7 +87,7 @@ const PersonalInformation = () => {
             <label className="block text-sm font-semibold">Email</label>
             <input
               type="email"
-              defaultValue={user?.email}
+              defaultValue={currentUser?.email}
               readOnly
               className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
             />
@@ -82,7 +96,7 @@ const PersonalInformation = () => {
             <label className="block text-sm font-semibold">Address</label>
             <input
               type="text"
-              defaultValue={user?.Address}
+              defaultValue={currentUser?.address}
               readOnly
               className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
             />
@@ -91,12 +105,12 @@ const PersonalInformation = () => {
             <label className="block text-sm font-semibold">Contact number</label>
             <input
               type="text"
-              defaultValue={user?.phoneNumber}
+              defaultValue={`${currentUser?.callingCode} ${currentUser?.phoneNumber}`}
               readOnly
               className="w-full border border-gray-300 rounded-lg px-5 py-3 bg-white outline-none"
             />
           </div>
-          <button className="px-8 py-3 bg-[#77C4FE] text-white rounded-lg w-full">
+          <button type="button" className="px-8 py-3 bg-[#77C4FE] text-white rounded-lg w-full">
             Save
           </button>
         </form>
