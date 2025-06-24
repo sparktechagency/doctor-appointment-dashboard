@@ -125,7 +125,7 @@ const CustomCalendar = () => {
               key={index}
               onClick={() => handleDateClick(day)}
               className={`flex flex-col items-center justify-start border border-gray-100 px-4 py-8 pb-[3rem]
-                ${isSelected ? 'border-2 border-blue-500' : ''}
+                ${isSelected ? 'border-2 bg-red-300' : ''}
                 ${hasAppointments ? 'bg-red-300' : ''}
                 ${index % 7 === 0 ? 'bg-white-100' : index % 7 === 6 ? 'bg-blue-100' : 'bg-white'}
                 hover:bg-gray-50 cursor-pointer

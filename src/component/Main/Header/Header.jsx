@@ -5,10 +5,11 @@ import { MdOutlineNotificationsActive } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
-
+import { useUpdateUserMutation, useGetUserQuery } from "../../../redux/features/auth/authApi";
 const Header = ({ toggleSidebar }) => {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+   const { data: userData, isLoading: isUserLoading, refetch } = useGetUserQuery();
+  const user = userData?.data?.attributes?.user;
 
   return (
     <div className="w-[99%] p-2 mx-2  flex justify-between items-center text-white sticky top-0 left-0 z-10 bg-[#77C4FE] rounded-md">
@@ -36,7 +37,7 @@ const Header = ({ toggleSidebar }) => {
         </Link>
         <img
           onClick={() => navigate("/personal-info")}
-          src={user?.image?.url ? `${imageBaseUrl}${user.image.url}` : "/src/assets/user.png"}
+          src={ user?.profileImage ? `${imageBaseUrl}${user?.profileImage}` : "/src/assets/user.png"}
           className="size-10 rounded-full cursor-pointer"
         />
       </div>
