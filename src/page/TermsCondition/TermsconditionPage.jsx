@@ -40,12 +40,28 @@ const TermsconditionPage = () => {
           </Link>
           <h1 className="text-2xl font-semibold">Terms & Conditions</h1>
         </div>
-        <Link to={'/settings/edit-terms-conditions/11'}>
+        
+         {termsContent ? (
+         <Link to={'/settings/edit-terms-conditions/11'}>
           <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-secondary text-white hover:bg-secondary-dark transition-colors">
             <TbEdit className="size-5" />
             <span>Edit</span>
           </button>
+        </Link >
+        ) : (
+      <div className="prose max-w-none">
+          <Link to={'/settings/edit-terms-conditions/11'}>
+          <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-secondary text-white hover:bg-secondary-dark transition-colors">
+            <TbEdit className="size-5" />
+            <span>Add</span>
+          </button>
         </Link>
+          </div>
+        )}
+        
+        
+        
+        
       </div>
 
       {/* Terms & Conditions Content */}

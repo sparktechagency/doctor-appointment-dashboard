@@ -75,13 +75,28 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['PrivacyPolicy'],
     }),
-    getTermsCondition: builder.query({
-      query: (data) => ({
+  getTermsCondition: builder.query({
+      query: () => ({
         url: "/info/terms-condition",
         method: "GET",
+      }),
+      providesTags: ['TermsCondition'],
+    }),
+    createTermsCondition: builder.mutation({
+      query: (data) => ({
+        url: "/info/terms-condition",
+        method: "POST",
         body: data,
       }),
-       invalidatesTags: ['TermsCondition'],
+      invalidatesTags: ['TermsCondition'],
+    }),
+    updateTermsCondition: builder.mutation({
+      query: (data) => ({
+        url: "/info/terms-condition",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ['TermsCondition'],
     }),
     getAboutUs: builder.query({
       query: (data) => ({
@@ -116,7 +131,9 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useForgotPasswordMutation,
-  useVerifyEmailMutation,useGetPrivacyPolicyQuery,useGetTermsConditionQuery, useGetAboutUsQuery,  useAddPrivacyPolicyMutation,
+  useVerifyEmailMutation,useGetPrivacyPolicyQuery,  useGetTermsConditionQuery,
+  useCreateTermsConditionMutation,
+  useUpdateTermsConditionMutation, useGetAboutUsQuery,  useAddPrivacyPolicyMutation,
   useUpdatePrivacyPolicyMutation,
   useResetPasswordMutation,  useChangePasswordMutation,useUpdateUserMutation,useGetUserQuery
 } = authApi;

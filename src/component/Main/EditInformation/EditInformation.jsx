@@ -322,9 +322,9 @@ console.log
         </div>
       </div>
 
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8">
-          <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 w-full">
+      <div className="w-full max-w-4xl mx-auto ">
+        <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8 ">
+          <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 w-full border ">
             <div className="w-32 h-32 rounded-full bg-[#D9D9D9] overflow-hidden">
               <img
                 className="w-full h-full object-cover"

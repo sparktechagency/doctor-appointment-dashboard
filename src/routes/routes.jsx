@@ -36,6 +36,8 @@ import AddFaqPage from "../page/AddFaq/AddFaq";
 import EditFaq from "../component/Main/EditFaq/EditFaq";
 import MemberDetails from "../component/Main/TeamMember/MemberDetails";
 import AddPrivacyPolicy from "../page/EditPrivacyPolicy/AddPrivacyPolicy";
+import MessagePage from "../page/Chat/Message";
+import MessagesDashboard from "../page/Chat/MessagesDashboard";
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -80,7 +82,11 @@ const router = createBrowserRouter([
      
       {
         path: "/chat",
-        element: <Chat />,
+        element: <MessagesDashboard />,
+      },
+       {
+        path: "/message/:id",
+        element: <MessagesDashboard />,
       },
       {
         path: "/laboratory-test-request",

@@ -296,9 +296,10 @@ const AddInformation = () => {
       </div>
 
       {/* Profile Information */}
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto  border border-[#B5B5B5] rounded-2xl">
+              <h1 className="p-5 text-2xl font-semibold">Basic Information</h1>
         {/* Profile Picture */}
-    <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8">
+    <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8 p-4">
           <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 w-full">
             <div className="w-32 h-32 rounded-full bg-[#D9D9D9] overflow-hidden">
               <img
@@ -317,7 +318,7 @@ const AddInformation = () => {
                   Upload Photo
                 </Button>
               </Upload>
-              <span className="text-lg font-semibold uppercase">{user?.role || "User"}</span>
+            
             </div>
           </div>
         </div>
@@ -340,16 +341,17 @@ const AddInformation = () => {
             instagram: user?.media?.instagram,
             linkedin: user?.media?.linkedin,
             X: user?.media?.X,
-          }}
+          }} className="p-5"
         >
-          <div className="flex flex-col md:flex-row gap-6 w-full">
+          <div className="flex flex-col md:flex-row gap-6 w-full ">
             <Form.Item
               name="firstName"
               label="First Name"
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input first name!" }]}
             >
-              <Input />
+              <Input                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+ />
             </Form.Item>
             <Form.Item
               name="lastName"
@@ -357,7 +359,7 @@ const AddInformation = () => {
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input last name!" }]}
             >
-              <Input />
+              <Input     className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
           </div>
 
@@ -368,7 +370,7 @@ const AddInformation = () => {
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input phone number!" }]}
             >
-              <Input addonBefore={<Form.Item name="callingCode" noStyle><Select defaultValue="+880"><Option value="+880">+880</Option></Select></Form.Item>} />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" addonBefore={<Form.Item name="callingCode" noStyle><Select defaultValue="+880"><Option value="+880">+880</Option></Select></Form.Item>} />
             </Form.Item>
             <Form.Item
               name="email"
@@ -376,7 +378,7 @@ const AddInformation = () => {
               className="w-full md:w-1/2"
               rules={[{ required: true, type: "email", message: "Please input a valid email!" }]}
             >
-              <Input />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
           </div>
 
@@ -387,32 +389,32 @@ const AddInformation = () => {
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input designation!" }]}
             >
-              <Input />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
             <Form.Item name="specialties" label="Specialties" className="w-full md:w-1/2">
-              <Input />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
           </div>
 
           <Form.Item name="about" label="About Me">
-            <TextArea rows={5} />
+            <TextArea  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" rows={8} />
           </Form.Item>
 
           <div className="flex flex-col md:flex-row gap-6 w-full">
             <Form.Item name="facebook" label="Facebook Link" className="w-full md:w-1/2">
-              <Input />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"  />
             </Form.Item>
             <Form.Item name="instagram" label="Instagram Link" className="w-full md:w-1/2">
-              <Input />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
           </div>
 
           <div className="flex flex-col md:flex-row gap-6 w-full">
             <Form.Item name="linkedin" label="LinkedIn Link" className="w-full md:w-1/2">
-              <Input />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
             <Form.Item name="X" label="X (Twitter) Link" className="w-full md:w-1/2">
-              <Input />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
           </div>
 
@@ -609,10 +611,10 @@ const AddInformation = () => {
           open={isEducationModalVisible}
           onCancel={() => setIsEducationModalVisible(false)}
           footer={null}
-          width={700}
-          destroyOnClose
+          width={700} className="bg-[#F1F9FF]" 
+          destroyOnClose 
         >
-          <Form form={educationForm} onFinish={onEducationFinish} layout="vertical">
+          <Form form={educationForm} onFinish={onEducationFinish} layout="vertical" className="bg-[#F1F9FF]"  >
             <Form.Item
               name="schoolName"
               label="School/University Name"

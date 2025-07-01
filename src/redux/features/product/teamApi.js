@@ -25,12 +25,24 @@ const teamApi = baseApi.injectEndpoints({
         };
       },
       providesTags: ["Teams"],
-      transformResponse: (response) => response?.data?.attributes?.results || [],
+      transformResponse: (response) => {
+        // Filter to only include admin members if needed
+        return response?.data?.attributes?.results || [];
+      },
+    }),
+    getAdminTeamMember: builder.query({
+      query: () => ({
+        url: '/team/member/admin',
+        method: "GET",
+      }),
+      providesTags: ["Teams"],
+      transformResponse: (response) => response?.data || null,
     }),
     getTeamMemberById: builder.query({
       query: (id) => ({
         url: `/team/member/${id}`,
-        method: "GET",  headers: {
+        method: "GET",
+        headers: {
           'Content-Type': 'application/json'
         },
       }),
@@ -58,6 +70,7 @@ const teamApi = baseApi.injectEndpoints({
 export const {
   useCreateTeamMemberMutation,
   useGetAllTeamMembersQuery,
+  useGetAdminTeamMemberQuery,
   useGetTeamMemberByIdQuery,
   useUpdateTeamMemberMutation,
   useDeleteTeamMemberMutation,

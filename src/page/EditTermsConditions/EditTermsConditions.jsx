@@ -1,30 +1,87 @@
-import { Button, Form } from "antd";
-import { useState } from "react";
+import { Button, Form, message, Spin } from "antd";
+import { useState, useEffect } from "react";
 import { IoChevronBack } from "react-icons/io5";
-import ReactQuill from "react-quill"; // Import React Quill
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { Link } from "react-router-dom";
+import { 
+  useGetTermsConditionQuery,
+  useCreateTermsConditionMutation,
+  useUpdateTermsConditionMutation 
+} from "../../redux/features/auth/authApi";
 
 const EditTermsConditions = () => {
   const [form] = Form.useForm();
-  const [content, setContent] = useState(
-    "<h1>Enter your 'Terms and Conditions' content here.</h1>"
-  ); // Default content for the Terms and Conditions section
+  const [content, setContent] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleSubmit = () => {
-    console.log("Updated Terms and Conditions Content:", content);
-    // Handle form submission, e.g., update the Terms and Conditions in the backend
+  // RTK Query hooks
+  const { 
+    data: termsData, 
+    isLoading: isTermsLoading, 
+    isError: isTermsError 
+  } = useGetTermsConditionQuery();
+  
+  const [createTerms, { isLoading: isCreating }] = useCreateTermsConditionMutation();
+  const [updateTerms, { isLoading: isUpdating }] = useUpdateTermsConditionMutation();
+
+  // Set initial content when data loads
+  useEffect(() => {
+    if (termsData) {
+      setContent(termsData.content || "<h1>Enter your 'Terms and Conditions' content here.</h1>");
+      setIsEditing(!!termsData.content);
+    }
+  }, [termsData]);
+
+  const handleSubmit = async () => {
+    try {
+      if (isEditing) {
+        // Update existing terms
+        const response = await updateTerms({ content }).unwrap();
+        if (response.code === 200) {
+          message.success("Terms and Conditions updated successfully");
+        } else {
+          message.error(response.message || "Failed to update Terms and Conditions");
+        }
+      } else {
+        // Create new terms
+        const response = await createTerms({ content }).unwrap();
+        if (response.code === 200) {
+          message.success("Terms and Conditions created successfully");
+          setIsEditing(true);
+        } else {
+          message.error(response.message || "Failed to create Terms and Conditions");
+        }
+      }
+    } catch (error) {
+      message.error(error.data?.message || "An error occurred");
+      console.error("Submission error:", error);
+    }
   };
 
+  if (isTermsLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (isTermsError) {
+    return <div>Error loading Terms and Conditions</div>;
+  }
+
   return (
-    <section className="w-full h-full min-h-screen ">
+    <section className="w-full h-full min-h-screen">
       {/* Header Section */}
       <div className="flex justify-between items-center py-5">
         <div className="flex gap-4 items-center">
           <Link to="/settings">
             <IoChevronBack className="text-2xl" />
           </Link>
-          <h1 className="text-2xl font-semibold">Edit Terms and Conditions</h1>
+          <h1 className="text-2xl font-semibold">
+            {isEditing ? "Edit" : "Create"} Terms and Conditions
+          </h1>
         </div>
       </div>
 
@@ -32,37 +89,40 @@ const EditTermsConditions = () => {
       <div className="w-full p-6 rounded-lg shadow-md bg-white">
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {/* React Quill for Terms and Conditions Content */}
-          <Form.Item name="content" initialValue={content}>
+          <Form.Item name="content">
             <ReactQuill
               value={content}
-              onChange={(value) => setContent(value)}
+              onChange={setContent}
               modules={{
                 toolbar: [
-                  [{ header: [1, 2, 3, 4, 5, 6, false] }], // Header dropdown
-                  [{ font: [] }], // Font options
-                  [{ list: "ordered" }, { list: "bullet" }], // Ordered and bullet lists
-                  ["bold", "italic", "underline", "strike"], // Formatting options
-                  [{ align: [] }], // Text alignment
-                  [{ color: [] }, { background: [] }], // Color and background
-                  ["blockquote", "code-block"], // Blockquote and code block
-                  ["link", "image", "video"], // Link, image, and video upload
-                  [{ script: "sub" }, { script: "super" }], // Subscript and superscript
-                  [{ indent: "-1" }, { indent: "+1" }], // Indent
-                  ["clean"], // Remove formatting
+                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                  [{ font: [] }],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["bold", "italic", "underline", "strike"],
+                  [{ align: [] }],
+                  [{ color: [] }, { background: [] }],
+                  ["blockquote", "code-block"],
+                  ["link", "image", "video"],
+                  [{ script: "sub" }, { script: "super" }],
+                  [{ indent: "-1" }, { indent: "+1" }],
+                  ["clean"],
                 ],
               }}
-              style={{ height: "300px" }} // Set the increased height
+              style={{ height: "400px", marginBottom: "50px" }}
+              theme="snow"
             />
           </Form.Item>
 
           {/* Update Button */}
-          <div className="flex justify-end mt-16">
+          <div className="flex justify-end mt-8">
             <Button
               type="primary"
               htmlType="submit"
-              className="bg-[#0d28e0] text-white px-5 py-2 rounded-md"
+              className="bg-[#0d28e0] text-white px-8 py-3 h-auto"
+              loading={isCreating || isUpdating}
+              disabled={!content}
             >
-              Update
+              {isEditing ? "Update" : "Create"} Terms
             </Button>
           </div>
         </Form>

@@ -14,9 +14,15 @@ const AddPrivacyPolicy = () => {
 
   useEffect(() => {
     if (privacyPolicyData) {
-      setContent(privacyPolicyData.content || "");
+      // Remove <p> tags from existing content
+      const rawContent = privacyPolicyData.content
+      console.log(rawContent)
+        ?.replace(/<p>/g, '')
+        ?.replace(/<\/p>/g, '') || "";
+      setContent(rawContent);
+      form.setFieldsValue({ content: rawContent });
     }
-  }, [privacyPolicyData]);
+  }, [privacyPolicyData, form]);
 
   const handleSubmit = async () => {
     try {
