@@ -38,6 +38,8 @@ import MemberDetails from "../component/Main/TeamMember/MemberDetails";
 import AddPrivacyPolicy from "../page/EditPrivacyPolicy/AddPrivacyPolicy";
 import MessagePage from "../page/Chat/Message";
 import MessagesDashboard from "../page/Chat/MessagesDashboard";
+import AppointmentSection from "../component/Main/Appointment/Appointment";
+import AppointmentSingleSection from "../component/Main/Appointment/singleAppoinmnet";
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -61,6 +63,10 @@ const router = createBrowserRouter([
       {
         path: "/appointment",
         element: <Appointment />,
+      },
+       {
+        path: "/appointments/:appointmentId",
+        element: <AppointmentSingleSection />,
       },
        {
         path: "/faq",

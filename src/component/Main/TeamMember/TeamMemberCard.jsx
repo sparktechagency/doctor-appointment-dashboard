@@ -39,9 +39,7 @@ const TeamMemberCard = ({ product }) => {
           src={imageUrl}
           alt={product?.fullName}
           className="w-full h-full object-cover"
-          onError={(e) => {
-            e.currentTarget.src = "/default-profile.png";
-          }}
+          
         />
       </div>
 

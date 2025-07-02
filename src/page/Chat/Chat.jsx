@@ -10,7 +10,7 @@ const ChatPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [conversations, setConversations] = useState([]);
-  const [appointmentId, setAppointmentId] = useState(null);
+  const [receiverId, setreceiverId] = useState(null);
   const [loading, setLoading] = useState({
     conversations: true,
     initialLoad: true
@@ -21,12 +21,12 @@ const ChatPage = () => {
   const isSocketConnected = useSelector((state) => state.socket.isConnected);
  useEffect(() => {
     if (conversations.length > 0) {
-      const firstAppointmentId = conversations[0]?.appointment?.id;
-      setAppointmentId(firstAppointmentId);
+      const firstreceiverId = conversations[0]?.appointment?.booker;
+      setreceiverId(firstreceiverId);
       
       // Only access localStorage in useEffect (client-side)
       if (typeof window !== 'undefined') {
-        localStorage.setItem("appointmentId", firstAppointmentId);
+        localStorage.setItem("receiverId", firstreceiverId);
       }
     }
   }, [conversations]);
@@ -121,7 +121,7 @@ const ChatPage = () => {
               {conversations.map((conversation) => (
                 <div
                   key={conversation.id}
-                  onClick={() => handleConversationClick(conversation.appointment.booker)}
+                  onClick={() => handleConversationClick(conversation.appointment.id)}
                   className="flex items-center gap-3 p-3 border border-transparent hover:border-blue-300 rounded-lg bg-slate-50 cursor-pointer transition-colors"
                 >
                   <div className="w-12 h-12 flex-shrink-0">

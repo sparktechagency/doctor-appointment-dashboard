@@ -1,17 +1,17 @@
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { ConfigProvider, DatePicker, Form, Input, Modal, Table } from "antd";
+import { ConfigProvider, DatePicker, Form, Input, Table } from "antd";
 import moment from "moment";
 import { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { MdKeyboardArrowLeft } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
 import { useGetAppointmentsQuery } from "../../../redux/features/dashboard/dashboardApi";
 
 const { Item } = Form;
 
 const AppointmentList = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState(null);
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [queryParams, setQueryParams] = useState({
     page: 1,
@@ -20,13 +20,8 @@ const AppointmentList = () => {
 
   const { data: appointments, isLoading, isFetching } = useGetAppointmentsQuery(queryParams);
 
-  const showModal = (record) => {
-    setSelectedRecord(record);
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const navigateToDetails = (record) => {
+    navigate(`/appointments/${record.appointmentId}`);
   };
 
   const onFinish = (values) => {
@@ -63,9 +58,7 @@ const AppointmentList = () => {
             className="w-8 h-8 rounded-full mr-2"
             src={`${imageBaseUrl}${record.booker?.profileImage}`}
             alt="avatar"
-            onError={(e) => {
-              e.target.src = "https://randomuser.me/api/portraits/men/1.jpg";
-            }}
+            
           />
           {text}
         </div>
@@ -87,14 +80,13 @@ const AppointmentList = () => {
       key: "date",
       render: (text) => moment(text).format("DD MMM YYYY"),
     },
-    
     {
       title: "Actions",
       key: "action",
       render: (text, record) => (
         <InfoCircleOutlined
           className="cursor-pointer text-xl"
-          onClick={() => showModal(record)}
+          onClick={() => navigateToDetails(record)}
         />
       ),
     },
@@ -138,7 +130,6 @@ const AppointmentList = () => {
             components: {
               Table: {
                 headerBg: "#77C4FE",
-            
                 headerBorderRadius: 2,
               },
             },
@@ -161,66 +152,6 @@ const AppointmentList = () => {
           />
         </ConfigProvider>
       </div>
-
-      {/* Appointment Details Modal */}
-      <Modal
-        open={isModalVisible}
-        onOk={handleCancel}
-        onCancel={handleCancel}
-        footer={null}
-        centered
-      >
-        <div className="text-black">
-          <h1 className="text-center text-2xl font-semibold my-2">
-            Appointment Details
-          </h1>
-          <div className="p-5">
-            <div className="flex justify-between py-3 border-b">
-              <p>Appointment ID:</p>
-              <p>{selectedRecord?.appointmentId || "N/A"}</p>
-            </div>
-            <div className="flex justify-between py-3 border-b">
-              <p>Patient Name:</p>
-              <p>{selectedRecord?.patientName || "N/A"}</p>
-            </div>
-            <div className="flex justify-between py-3 border-b">
-              <p>Email:</p>
-              <p>{selectedRecord?.patientEmail || "N/A"}</p>
-            </div>
-            <div className="flex justify-between py-3 border-b">
-              <p>Phone Number:</p>
-              <p>{selectedRecord?.patientPhone || "N/A"}</p>
-            </div>
-            <div className="flex justify-between py-3 border-b">
-              <p>Address:</p>
-              <p>{selectedRecord?.patientAddress || "N/A"}</p>
-            </div>
-            <div className="flex justify-between py-3 border-b">
-              <p>Appointment Date:</p>
-              <p>
-                {selectedRecord?.date
-                  ? moment(selectedRecord.date).format("DD MMM YYYY")
-                  : "N/A"}
-              </p>
-            </div>
-            <div className="flex justify-between py-3 border-b">
-              <p>Time Slot:</p>
-              <p>{selectedRecord?.timeSlot || "N/A"}</p>
-            </div>
-            <div className="flex justify-between py-3 border-b">
-              <p>Status:</p>
-              <p className={`${
-                selectedRecord?.status === "pending" ? "bg-orange-500" : 
-                selectedRecord?.status === "confirmed" ? "bg-green-500" : "bg-gray-500"
-              } text-white rounded-full px-2 py-1 inline-block`}>
-                {selectedRecord?.status ? 
-                  selectedRecord.status.charAt(0).toUpperCase() + selectedRecord.status.slice(1) : 
-                  "N/A"}
-              </p>
-            </div>
-          </div>
-        </div>
-      </Modal>
     </section>
   );
 };

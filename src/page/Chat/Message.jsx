@@ -11,8 +11,8 @@ import { NEXT_PUBLIC_SOCKET_URL } from '../../utils/constants';
 const MessagePage = () => {
     const params = useParams();
     const navigate = useNavigate();
-    const appointmentId = localStorage.getItem("appointmentId");
-    const receiverId = params.id;
+    const receiverId = localStorage.getItem("receiverId");
+    const appointmentId = params.id;
     console.log(receiverId)
     const currentUserId = useSelector((state) => state.auth.user?.id);
     

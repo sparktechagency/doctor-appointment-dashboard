@@ -4,18 +4,17 @@ import { Link } from "react-router-dom";
 import SubscriptionsCard from "./SubscriptionsCard";
 import { useGetSubscriptionsQuery } from "../../../redux/features/subscription/subscriptionApi";
 
-
 const Subscriptions = () => {
   const { data: subscriptions, isLoading, isError } = useGetSubscriptionsQuery();
 
-  if (isLoading) return(<div> loading </div >);
+  if (isLoading) return <div> loading </div>;
   if (isError) return <div>Error loading subscriptions</div>;
 
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-semibold flex items-center">
-          <Link to="/dashboard" className="mr-2">
+          <Link to="/" className="mr-2">
             <MdKeyboardArrowLeft size={24} />
           </Link>
           Price
@@ -29,15 +28,21 @@ const Subscriptions = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        {subscriptions?.map((subscription, index) => (
-          <SubscriptionsCard 
-            key={subscription.id} 
-            subscription={subscription} 
-            index={index} 
-          />
-        ))}
-      </div>
+      {subscriptions?.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          {subscriptions.map((subscription, index) => (
+            <SubscriptionsCard 
+              key={subscription.id} 
+              subscription={subscription} 
+              index={index} 
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-10">
+          <p className="text-gray-500 text-lg">No subscriptions found</p>
+        </div>
+      )}
     </div>
   );
 };

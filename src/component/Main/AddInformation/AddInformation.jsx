@@ -1,9 +1,9 @@
-import { Button, Form, Input, Modal, Radio, Select, DatePicker, Upload, message, Checkbox  } from "antd";
+import { Button, Form, Input, Radio, Select, DatePicker, Upload, message, Checkbox } from "antd";
 import { UploadOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { IoChevronBack } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCreateTeamMemberMutation } from "../../../redux/features/product/teamApi";
 import moment from "moment";
@@ -13,7 +13,7 @@ const { Option } = Select;
 const AddInformation = () => {
   const { user } = useSelector((state) => state.auth);
   const [form] = Form.useForm();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [educationForm] = Form.useForm();
   const [experienceForm] = Form.useForm();
   const [achievementForm] = Form.useForm();
@@ -605,213 +605,239 @@ const AddInformation = () => {
             </Button>
           </Form.Item>
         </Form>
-        {/* Education Modal */}
-        <Modal
-          title="Add Education"
-          open={isEducationModalVisible}
-          onCancel={() => setIsEducationModalVisible(false)}
-          footer={null}
-          width={700} className="bg-[#F1F9FF]" 
-          destroyOnClose 
-        >
-          <Form form={educationForm} onFinish={onEducationFinish} layout="vertical" className="bg-[#F1F9FF]"  >
-            <Form.Item
-              name="schoolName"
-              label="School/University Name"
-              rules={[{ required: true, message: "Please input school name!" }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              name="degree"
-              label="Degree"
-              rules={[{ required: true, message: "Please select degree!" }]}
-            >
-              <Select placeholder="Select degree">
-                <Option value="bachelor">Bachelor's Degree</Option>
-                <Option value="master">Master's Degree</Option>
-                <Option value="phd">PhD</Option>
-                <Option value="associate">Associate Degree</Option>
-                <Option value="diploma">Diploma</Option>
-                <Option value="certificate">Certificate</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              name="subject"
-              label="Field of Study"
-              rules={[{ required: true, message: "Please input field of study!" }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item name="grade" label="Grade">
-              <Input placeholder="e.g., 3.8, A, First Class" />
-            </Form.Item>
-
-            <Form.Item name="skills" label="Skills (comma-separated)">
-              <Input placeholder="e.g., business, finance, communication" />
-            </Form.Item>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Form.Item
-                name="startDate"
-                label="Start Date"
-                rules={[{ required: true, message: "Please select start date!" }]}
+       {isEducationModalVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#F1F9FF] rounded-lg w-full max-w-2xl p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-3xl font-bold">Education</h2>
+              <button 
+                onClick={() => setIsEducationModalVisible(false)}
+                className="text-gray-500 hover:text-gray-700"
               >
-                <DatePicker className="w-full" format="YYYY-MM-DD" />
-              </Form.Item>
-              <Form.Item name="endDate" label="End Date">
-                <DatePicker className="w-full" format="YYYY-MM-DD" />
-              </Form.Item>
+                &times;
+              </button>
             </div>
-
-            <Form.Item name="description" label="Description">
-              <TextArea rows={4} />
-            </Form.Item>
-
-            <Form.Item name="status" label="Status" initialValue="completed">
-              <Radio.Group>
-                <Radio value="current">Current</Radio>
-                <Radio value="completed">Completed</Radio>
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block>
-                Save Education
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-
-        {/* Experience Modal */}
-        <Modal
-          title="Add Experience"
-          open={isExperienceModalVisible}
-          onCancel={() => setIsExperienceModalVisible(false)}
-          footer={null}
-          width={700}
-          destroyOnClose
-        >
-          <Form form={experienceForm} onFinish={onExperienceFinish} layout="vertical">
-            <Form.Item
-              name="company"
-              label="Company"
-              rules={[{ required: true, message: "Please input company name!" }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              name="position"
-              label="Position"
-              rules={[{ required: true, message: "Please input position!" }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              name="employmentType"
-              label="Employment Type"
-              rules={[{ required: true, message: "Please select employment type!" }]}
-            >
-              <Select placeholder="Select employment type">
-                <Option value="Full-time">Full-time</Option>
-                <Option value="Part-time">Part-time</Option>
-                <Option value="Freelance">Freelance</Option>
-                <Option value="Internship">Internship</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item name="location" label="Location">
-              <Input placeholder="e.g., Dhaka, Bangladesh" />
-            </Form.Item>
-
-            <Form.Item name="skills" label="Skills (comma-separated)">
-              <Input placeholder="e.g., business, finance, communication" />
-            </Form.Item>
-
-            <div className="grid grid-cols-2 gap-4">
+            <Form form={educationForm} onFinish={onEducationFinish} layout="vertical">
               <Form.Item
-                name="startDate"
-                label="Start Date"
-                rules={[{ required: true, message: "Please select start date!" }]}
+                name="schoolName"
+                label="School Name"
+                rules={[{ required: true, message: "Please input school name!" }]}
               >
-                <DatePicker className="w-full" format="YYYY-MM-DD" />
+                <Input className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" />
               </Form.Item>
-              <Form.Item name="endDate" label="End Date">
-                <DatePicker className="w-full" format="YYYY-MM-DD" />
+
+              <Form.Item
+                name="degree"
+                label="Degree"
+                rules={[{ required: true, message: "Please select degree!" }]}
+              >
+                <Select placeholder="Select degree" className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md w-full"  >
+                  <Option value="bachelor">Bachelor's Degree</Option>
+                  <Option value="master">Master's Degree</Option>
+                  <Option value="phd">PhD</Option>
+                  <Option value="associate">Associate Degree</Option>
+                  <Option value="diploma">Diploma</Option>
+                  <Option value="certificate">Certificate</Option>
+                </Select>
               </Form.Item>
+
+              <Form.Item
+                name="subject"
+                label="Field of Study"
+                rules={[{ required: true, message: "Please input field of study!" }]}
+              >
+                <Input className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" />
+              </Form.Item>
+
+              <Form.Item name="grade" label="Grade">
+                <Input placeholder="e.g., 3.8, A, First Class" className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" />
+              </Form.Item>
+
+              <Form.Item name="skills" label="Skills (comma-separated)">
+                <Input  className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" placeholder="e.g., business, finance, communication" />
+              </Form.Item>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Form.Item
+                  name="startDate"
+                  label="Start Date"
+                  rules={[{ required: true, message: "Please select start date!" }]}
+                >
+                  <DatePicker  className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md w-full" format="YYYY-MM-DD" />
+                </Form.Item>
+                <Form.Item name="endDate" label="End Date">
+                  <DatePicker className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md w-full" format="YYYY-MM-DD" />
+                </Form.Item>
+              </div>
+
+              <Form.Item name="description" label="Description">
+                <TextArea rows={4} className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md w-full" />
+              </Form.Item>
+
+              <Form.Item name="status" label="Status" initialValue="completed">
+                <Radio.Group>
+                  <Radio value="current">Current</Radio>
+                  <Radio value="completed">Completed</Radio>
+                </Radio.Group>
+              </Form.Item>
+
+              <div className="flex justify-end gap-4 mt-6">
+                <Button onClick={() => setIsEducationModalVisible(false)}>
+                  Cancel
+                </Button>
+                <Button type="primary" htmlType="submit">
+                  Save Education
+                </Button>
+              </div>
+            </Form>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Experience Modal */}
+      {isExperienceModalVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-2xl p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Add Experience</h2>
+              <button 
+                onClick={() => setIsExperienceModalVisible(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
             </div>
+            <Form form={experienceForm} onFinish={onExperienceFinish} layout="vertical">
+              <Form.Item
+                name="company"
+                label="Company"
+                rules={[{ required: true, message: "Please input company name!" }]}
+              >
+                <Input className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" />
+              </Form.Item>
 
-            <Form.Item name="description" label="Description">
-              <TextArea rows={4} />
-            </Form.Item>
+              <Form.Item
+                name="position"
+                label="Position"
+                rules={[{ required: true, message: "Please input position!" }]}
+              >
+                <Input className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" />
+              </Form.Item>
 
-            <Form.Item name="status" label="Status" initialValue="completed">
-              <Radio.Group>
-                <Radio value="current">Current</Radio>
-                <Radio value="completed">Completed</Radio>
-              </Radio.Group>
-            </Form.Item>
+              <Form.Item
+                name="employmentType"
+                label="Employment Type"
+                rules={[{ required: true, message: "Please select employment type!" }]}
+              >
+                <Select placeholder="Select employment type">
+                  <Option value="Full-time">Full-time</Option>
+                  <Option value="Part-time">Part-time</Option>
+                  <Option value="Freelance">Freelance</Option>
+                  <Option value="Internship">Internship</Option>
+                </Select>
+              </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block>
-                Save Experience
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
+              <Form.Item name="location" label="Location">
+                <Input className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" placeholder="e.g., Dhaka, Bangladesh" />
+              </Form.Item>
 
-        {/* Achievement Modal */}
-         <Modal
-          title="Add Achievement"
-          open={isAchievementModalVisible}
-          onCancel={() => setIsAchievementModalVisible(false)}
-          footer={null}
-          width={700}
-          destroyOnClose
-        >
-          <Form form={achievementForm} onFinish={onAchievementFinish} layout="vertical">
-            <Form.Item
-              name="award"
-              label="Award Name"
-              rules={[{ required: true, message: "Please input award name!" }]}
-            >
-              <Input />
-            </Form.Item>
+              <Form.Item name="skills" label="Skills (comma-separated)">
+                <Input className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" placeholder="e.g., business, finance, communication" />
+              </Form.Item>
 
-            <Form.Item
-              name="date"
-              label="Date"
-              rules={[{ required: true, message: "Please select date!" }]}
-            >
-              <DatePicker className="w-full" format="YYYY-MM-DD" />
-            </Form.Item>
+              <div className="grid grid-cols-2 gap-4">
+                <Form.Item
+                  name="startDate"
+                  label="Start Date"
+                  rules={[{ required: true, message: "Please select start date!" }]}
+                >
+                  <DatePicker className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md w-full" format="YYYY-MM-DD" />
+                </Form.Item>
+                <Form.Item name="endDate" label="End Date">
+                  <DatePicker className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md w-full" format="YYYY-MM-DD" />
+                </Form.Item>
+              </div>
 
-            <Form.Item name="description" label="Description">
-              <TextArea rows={4} />
-            </Form.Item>
+              <Form.Item name="description" label="Description">
+                <TextArea rows={4} />
+              </Form.Item>
 
-            <Form.Item name="status" label="Status" initialValue="achieved">
-              <Radio.Group>
-                <Radio value="achieved">Achieved</Radio>
-                <Radio value="pending">Pending</Radio>
-              </Radio.Group>
-            </Form.Item>
+              <Form.Item name="status" label="Status" initialValue="completed">
+                <Radio.Group>
+                  <Radio value="current">Current</Radio>
+                  <Radio value="completed">Completed</Radio>
+                </Radio.Group>
+              </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block>
-                Save Achievement
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-      </div>
+              <div className="flex justify-end gap-4 mt-6">
+                <Button onClick={() => setIsExperienceModalVisible(false)}>
+                  Cancel
+                </Button>
+                <Button type="primary" htmlType="submit">
+                  Save Experience
+                </Button>
+              </div>
+            </Form>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Achievement Modal */}
+      {isAchievementModalVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-2xl p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Add Achievement</h2>
+              <button 
+                onClick={() => setIsAchievementModalVisible(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
+            </div>
+            <Form form={achievementForm} onFinish={onAchievementFinish} layout="vertical">
+              <Form.Item
+                name="award"
+                label="Award Name"
+                rules={[{ required: true, message: "Please input award name!" }]}
+              >
+                <Input className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md" />
+              </Form.Item>
+
+              <Form.Item
+                name="date"
+                label="Date"
+                rules={[{ required: true, message: "Please select date!" }]}
+              >
+                <DatePicker className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md w-full" format="YYYY-MM-DD" />
+              </Form.Item>
+
+              <Form.Item name="description" label="Description">
+                <TextArea className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md " rows={4} />
+              </Form.Item>
+
+              <Form.Item name="status" label="Status" initialValue="achieved">
+                <Radio.Group>
+                  <Radio value="achieved">Achieved</Radio>
+                  <Radio value="pending">Pending</Radio>
+                </Radio.Group>
+              </Form.Item>
+
+              <div className="flex justify-end gap-4 mt-6">
+                <Button onClick={() => setIsAchievementModalVisible(false)}>
+                  Cancel
+                </Button>
+                <Button type="primary" htmlType="submit">
+                  Save Achievement
+                </Button>
+              </div>
+            </Form>
+          </div>
+        </div>
+      )}
+    </div>
     </div>
   );
-};
+}
 
 export default AddInformation;

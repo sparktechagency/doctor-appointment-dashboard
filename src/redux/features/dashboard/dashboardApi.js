@@ -30,6 +30,13 @@ const dashboardApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response) => response?.data?.attributes?.results,
     }),
+    getAppointmentById: builder.query({
+      query: (appointmentId) => ({
+        url: `appointment/${appointmentId}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response?.data,
+    }),
     getAllUsers: builder.query({
       query: (params = {}) => {
         const queryParams = new URLSearchParams();
@@ -104,6 +111,6 @@ export const {
   useGetDashboardStatusQuery, 
   useGetIncomeRatioQuery,
   useGetUserRatioQuery,
-  useGetRecentAppointmentsQuery,  useGetAppointmentsQuery,useGetEarningsQuery,
+  useGetRecentAppointmentsQuery,  useGetAppointmentsQuery,useGetEarningsQuery,  useGetAppointmentByIdQuery,
   useGetAllUsersQuery
 } = dashboardApi;
