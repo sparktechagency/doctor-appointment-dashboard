@@ -12,8 +12,9 @@ const AppointmentSingleSection = () => {
   // Fetch appointment data using RTK Query
   const { data: appointmentData, isLoading, isError } = useGetAppointmentByIdQuery(appointmentId);
   
-  const selectedAppointment = appointmentData.attributes
+  const selectedAppointment = appointmentData?.attributes
  || {};
+ console.log(selectedAppointment)
   console.log(selectedAppointment)
   const breadcrumbItems = [
     { title: "Dashboard", link: "/dashboard" },
@@ -43,10 +44,9 @@ const AppointmentSingleSection = () => {
 
   return (
     <div>
-      <section className="w-full px-5 py-10 bg-[#F1F9FF] min-h-screen">
-        <div className="flex flex-col items-center">
-          <div className="w-full max-w-6xl">
-         
+    <section className="px-2 mt-5">
+      <div className="rounded-lg">
+        <div className="justify-center items-center px-5 py-5 max-w-6xl">
             
             <div className="flex items-center mb-6 cursor-pointer" onClick={handleBackToList}>
               <MdKeyboardArrowLeft className="text-2xl mr-2" />

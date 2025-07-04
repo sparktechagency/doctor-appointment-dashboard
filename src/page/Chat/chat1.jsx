@@ -70,20 +70,11 @@ const MessagePage = () => {
         const socket = getSocket();
         if (!socket || !currentUserId || !appointmentId || !isSocketConnected) return;
 
-        // Get receiverId from localStorage or URL params
-        const receiverId = localStorage.getItem("receiverId") || params.receiverId;
+        const receiverId = localStorage.getItem("receiverId");
         
-        if (!receiverId) {
-            console.error('No receiverId found');
-            setError('Receiver ID is required');
-            return;
-        }
-
         const handleMessageUser = (data) => {
             console.log('Received message user data:', data);
             setReceiver(data);
-            // Store receiverId for future use
-            localStorage.setItem("receiverId", data._id);
         };
 
         const handleMessage = (data) => {
@@ -96,11 +87,7 @@ const MessagePage = () => {
 
         const handleNewMessage = (newMessage) => {
             console.log('New message received:', newMessage);
-            setMessages(prev => {
-                // Remove temporary message if exists
-                const filteredMessages = prev.filter(msg => !msg.isTemporary || msg.text !== newMessage.text);
-                return [...filteredMessages, newMessage];
-            });
+            setMessages(prev => [...prev, newMessage]);
             scrollToBottom();
             if (newMessage.msgByUserId !== currentUserId) {
                 markMessagesAsSeen();
@@ -113,7 +100,6 @@ const MessagePage = () => {
             setLoading(prev => ({ ...prev, messages: false, initial: false }));
         };
 
-        // Set up event listeners
         socket.on("message-user", handleMessageUser);
         socket.on("message", handleMessage);
         socket.on("new-message", handleNewMessage);
@@ -128,11 +114,6 @@ const MessagePage = () => {
         socket.emit("message-page", { 
             receiver: receiverId,
             appointmentId: appointmentId
-        }, (response) => {
-            if (response && !response.success) {
-                console.error('Message page request failed:', response.error);
-                setError(response.error.message || 'Failed to load messages');
-            }
         });
 
         return () => {
@@ -141,7 +122,7 @@ const MessagePage = () => {
             socket.off("new-message", handleNewMessage);
             socket.off("error", handleError);
         };
-    }, [currentUserId, appointmentId, isSocketConnected, params.receiverId]);
+    }, [currentUserId, appointmentId, isSocketConnected]);
 
     const scrollToBottom = () => {
         setTimeout(() => {
@@ -162,14 +143,11 @@ const MessagePage = () => {
     const sendMessage = async (e) => {
         e.preventDefault();
         const socket = getSocket();
-        if (!messageInput.trim() || !socket || !appointmentId || !isSocketConnected || !receiver?._id) {
-            console.error('Missing required data for sending message');
-            return;
-        }
+        if (!messageInput.trim() || !socket || !appointmentId || !isSocketConnected) return;
 
         const messagePayload = {
             sender: currentUserId,
-            receiver: receiver._id,
+            receiver: receiver?._id,
             appointmentId,
             text: messageInput,
             msgByUserId: currentUserId,
@@ -195,13 +173,15 @@ const MessagePage = () => {
             // Send with acknowledgement
             socket.emit('new-message', messagePayload, (ack) => {
                 if (ack?.success) {
-                    console.log('Message sent successfully');
-                    // The real message will come through the "new-message" event
+                    // Replace temporary message with real one
+                    setMessages(prev => prev.map(msg => 
+                        msg._id === tempId ? { ...ack.message, isTemporary: false } : msg
+                    ));
                 } else {
                     // Remove optimistic message on failure
                     setMessages(prev => prev.filter(msg => msg._id !== tempId));
                     console.error("Message send failed:", ack?.error);
-                    setError(ack?.error?.message || "Failed to send message. Please try again.");
+                    setError("Failed to send message. Please try again.");
                 }
             });
         } catch (error) {
@@ -324,18 +304,7 @@ const MessagePage = () => {
                                                 : "bg-white rounded-bl-none border"
                                         } ${msg.isTemporary ? 'opacity-70' : ''}`}
                                     >
-                                        {msg.type === 'link' && msg.zoomJoinUrl ? (
-                                            <a 
-                                                href={msg.zoomJoinUrl} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                className="text-blue-500 hover:underline"
-                                            >
-                                                🔗 Join Zoom Meeting
-                                            </a>
-                                        ) : (
-                                            <p className="text-gray-800">{msg.text}</p>
-                                        )}
+                                        <p className="text-gray-800">{msg.text}</p>
                                         <div className="flex items-center justify-end mt-1 space-x-1">
                                             {msg.msgByUserId === currentUserId && (
                                                 <PiChecks className={`text-xs ${
@@ -369,12 +338,12 @@ const MessagePage = () => {
                     onChange={(e) => setMessageInput(e.target.value)}
                     placeholder="Type a message..."
                     className="flex-1 border rounded-full py-2 px-4 mx-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    disabled={!isSocketConnected || !receiver?._id}
+                    disabled={!isSocketConnected}
                 />
                 <button 
                     type="submit" 
                     className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 disabled:opacity-50"
-                    disabled={!messageInput.trim() || !isSocketConnected || !receiver?._id}
+                    disabled={!messageInput.trim() || !isSocketConnected}
                 >
                     <FiSend size={20} />
                 </button>
