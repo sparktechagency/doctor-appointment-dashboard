@@ -1,47 +1,26 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FiArrowUpLeft } from "react-icons/fi";
 import { FaImage, FaVideo } from "react-icons/fa";
 import { initializeSocket, getSocket } from "../../services/socketService";
-import { setSocketConnection, setConnectionStatus } from "../../redux/features/socket/socketSlice";
 
-
-
-const ChatPage = () => {
+const ChatPage = ({ onConversationSelect }) => {
   const navigate = useNavigate();
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [receiverId, setReceiverId] = useState(null);
 
-  const currentUserId = useSelector((state) => state.auth.user?.id);
+  const currentUser = useSelector((state) => state.auth.user);
+  const currentUserId = currentUser?._id || currentUser?.id;
   const isSocketConnected = useSelector((state) => state.socket.isConnected);
-  console.log(currentUserId)
-console.log(conversations)
-  useEffect(() => {
-    if (conversations.length > 0 && !receiverId) {
-      const firstReceiverId = conversations?.[0]?.sender?.id;
-      console.log(firstReceiverId)
-      if (firstReceiverId) {
-        setReceiverId(firstReceiverId);
-        
-        // Only access localStorage in useEffect (client-side)
-        if (typeof window !== 'undefined') {
-          localStorage.setItem("receiverId", firstReceiverId);
-        }
-      }
-    }
-  }, [conversations, receiverId])
 
-  // Initialize socket and load conversations
   useEffect(() => {
-  const authData = JSON.parse(localStorage.getItem("persist:auth") || '{}');
-        const token = authData.token ? JSON.parse(authData.token) : null;
+    const authData = JSON.parse(localStorage.getItem("persist:auth") || '{}');
+    const token = authData.token ? JSON.parse(authData.token) : null;
 
     if (!token) {
-       navigate('/login');
+      navigate('/login');
       return;
     }
 
@@ -49,22 +28,41 @@ console.log(conversations)
       try {
         await initializeSocket(token);
         const socket = getSocket();
-        
-        if (!socket || !currentUserId) return;
 
-        // Load conversations
-        socket.emit("conversation-page", { currentUserId });
-
-        // Set up event listeners
-        socket.on("conversation", (data) => {
-          setConversations(data);
+        if (!socket || !currentUserId) {
+          setError("Connection failed - please refresh");
           setLoading(false);
-          setError(null);
+          return;
+        }
+
+        socket.on("conversation", (data) => {
+          if (!data || data.length === 0) {
+            setConversations([]);
+            setError("No conversations found");
+          } else {
+            const formattedConversations = data.map(conv => ({
+              ...conv,
+              sender: conv.sender || {},
+              receiver: conv.receiver || {},
+              lastMsg: conv.lastMsg || null,
+              unseenMsg: conv.unseenMsg || 0
+            }));
+            setConversations(formattedConversations);
+            setError(null);
+          }
+          setLoading(false);
         });
 
         socket.on("error", (errorData) => {
           setError(errorData.message || "Connection error");
           setLoading(false);
+        });
+
+        socket.emit("conversation-page", { currentUserId }, (response) => {
+          if (!response?.success) {
+            setError(response?.error?.message || "Failed to load conversations");
+            setLoading(false);
+          }
         });
 
       } catch (err) {
@@ -82,10 +80,32 @@ console.log(conversations)
         socket.off("error");
       }
     };
-  }, [currentUserId,      navigate]);
+  }, [currentUserId, navigate]);
 
-  const handleConversationClick = (appointmentId) => {
-        navigate(`/message/${appointmentId}`);
+  const handleConversationClick = (conversation) => {
+    if (!conversation || !conversation.sender || !conversation.receiver) {
+      console.error('Invalid conversation data:', conversation);
+      return;
+    }
+
+    const otherUser = conversation.sender._id === currentUserId 
+      ? conversation.receiver 
+      : conversation.sender;
+
+    if (!otherUser._id) {
+      console.error('No receiver ID found in conversation:', conversation);
+      return;
+    }
+
+    localStorage.setItem("receiverId", otherUser._id);
+    localStorage.setItem("currentConversation", JSON.stringify(conversation));
+
+    if (onConversationSelect) {
+      onConversationSelect(conversation);
+    } else {
+      const conversationId = conversation.appointmentId || conversation._id || 'general';
+      navigate(`/message/${conversationId}`);
+    }
   };
 
   const handleRetry = () => {
@@ -149,16 +169,14 @@ console.log(conversations)
                 const otherUser = conversation.sender._id === currentUserId 
                   ? conversation.receiver 
                   : conversation.sender;
-                
-                const lastMessage = conversation.messages[0];
-                const unseenCount = conversation.messages.filter(
-                  msg => !msg.seen && msg.msgByUserId !== currentUserId
-                ).length;
+
+                const lastMessage = conversation.lastMsg || {};
+                const unseenCount = conversation.unseenMsg || 0;
 
                 return (
                   <div
                     key={conversation._id}
-                    onClick={() => handleConversationClick(conversation.appointmentId)}
+                    onClick={() => handleConversationClick(conversation)}
                     className="flex items-center gap-3 p-3 border border-transparent hover:border-blue-300 rounded-lg bg-slate-50 cursor-pointer transition-colors"
                   >
                     <div className="w-12 h-12 flex-shrink-0">
@@ -166,7 +184,6 @@ console.log(conversations)
                         src={otherUser.image || "/default-avatar.png"}
                         alt={otherUser.fullName}
                         className="w-full h-full rounded-full object-cover"
-                       
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -174,7 +191,7 @@ console.log(conversations)
                         <h3 className="font-semibold text-gray-800 truncate">
                           {otherUser.fullName}
                         </h3>
-                        {lastMessage && (
+                        {lastMessage.createdAt && (
                           <span className="text-xs text-gray-500">
                             {new Date(lastMessage.createdAt).toLocaleTimeString([], {
                               hour: '2-digit',

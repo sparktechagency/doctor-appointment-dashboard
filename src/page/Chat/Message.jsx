@@ -11,9 +11,12 @@ import { NEXT_PUBLIC_SOCKET_URL } from '../../utils/constants';
 const MessagePage = () => {
     const params = useParams();
     const navigate = useNavigate();
-    const appointmentId = params.id;
-    const currentUserId = useSelector((state) => state.auth.user?.id);
+    const appointmentId = params.id === 'general' ? undefined : params.id;
+    const currentUser = useSelector((state) => state.auth.user);
+    const currentUserId = currentUser?._id || currentUser?.id;
     const isSocketConnected = useSelector((state) => state.socket.isConnected);
+    const userRole = currentUser?.role;
+    console.log(userRole)
     
     const [messageInput, setMessageInput] = useState("");
     const [messages, setMessages] = useState([]);
@@ -24,6 +27,9 @@ const MessagePage = () => {
         _id: ""
     });
     const [error, setError] = useState(null);
+    const [isTyping, setIsTyping] = useState(false);
+    const [conversationStatus, setConversationStatus] = useState("active");
+    const [conversationId, setConversationId] = useState(null);
     
     const messagesEndRef = useRef(null);
     const socketInitialized = useRef(false);
@@ -63,26 +69,72 @@ const MessagePage = () => {
         };
 
         initSocket();
+
+        return () => {
+            const socket = getSocket();
+            if (socket) {
+                socket.off("message-user");
+                socket.off("message");
+                socket.off("new-message");
+                socket.off("error");
+                socket.off("user-typing");
+                socket.off("conversation-status");
+            }
+        };
     }, [navigate]);
 
-    // Socket event listeners
+    // Socket event listeners and data loading
     useEffect(() => {
         const socket = getSocket();
-        if (!socket || !currentUserId || !appointmentId || !isSocketConnected) return;
+        if (!socket || !currentUserId || !isSocketConnected) return;
 
-        // Get receiverId from localStorage or URL params
-        const receiverId = localStorage.getItem("receiverId") || params.receiverId;
+        // Get receiverId from localStorage
+        const receiverId = localStorage.getItem("receiverId");
+        const savedConversation = localStorage.getItem("currentConversation");
         
-        if (!receiverId) {
+        if (!receiverId && !savedConversation) {
             console.error('No receiverId found');
-            setError('Receiver ID is required');
+            setError('Please select a conversation first');
+            setLoading(prev => ({ ...prev, initial: false }));
             return;
+        }
+
+        // Try to get receiver info from saved conversation if available
+        if (savedConversation) {
+            try {
+                const conversation = JSON.parse(savedConversation);
+                const otherUser = conversation.sender._id === currentUserId 
+                    ? conversation.receiver 
+                    : conversation.sender;
+                
+                setReceiver({
+                    fullName: otherUser.fullName || "Unknown User",
+                    image: otherUser.image || "",
+                    online: false,
+                    _id: otherUser._id || receiverId
+                });
+                
+                // Set initial conversation status
+                if (conversation.status) {
+                    setConversationStatus(conversation.status);
+                }
+                if (conversation._id) {
+                    setConversationId(conversation._id);
+                }
+            } catch (e) {
+                console.error('Failed to parse saved conversation', e);
+            }
         }
 
         const handleMessageUser = (data) => {
             console.log('Received message user data:', data);
-            setReceiver(data);
-            // Store receiverId for future use
+            setReceiver(prev => ({
+                ...prev,
+                ...data,
+                fullName: data.fullName || prev.fullName,
+                image: data.image || prev.image,
+                _id: data._id || prev._id
+            }));
             localStorage.setItem("receiverId", data._id);
         };
 
@@ -97,8 +149,9 @@ const MessagePage = () => {
         const handleNewMessage = (newMessage) => {
             console.log('New message received:', newMessage);
             setMessages(prev => {
-                // Remove temporary message if exists
-                const filteredMessages = prev.filter(msg => !msg.isTemporary || msg.text !== newMessage.text);
+                const filteredMessages = prev.filter(msg => 
+                    !msg.isTemporary || msg._id !== `temp_${newMessage.tempId}`
+                );
                 return [...filteredMessages, newMessage];
             });
             scrollToBottom();
@@ -113,35 +166,75 @@ const MessagePage = () => {
             setLoading(prev => ({ ...prev, messages: false, initial: false }));
         };
 
+        const handleUserTyping = (data) => {
+            if (data.userId === receiver._id) {
+                setIsTyping(data.isTyping);
+            }
+        };
+
+        const handleConversationStatus = (data) => {
+            console.log('Conversation status updated:', data);
+            if (data.conversationId === conversationId) {
+                setConversationStatus(data.status);
+            }
+        };
+
         // Set up event listeners
         socket.on("message-user", handleMessageUser);
         socket.on("message", handleMessage);
         socket.on("new-message", handleNewMessage);
         socket.on("error", handleError);
+        socket.on("user-typing", handleUserTyping);
+        socket.on("conversation-status", handleConversationStatus);
 
         // Request initial data
         console.log('Requesting message page data:', { 
             receiver: receiverId, 
-            appointmentId: appointmentId 
+            appointmentId 
         });
-        
+
         socket.emit("message-page", { 
             receiver: receiverId,
-            appointmentId: appointmentId
+            appointmentId
         }, (response) => {
             if (response && !response.success) {
                 console.error('Message page request failed:', response.error);
                 setError(response.error.message || 'Failed to load messages');
+                setLoading(prev => ({ ...prev, initial: false }));
             }
         });
 
         return () => {
-            socket.off("message-user", handleMessageUser);
-            socket.off("message", handleMessage);
-            socket.off("new-message", handleNewMessage);
-            socket.off("error", handleError);
+            const socket = getSocket();
+            if (socket) {
+                socket.off("message-user", handleMessageUser);
+                socket.off("message", handleMessage);
+                socket.off("new-message", handleNewMessage);
+                socket.off("error", handleError);
+                socket.off("user-typing", handleUserTyping);
+                socket.off("conversation-status", handleConversationStatus);
+            }
         };
-    }, [currentUserId, appointmentId, isSocketConnected, params.receiverId]);
+    }, [currentUserId, appointmentId, isSocketConnected, navigate]);
+
+    const toggleConversationStatus = async () => {
+        const socket = getSocket();
+        if (!socket || !conversationId) return;
+
+        try {
+            socket.emit("status", { conversationId }, (response) => {
+                if (response?.success) {
+                    const newStatus = conversationStatus === "active" ? "inactive" : "active";
+                    setConversationStatus(newStatus);
+                } else {
+                    setError(response?.error?.message || "Failed to update conversation status");
+                }
+            });
+        } catch (error) {
+            console.error("Error toggling conversation status:", error);
+            setError("Failed to update conversation status");
+        }
+    };
 
     const scrollToBottom = () => {
         setTimeout(() => {
@@ -167,6 +260,12 @@ const MessagePage = () => {
             return;
         }
 
+        // Check if conversation is inactive and user is not admin
+        if (conversationStatus === "inactive" && userRole !== "superAdmin") {
+            setError("You cannot send messages in an inactive conversation");
+            return;
+        }
+
         const messagePayload = {
             sender: currentUserId,
             receiver: receiver._id,
@@ -176,7 +275,6 @@ const MessagePage = () => {
             type: "text"
         };
 
-        // Optimistic update
         const tempId = `temp_${Date.now()}`;
         const tempMessage = {
             _id: tempId,
@@ -192,20 +290,16 @@ const MessagePage = () => {
         scrollToBottom();
         
         try {
-            // Send with acknowledgement
             socket.emit('new-message', messagePayload, (ack) => {
                 if (ack?.success) {
                     console.log('Message sent successfully');
-                    // The real message will come through the "new-message" event
                 } else {
-                    // Remove optimistic message on failure
                     setMessages(prev => prev.filter(msg => msg._id !== tempId));
                     console.error("Message send failed:", ack?.error);
                     setError(ack?.error?.message || "Failed to send message. Please try again.");
                 }
             });
         } catch (error) {
-            // Remove optimistic message on error
             setMessages(prev => prev.filter(msg => msg._id !== tempId));
             console.error("Message send error:", error);
             setError("Failed to send message. Please try again.");
@@ -227,7 +321,6 @@ const MessagePage = () => {
         ? `${NEXT_PUBLIC_SOCKET_URL}${receiver?.image}`
         : "/uploads/user.png";
 
-    // Error state
     if (error && !loading.initial) {
         return (
             <div className="flex h-screen items-center justify-center bg-white">
@@ -261,7 +354,6 @@ const MessagePage = () => {
 
     return (
         <section className="w-full bg-white flex flex-col h-screen">
-            {/* Header */}
             <header className='sticky top-0 h-16 bg-white flex justify-between items-center px-4 border-b'>
                 <div className='flex items-center gap-4'>
                     <button onClick={() => navigate(-1)} className='lg:hidden'>
@@ -271,7 +363,6 @@ const MessagePage = () => {
                         src={receiverImage}
                         alt={receiver?.fullName}
                         className="w-12 h-12 rounded-full object-cover"
-                        
                     />
                     <div>
                         <h3 className='font-semibold text-lg'>{receiver?.fullName}</h3>
@@ -283,6 +374,19 @@ const MessagePage = () => {
                     </div>
                 </div>
                 <div className="flex items-center space-x-2">
+                    {userRole === "superAdmin" && (
+                        <button 
+                            onClick={toggleConversationStatus}
+                            className={`p-2 rounded-full transition duration-200 ${
+                                conversationStatus === "active" 
+                                    ? "bg-green-100 hover:bg-green-200 text-green-600"
+                                    : "bg-red-100 hover:bg-red-200 text-red-600"
+                            }`}
+                            title={conversationStatus === "active" ? "Deactivate conversation" : "Activate conversation"}
+                        >
+                            {conversationStatus === "active" ? "Active" : "Inactive"}
+                        </button>
+                    )}
                     <button className='p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200'>
                         <FiPhone className="text-gray-600" size={18} />
                     </button>
@@ -295,7 +399,6 @@ const MessagePage = () => {
                 </div>
             </header>
 
-            {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 bg-gray-50" onScroll={markMessagesAsSeen}>
                 {loading.messages ? (
                     <div className="h-full flex items-center justify-center">
@@ -355,7 +458,6 @@ const MessagePage = () => {
                 )}
             </div>
 
-            {/* Message Input */}
             <form 
                 onSubmit={sendMessage}
                 className="sticky bottom-0 bg-white border-t p-4 flex items-center"
@@ -369,12 +471,12 @@ const MessagePage = () => {
                     onChange={(e) => setMessageInput(e.target.value)}
                     placeholder="Type a message..."
                     className="flex-1 border rounded-full py-2 px-4 mx-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    disabled={!isSocketConnected || !receiver?._id}
+                    disabled={!isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
                 />
                 <button 
                     type="submit" 
                     className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 disabled:opacity-50"
-                    disabled={!messageInput.trim() || !isSocketConnected || !receiver?._id}
+                    disabled={!messageInput.trim() || !isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
                 >
                     <FiSend size={20} />
                 </button>

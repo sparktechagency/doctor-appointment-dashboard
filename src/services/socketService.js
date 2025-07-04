@@ -9,44 +9,61 @@ import {
 import { NEXT_PUBLIC_SOCKET_URL } from '../utils/constants';
 
 let socketInstance = null;
-let connectionPromise = null;
+let isConnecting = false;
 
 export const initializeSocket = (token) => {
-  // Return existing connection if available and connected
+  // Return existing socket if connected
   if (socketInstance && socketInstance.connected) {
-    return socketInstance;
+    return Promise.resolve(socketInstance);
   }
 
-  // Return existing connection promise to avoid multiple simultaneous connections
-  if (connectionPromise) {
-    return connectionPromise;
+  // Prevent multiple simultaneous connections
+  if (isConnecting) {
+    return new Promise((resolve, reject) => {
+      const checkConnection = () => {
+        if (socketInstance && socketInstance.connected) {
+          resolve(socketInstance);
+        } else if (!isConnecting) {
+          reject(new Error('Connection failed'));
+        } else {
+          setTimeout(checkConnection, 100);
+        }
+      };
+      checkConnection();
+    });
   }
 
-  // Disconnect existing socket if any
+  // Clean up existing socket
   if (socketInstance) {
+    socketInstance.removeAllListeners();
     socketInstance.disconnect();
     socketInstance = null;
   }
 
-  // Create connection promise
-  connectionPromise = new Promise((resolve, reject) => {
+  isConnecting = true;
+
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      isConnecting = false;
+      reject(new Error('Connection timeout'));
+    }, 5000); // Reduced timeout to 5 seconds
+
     socketInstance = io(NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000', {
       transports: ['websocket'],
       auth: { token },
       reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-      timeout: 10000, // 10 second timeout
+      reconnectionAttempts: 3, // Reduced attempts
+      reconnectionDelay: 500,   // Faster reconnection
+      timeout: 5000,            // Reduced timeout
+      forceNew: true,           // Force new connection
     });
 
-    const connectTimeout = setTimeout(() => {
-      reject(new Error('Connection timeout'));
-    }, 10000);
-
     socketInstance.on('connect', () => {
-      clearTimeout(connectTimeout);
+      clearTimeout(timeout);
+      isConnecting = false;
       store.dispatch(setConnectionStatus(true));
       store.dispatch(setSocketConnection(socketInstance?.id || null));
+      store.dispatch(setSocketError(null));
       console.log('Socket connected successfully');
       resolve(socketInstance);
     });
@@ -54,11 +71,11 @@ export const initializeSocket = (token) => {
     socketInstance.on('disconnect', (reason) => {
       console.log('Socket disconnected:', reason);
       store.dispatch(setConnectionStatus(false));
-      // Don't clear socketInstance here to allow for reconnection
     });
 
     socketInstance.on('connect_error', (err) => {
-      clearTimeout(connectTimeout);
+      clearTimeout(timeout);
+      isConnecting = false;
       console.error('Socket connection error:', err);
       store.dispatch(setSocketError(err.message));
       reject(err);
@@ -69,30 +86,17 @@ export const initializeSocket = (token) => {
       store.dispatch(setConnectionStatus(true));
       store.dispatch(setSocketConnection(socketInstance?.id || null));
     });
-
-    socketInstance.on('reconnect_error', (err) => {
-      console.error('Socket reconnection error:', err);
-      store.dispatch(setSocketError(err.message));
-    });
   });
-
-  // Clear the promise after completion
-  connectionPromise.finally(() => {
-    connectionPromise = null;
-  });
-
-  return connectionPromise;
 };
 
 export const getSocket = () => socketInstance;
 
 export const disconnectSocket = () => {
   if (socketInstance) {
+    socketInstance.removeAllListeners();
     socketInstance.disconnect();
     socketInstance = null;
-    store.dispatch(clearSocketConnection());
   }
-  if (connectionPromise) {
-    connectionPromise = null;
-  }
+  isConnecting = false;
+  store.dispatch(clearSocketConnection());
 };
