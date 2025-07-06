@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { FiArrowUpLeft } from "react-icons/fi";
 import { FaImage, FaVideo } from "react-icons/fa";
 import { initializeSocket, getSocket } from "../../services/socketService";
-
+import search from "../../assets/search.svg"
+import { BASE_URL, NEXT_PUBLIC_SOCKET_URL } from "../../utils/constants";
 const ChatPage = ({ onConversationSelect }) => {
   const navigate = useNavigate();
   const [conversations, setConversations] = useState([]);
@@ -12,6 +13,7 @@ const ChatPage = ({ onConversationSelect }) => {
   const [error, setError] = useState(null);
 
   const currentUser = useSelector((state) => state.auth.user);
+  console.log(currentUser)
   const currentUserId = currentUser?._id || currentUser?.id;
   const isSocketConnected = useSelector((state) => state.socket.isConnected);
 
@@ -148,88 +150,90 @@ const ChatPage = ({ onConversationSelect }) => {
     );
   }
 
-  return (
-    <div className="w-full h-full p-4">
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="h-[calc(100vh-160px)] overflow-y-auto scrollbar mt-3 border rounded-lg p-2">
-          <div className="h-16 flex bg-[#091D2E] text-center p-4 rounded-lg mb-2">
-            <h2 className="text-xl font-bold text-white w-full">Messages</h2>
-          </div>
-          
-          {conversations.length === 0 ? (
-            <div className="mt-12 text-center">
-              <div className="flex justify-center items-center my-4 text-slate-500">
-                <FiArrowUpLeft size={50} />
-              </div>
-              <p className="text-lg text-slate-400">No conversations found</p>
+   return (
+    <div className="flex flex-col h-screen bg-white">
+      
+      <div className="flex items-center justify-between px-5 py-4 bg-white">
+        <h2 className="text-2xl font-bold text-[#77C4FE]">Messages</h2>
+        <button className="h-8 w-8 rounded-full bg-[#F3F3F3] flex justify-center items-center text-gray-700">
+       <img src={search} alt="search" width={20} height={20} />
+        </button>
+      </div>
+
+      {/* Conversations List */}
+      <div className="bg-white border-r border-gray-200 mt-3 p-5 overflow-y-auto flex-1">
+        {conversations.length === 0 ? (
+          <div className="mt-12 text-center">
+            <div className="flex justify-center items-center my-4 text-slate-500">
+              <FiArrowUpLeft size={50} />
             </div>
-          ) : (
-            <div className="space-y-2">
-              {conversations.map((conversation) => {
-                const otherUser = conversation.sender._id === currentUserId 
-                  ? conversation.receiver 
-                  : conversation.sender;
+            <p className="text-lg text-slate-400">No conversations found</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {conversations.map((conversation) => {
+              const otherUser = conversation.sender._id === currentUserId 
+                ? conversation.receiver 
+                : conversation.sender;
 
-                const lastMessage = conversation.lastMsg || {};
-                const unseenCount = conversation.unseenMsg || 0;
+              const lastMessage = conversation.lastMsg || {};
+              const unseenCount = conversation.unseenMsg || 0;
+              const lastActive = lastMessage.createdAt 
+                ? new Date(lastMessage.createdAt).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })
+                : '';
+  const receiverImage = otherUser.profileImage
+    ? `${BASE_URL}${otherUser.profileImage
+}`
+    : "/uploads/user.png";
+              return (
+                <div
+                  key={conversation._id}
+                  onClick={() => handleConversationClick(conversation)}
+                  className="flex items-center p-4 bg-white rounded-lg shadow-sm hover:bg-blue-50 cursor-pointer transition-all duration-200"
+                >
+                  {/* User Image */}
+                  <img
+                    src={receiverImage  || "/default-avatar.png"}
+                    alt={otherUser.fullName}
+                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                  />
 
-                return (
-                  <div
-                    key={conversation._id}
-                    onClick={() => handleConversationClick(conversation)}
-                    className="flex items-center gap-3 p-3 border border-transparent hover:border-blue-300 rounded-lg bg-slate-50 cursor-pointer transition-colors"
-                  >
-                    <div className="w-12 h-12 flex-shrink-0">
-                      <img
-                        src={otherUser.image || "/default-avatar.png"}
-                        alt={otherUser.fullName}
-                        className="w-full h-full rounded-full object-cover"
-                      />
+                  {/* User Info */}
+                  <div className="ml-4 flex-1">
+                    <p className="text-gray-900 font-semibold text-base">
+                      {conversation.title}
+                    </p>
+                    <div className="text-sm text-gray-500 flex items-center gap-1">
+                      {lastMessage?.type === 'image' && (
+                        <FaImage className="text-gray-400" />
+                      )}
+                      {lastMessage?.type === 'video' && (
+                        <FaVideo className="text-gray-400" />
+                      )}
+                      <p className="truncate">
+                        {lastMessage?.text || 
+                        (lastMessage?.type === 'link' ? 'Meeting link' : 'No messages')}
+                      </p>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-semibold text-gray-800 truncate">
-                          {otherUser.fullName}
-                        </h3>
-                        {lastMessage.createdAt && (
-                          <span className="text-xs text-gray-500">
-                            {new Date(lastMessage.createdAt).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-gray-500 text-sm flex items-center gap-1">
-                        {lastMessage?.type === 'image' && (
-                          <span className="flex items-center gap-1">
-                            <FaImage className="text-gray-400" />
-                            {!lastMessage?.text && <span>Image</span>}
-                          </span>
-                        )}
-                        {lastMessage?.type === 'video' && (
-                          <span className="flex items-center gap-1">
-                            <FaVideo className="text-gray-400" />
-                            {!lastMessage?.text && <span>Video</span>}
-                          </span>
-                        )}
-                        <p className="truncate">
-                          {lastMessage?.text || 
-                          (lastMessage?.type === 'link' ? 'Meeting link' : 'No messages')}
-                        </p>
-                      </div>
-                    </div>
+                  </div>
+
+                  {/* Time and Notification Badge */}
+                  <div className="flex flex-col items-center ml-2">
+                    <p className="text-gray-400 text-xs mb-1">{lastActive}</p>
                     {unseenCount > 0 && (
-                      <span className="ml-auto w-6 h-6 flex justify-center items-center p-1 bg-green-500 text-white text-xs font-semibold rounded-full">
+                      <div className="bg-[#77C4FE] text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
                         {unseenCount}
-                      </span>
+                      </div>
                     )}
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

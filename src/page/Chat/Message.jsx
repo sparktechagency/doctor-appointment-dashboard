@@ -1,28 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import moment from 'moment';
-import { FiSend, FiImage, FiMoreVertical, FiPhone, FiVideo } from "react-icons/fi";
+import { FiSend, FiImage, FiMoreVertical, FiPhone, FiVideo, FiSmile, FiLink } from "react-icons/fi";
 import { PiChecks } from "react-icons/pi";
-import { FaAngleLeft } from "react-icons/fa6";
 import { initializeSocket, getSocket } from "../../services/socketService";
-import { NEXT_PUBLIC_SOCKET_URL } from '../../utils/constants';
-
+import notfound from "../../assets/sentmessage.svg";
 const MessagePage = () => {
     const params = useParams();
     const navigate = useNavigate();
     const appointmentId = params.id === 'general' ? undefined : params.id;
     const currentUser = useSelector((state) => state.auth.user);
+    console.log(currentUser)
     const currentUserId = currentUser?._id || currentUser?.id;
     const isSocketConnected = useSelector((state) => state.socket.isConnected);
     const userRole = currentUser?.role;
-    console.log(userRole)
     
     const [messageInput, setMessageInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [receiver, setReceiver] = useState({
         fullName: "Loading...",
-        image: "",
+        profileImage: "",
         online: false,
         _id: ""
     });
@@ -79,6 +77,7 @@ const MessagePage = () => {
                 socket.off("error");
                 socket.off("user-typing");
                 socket.off("conversation-status");
+                socket.off("user-status");
             }
         };
     }, [navigate]);
@@ -88,7 +87,6 @@ const MessagePage = () => {
         const socket = getSocket();
         if (!socket || !currentUserId || !isSocketConnected) return;
 
-        // Get receiverId from localStorage
         const receiverId = localStorage.getItem("receiverId");
         const savedConversation = localStorage.getItem("currentConversation");
         
@@ -99,7 +97,6 @@ const MessagePage = () => {
             return;
         }
 
-        // Try to get receiver info from saved conversation if available
         if (savedConversation) {
             try {
                 const conversation = JSON.parse(savedConversation);
@@ -109,12 +106,11 @@ const MessagePage = () => {
                 
                 setReceiver({
                     fullName: otherUser.fullName || "Unknown User",
-                    image: otherUser.image || "",
+                    profileImage: otherUser.profileImage || "",
                     online: false,
                     _id: otherUser._id || receiverId
                 });
                 
-                // Set initial conversation status
                 if (conversation.status) {
                     setConversationStatus(conversation.status);
                 }
@@ -127,19 +123,17 @@ const MessagePage = () => {
         }
 
         const handleMessageUser = (data) => {
-            console.log('Received message user data:', data);
             setReceiver(prev => ({
                 ...prev,
                 ...data,
                 fullName: data.fullName || prev.fullName,
-                image: data.image || prev.image,
+                profileImage: data.profileImage || prev.profileImage,
                 _id: data._id || prev._id
             }));
             localStorage.setItem("receiverId", data._id);
         };
 
         const handleMessage = (data) => {
-            console.log('Received messages:', data);
             setMessages(Array.isArray(data) ? data : []);
             setLoading(prev => ({ ...prev, messages: false, initial: false }));
             scrollToBottom();
@@ -147,7 +141,6 @@ const MessagePage = () => {
         };
 
         const handleNewMessage = (newMessage) => {
-            console.log('New message received:', newMessage);
             setMessages(prev => {
                 const filteredMessages = prev.filter(msg => 
                     !msg.isTemporary || msg._id !== `temp_${newMessage.tempId}`
@@ -161,7 +154,6 @@ const MessagePage = () => {
         };
 
         const handleError = (error) => {
-            console.error('Socket error:', error);
             setError(error.message || 'Connection error occurred');
             setLoading(prev => ({ ...prev, messages: false, initial: false }));
         };
@@ -173,32 +165,33 @@ const MessagePage = () => {
         };
 
         const handleConversationStatus = (data) => {
-            console.log('Conversation status updated:', data);
             if (data.conversationId === conversationId) {
                 setConversationStatus(data.status);
             }
         };
 
-        // Set up event listeners
+        const handleUserStatus = (data) => {
+            if (data.userId === receiver._id) {
+                setReceiver(prev => ({
+                    ...prev,
+                    online: data.online
+                }));
+            }
+        };
+
         socket.on("message-user", handleMessageUser);
         socket.on("message", handleMessage);
         socket.on("new-message", handleNewMessage);
         socket.on("error", handleError);
         socket.on("user-typing", handleUserTyping);
         socket.on("conversation-status", handleConversationStatus);
-
-        // Request initial data
-        console.log('Requesting message page data:', { 
-            receiver: receiverId, 
-            appointmentId 
-        });
+        socket.on("user-status", handleUserStatus);
 
         socket.emit("message-page", { 
             receiver: receiverId,
             appointmentId
         }, (response) => {
             if (response && !response.success) {
-                console.error('Message page request failed:', response.error);
                 setError(response.error.message || 'Failed to load messages');
                 setLoading(prev => ({ ...prev, initial: false }));
             }
@@ -213,9 +206,10 @@ const MessagePage = () => {
                 socket.off("error", handleError);
                 socket.off("user-typing", handleUserTyping);
                 socket.off("conversation-status", handleConversationStatus);
+                socket.off("user-status", handleUserStatus);
             }
         };
-    }, [currentUserId, appointmentId, isSocketConnected, navigate]);
+    }, [currentUserId, appointmentId, isSocketConnected, navigate, conversationId, receiver._id]);
 
     const toggleConversationStatus = async () => {
         const socket = getSocket();
@@ -224,14 +218,12 @@ const MessagePage = () => {
         try {
             socket.emit("status", { conversationId }, (response) => {
                 if (response?.success) {
-                    const newStatus = conversationStatus === "active" ? "inactive" : "active";
-                    setConversationStatus(newStatus);
+                    setConversationStatus(response.status);
                 } else {
                     setError(response?.error?.message || "Failed to update conversation status");
                 }
             });
         } catch (error) {
-            console.error("Error toggling conversation status:", error);
             setError("Failed to update conversation status");
         }
     };
@@ -256,11 +248,9 @@ const MessagePage = () => {
         e.preventDefault();
         const socket = getSocket();
         if (!messageInput.trim() || !socket || !appointmentId || !isSocketConnected || !receiver?._id) {
-            console.error('Missing required data for sending message');
             return;
         }
 
-        // Check if conversation is inactive and user is not admin
         if (conversationStatus === "inactive" && userRole !== "superAdmin") {
             setError("You cannot send messages in an inactive conversation");
             return;
@@ -291,17 +281,13 @@ const MessagePage = () => {
         
         try {
             socket.emit('new-message', messagePayload, (ack) => {
-                if (ack?.success) {
-                    console.log('Message sent successfully');
-                } else {
+                if (!ack?.success) {
                     setMessages(prev => prev.filter(msg => msg._id !== tempId));
-                    console.error("Message send failed:", ack?.error);
                     setError(ack?.error?.message || "Failed to send message. Please try again.");
                 }
             });
         } catch (error) {
             setMessages(prev => prev.filter(msg => msg._id !== tempId));
-            console.error("Message send error:", error);
             setError("Failed to send message. Please try again.");
         }
     };
@@ -317,8 +303,8 @@ const MessagePage = () => {
         window.location.reload();
     };
 
-    const receiverImage = receiver?.image
-        ? `${NEXT_PUBLIC_SOCKET_URL}${receiver?.image}`
+    const receiverImage = receiver.profileImage
+        ? `${'http://localhost:5000/'}${receiver.profileImage}`
         : "/uploads/user.png";
 
     if (error && !loading.initial) {
@@ -353,53 +339,66 @@ const MessagePage = () => {
     }
 
     return (
-        <section className="w-full bg-white flex flex-col h-screen">
-            <header className='sticky top-0 h-16 bg-white flex justify-between items-center px-4 border-b'>
-                <div className='flex items-center gap-4'>
-                    <button onClick={() => navigate(-1)} className='lg:hidden'>
-                        <FaAngleLeft size={25} />
-                    </button>
+        <div className="flex flex-col h-screen w-full bg-white">
+            {/* Chat Header */}
+            <div className="flex items-center justify-between px-5 py-4 bg-white border-b">
+                <div className="flex items-center space-x-3">
                     <img
                         src={receiverImage}
                         alt={receiver?.fullName}
-                        className="w-12 h-12 rounded-full object-cover"
+                        className="w-10 h-10 rounded-full object-cover"
                     />
                     <div>
-                        <h3 className='font-semibold text-lg'>{receiver?.fullName}</h3>
-                        <p className='text-sm'>
-                            {receiver.online ? 
-                                <span className='text-green-500'>online</span> : 
-                                <span className='text-gray-400'>offline</span>}
+                        <h3 className="text-lg font-semibold text-gray-800">{receiver?.fullName}</h3>
+                        <p className="text-sm text-gray-500">
+                            {receiver.online ? 'Online' : 'Offline'}
+                            {isTyping && <span className="text-blue-500 ml-2">typing...</span>}
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center space-x-2">
+
+                <div className="flex items-center space-x-3">
                     {userRole === "superAdmin" && (
-                        <button 
-                            onClick={toggleConversationStatus}
-                            className={`p-2 rounded-full transition duration-200 ${
-                                conversationStatus === "active" 
-                                    ? "bg-green-100 hover:bg-green-200 text-green-600"
-                                    : "bg-red-100 hover:bg-red-200 text-red-600"
-                            }`}
-                            title={conversationStatus === "active" ? "Deactivate conversation" : "Activate conversation"}
-                        >
-                            {conversationStatus === "active" ? "Active" : "Inactive"}
-                        </button>
+                       <button
+  type="button"
+  onClick={toggleConversationStatus}
+  aria-pressed={conversationStatus === "active"}
+  className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+    conversationStatus === "active" 
+      ? "bg-green-500" 
+      : "bg-gray-300"
+  }`}
+>
+  <span className={`sr-only`}>Toggle status</span>
+  <span
+    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${
+      conversationStatus === "active" 
+        ? "translate-x-7" 
+        : "translate-x-1"
+    }`}
+  />
+  
+
+</button>
                     )}
-                    <button className='p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200'>
-                        <FiPhone className="text-gray-600" size={18} />
-                    </button>
-                    <button className='p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200'>
-                        <FiVideo className="text-gray-600" size={18} />
-                    </button>
-                    <button className='cursor-pointer hover:text-primary'>
-                        <FiMoreVertical />
+                    <Link to={`/chat/callaudio/${appointmentId || 'general'}`}>
+                        <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
+                            <FiPhone className="text-gray-600" size={18} />
+                        </button>
+                    </Link>
+                    <Link to={`/chat/videocall/${appointmentId || 'general'}`}>
+                        <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
+                            <FiVideo className="text-gray-600" size={18} />
+                        </button>
+                    </Link>
+                    <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
+                        <FiMoreVertical className="text-gray-600" size={18} />
                     </button>
                 </div>
-            </header>
+            </div>
 
-            <div className="flex-1 overflow-y-auto p-4 bg-gray-50" onScroll={markMessagesAsSeen}>
+            {/* Chat Messages Area */}
+            <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
                 {loading.messages ? (
                     <div className="h-full flex items-center justify-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
@@ -413,18 +412,18 @@ const MessagePage = () => {
                         <p className="text-sm">Start the conversation</p>
                     </div>
                 ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                         {messages.map((msg) => (
                             <div 
                                 key={msg._id} 
                                 className={`flex ${msg.msgByUserId === currentUserId ? "justify-end" : "justify-start"}`}
                             >
-                                <div className="flex flex-col">
-                                    <div 
-                                        className={`max-w-xs md:max-w-md p-3 rounded-lg ${
-                                            msg.msgByUserId === currentUserId 
-                                                ? "bg-blue-100 rounded-br-none" 
-                                                : "bg-white rounded-bl-none border"
+                                <div className={`flex ${msg.msgByUserId === currentUserId ? "flex flex-col justify-end items-end" : "flex flex-col justify-end"}`}>
+                                    <div
+                                        className={`max-w-xs md:max-w-md p-3 rounded-lg shadow-sm ${
+                                            msg.msgByUserId === currentUserId
+                                                ? "bg-[#D5EDFF] text-black rounded-br-none"
+                                                : "bg-[#EDE9E9] text-black rounded-bl-none"
                                         } ${msg.isTemporary ? 'opacity-70' : ''}`}
                                     >
                                         {msg.type === 'link' && msg.zoomJoinUrl ? (
@@ -437,18 +436,17 @@ const MessagePage = () => {
                                                 🔗 Join Zoom Meeting
                                             </a>
                                         ) : (
-                                            <p className="text-gray-800">{msg.text}</p>
+                                            <p className="text-sm">{msg.text}</p>
                                         )}
-                                        <div className="flex items-center justify-end mt-1 space-x-1">
-                                            {msg.msgByUserId === currentUserId && (
-                                                <PiChecks className={`text-xs ${
-                                                    msg.seen ? "text-blue-500" : "text-gray-400"
-                                                }`} />
-                                            )}
-                                            <span className="text-xs text-gray-500">
-                                                {moment(msg.createdAt).format('hh:mm A')}
-                                            </span>
-                                        </div>
+                                    </div>
+                                    <div className="flex flex-row items-center mt-1">
+                                       
+                                        <p className="text-xs text-gray-800 px-1">
+                                            {msg.msgByUserId === currentUserId ? 'You' : receiver.fullName}
+                                        </p>
+                                        <p className="text-xs text-[#77C4FE]">
+                                            {moment(msg.createdAt).format('h:mm A')}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -458,30 +456,46 @@ const MessagePage = () => {
                 )}
             </div>
 
-            <form 
-                onSubmit={sendMessage}
-                className="sticky bottom-0 bg-white border-t p-4 flex items-center"
-            >
-                <button type="button" className="text-gray-500 hover:text-blue-500 p-2">
-                    <FiImage size={20} />
-                </button>
-                <input
-                    type="text"
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)}
-                    placeholder="Type a message..."
-                    className="flex-1 border rounded-full py-2 px-4 mx-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    disabled={!isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
-                />
-                <button 
-                    type="submit" 
-                    className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 disabled:opacity-50"
-                    disabled={!messageInput.trim() || !isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
-                >
-                    <FiSend size={20} />
-                </button>
-            </form>
-        </section>
+            {/* Message Input */}
+            <div className="p-4 bg-white border-t">
+                <form onSubmit={sendMessage} className="flex items-center w-full ">
+                    <div className='bg-[#F1F9FF] rounded-full border border-gray-300 px-4 py-2 shadow-sm w-full flex justify-between'>
+
+                         <button type="button" className="text-gray-500 hover:text-blue-500 transition duration-200">
+                        <FiSmile size={20} />
+                    </button>
+                    <input
+                        type="text"
+                        value={messageInput}
+                        onChange={(e) => setMessageInput(e.target.value)}
+                        placeholder="Send your message..."
+                        className="flex-1 bg-[#F1F9FF] px-4 py-2 text-[#222222] placeholder-[#222222] focus:outline-none"
+                        disabled={!isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
+                    />
+                      <button type="button" className="text-gray-500 hover:text-blue-500 mx-2 transition duration-200">
+                       <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4.00004 11.5571C12.7742 1.88169 14.7628 2.45166 17.8539 5.39632C20.6252 8.03636 21.1384 9.76254 16.8274 14.6365C10.5662 21.6427 8.75355 21.2427 6.58068 19.1955C3.60828 16.3951 4.83082 14.6365 10 9.99998C11.2686 8.86214 12.4517 7.97229 14 9.49998C15.5484 11.0277 15 12 10 17" stroke="#4E4E4E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+                    </button> <button type="button" className="h-10 w-15 font-small rounded-md px-2 text-[#FDFDFD] bg-[#77C4FE]">
+                      Arrange Consultation
+                    </button>
+                    </div>
+                   
+                 
+                    <button 
+                        type="submit" 
+                        className=" bg-[#77C4FE] p-2 m-5 rounded-full hover:bg-blue-600 transition "
+                        disabled={!messageInput.trim() || !isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
+                    >
+                     <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.99811 10.7467L7.43298 11.5077C7.70983 11.9922 7.84825 12.2344 7.84825 12.5C7.84825 12.7656 7.70983 13.0078 7.43299 13.4923L7.43298 13.4923L6.99811 14.2533C5.75981 16.4203 5.14066 17.5039 5.62348 18.0412C6.1063 18.5785 7.24961 18.0783 9.53623 17.0779L15.8119 14.3323C17.6074 13.5468 18.5051 13.154 18.5051 12.5C18.5051 11.846 17.6074 11.4532 15.8119 10.6677L9.53624 7.9221C7.24962 6.92171 6.1063 6.42151 5.62348 6.95883C5.14066 7.49615 5.75981 8.57966 6.99811 10.7467Z" fill="white"/>
+</svg>
+
+                    </button>
+                </form>
+            </div>
+        </div>
     );
 };
 
