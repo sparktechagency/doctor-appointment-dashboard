@@ -105,6 +105,14 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    updateAboutUs: builder.mutation({
+  query: (data) => ({
+    url: "/info/about-us",
+    method: "POST", // or "POST" depending on your API
+    body: data,
+  }),
+  invalidatesTags: ['AboutUs'],
+}),
    updateUser: builder.mutation({
       query: (data) => ({
         url: `/users/self/update`,
@@ -133,7 +141,7 @@ export const {
   useForgotPasswordMutation,
   useVerifyEmailMutation,useGetPrivacyPolicyQuery,  useGetTermsConditionQuery,
   useCreateTermsConditionMutation,
-  useUpdateTermsConditionMutation, useGetAboutUsQuery,  useAddPrivacyPolicyMutation,
+  useUpdateTermsConditionMutation, useGetAboutUsQuery,useUpdateAboutUsMutation,  useAddPrivacyPolicyMutation,
   useUpdatePrivacyPolicyMutation,
   useResetPasswordMutation,  useChangePasswordMutation,useUpdateUserMutation,useGetUserQuery
 } = authApi;

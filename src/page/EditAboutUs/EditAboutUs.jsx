@@ -1,23 +1,41 @@
-import { Button, Form } from "antd";
-import { useState } from "react";
+import { Button, Form, message } from "antd";
+import { useEffect, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
-import ReactQuill from "react-quill"; // Import React Quill
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { Link } from "react-router-dom";
+import { useGetAboutUsQuery, useUpdateAboutUsMutation } from "../../redux/features/auth/authApi";
 
 const EditAboutUs = () => {
   const [form] = Form.useForm();
-  const [content, setContent] = useState(
-    "<p>Enter your 'About Us' content here.</p>"
-  ); // Default content for the About Us section
+  const [content, setContent] = useState("<p>Enter your 'About Us' content here.</p>");
+  
+  // Use the query hook to fetch existing about us content
+  const { data: aboutUsData, isLoading, isError } = useGetAboutUsQuery();
+  // Use the mutation hook for updating
+  const [updateAboutUs, { isLoading: isUpdating }] = useUpdateAboutUsMutation();
 
-  const handleSubmit = () => {
-    console.log("Updated About Us Content:", content);
-    // Handle form submission, e.g., update the about us section in the backend
+  // Set initial content when data is loaded
+  useEffect(() => {
+    if (aboutUsData?.data?.attributes?.content) {
+      setContent(aboutUsData.data.attributes.content);
+    }
+  }, [aboutUsData]);
+
+  const handleSubmit = async () => {
+    try {
+      const response = await updateAboutUs({ content }).unwrap();
+      message.success(response.message || "About Us updated successfully");
+    } catch (err) {
+      message.error(err.data?.message || "Failed to update About Us");
+    }
   };
 
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading About Us content</div>;
+
   return (
-    <section className="w-full h-full min-h-screen ">
+    <section className="w-full h-full min-h-screen">
       {/* Header Section */}
       <div className="flex justify-between items-center py-5">
         <div className="flex gap-4 items-center">
@@ -29,29 +47,25 @@ const EditAboutUs = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-full p-6 rounded-lg shadow-md bg-white">
+      <div className="w-full p-6 rounded-lg text-end bg-[#F1F9FF]">
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {/* React Quill for About Us Content */}
-          <Form.Item name="content" initialValue={content}>
+          <Form.Item name="content">
             <ReactQuill
               value={content}
-              onChange={(value) => setContent(value)}
+              onChange={setContent}
               modules={{
                 toolbar: [
-                  [{ header: [1, 2, 3, 4, 5, 6, false] }], // Header dropdown
-                  [{ font: [] }], // Font options
-                  [{ list: "ordered" }, { list: "bullet" }], // Ordered and bullet lists
-                  ["bold", "italic", "underline", "strike"], // Formatting options
-                  [{ align: [] }], // Text alignment
-                  [{ color: [] }, { background: [] }], // Color and background
-                  ["blockquote", "code-block"], // Blockquote and code block
-                  ["link", "image", "video"], // Link, image, and video upload
-                  [{ script: "sub" }, { script: "super" }], // Subscript and superscript
-                  [{ indent: "-1" }, { indent: "+1" }], // Indent
-                  ["clean"], // Remove formatting
+                  ["image"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["bold", "italic", "underline"],
+                  [{ align: [] }],
+                  [{ color: [] }, { background: [] }],
+                  [{ indent: "-1" }, { indent: "+1" }],
                 ],
               }}
-              style={{ height: "300px" }} // Set the increased height
+              style={{ height: "400px", marginBottom: "50px", float: "left" }}
+              theme="snow"
             />
           </Form.Item>
 
@@ -61,6 +75,8 @@ const EditAboutUs = () => {
               type="primary"
               htmlType="submit"
               className="bg-[#0d28e0] text-white px-5 py-2 rounded-md"
+              loading={isUpdating}
+              disabled={isUpdating}
             >
               Update
             </Button>

@@ -16,8 +16,7 @@ const AddPrivacyPolicy = () => {
     if (privacyPolicyData) {
       // Remove <p> tags from existing content
       const rawContent = privacyPolicyData.content
-        ?.replace(/<p>/g, '')
-        ?.replace(/<\/p>/g, '') || "";
+     
       setContent(rawContent);
       form.setFieldsValue({ content: rawContent });
     }
@@ -27,8 +26,7 @@ const AddPrivacyPolicy = () => {
     try {
       // Remove <p> tags before submitting
       const cleanedContent = content
-        .replace(/<p>/g, '')
-        .replace(/<\/p>/g, '');
+  
       
       await addPrivacyPolicy({ content: cleanedContent }).unwrap();
       message.success("Privacy Policy updated successfully");
@@ -91,7 +89,7 @@ const AddPrivacyPolicy = () => {
           <div className="w-full flex justify-end mt-16">
             <button 
               type="submit" 
-              className="py-2 px-8 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+              className="py-2 px-8 bg-[#77C4FE] text-white rounded-md hover:bg-primary-dark transition-colors"
             >
               {privacyPolicyData ? "Update" : "Add"}
             </button>

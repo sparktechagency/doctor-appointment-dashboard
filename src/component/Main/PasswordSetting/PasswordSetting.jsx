@@ -49,7 +49,7 @@ const PasswordSetting = () => {
 
       {/* Password Change Form */}
       <div className="w-full max-w-4xl mx-auto">
-        <Card className="shadow-sm">
+        <div className="">
           <Form
             form={form}
             name="passwordForm"
@@ -71,9 +71,9 @@ const PasswordSetting = () => {
               >
                 <Input.Password
                   size="large"
-                  prefix={<HiOutlineLockClosed className="text-gray-400" />}
+                  prefix={<HiOutlineLockClosed className="text-gray-400 rounded-none" />}
                   placeholder="Enter your current password"
-                  className="py-3 px-4"
+                  className="py-3 px-4 rounded-none"
                 />
               </Form.Item>
 
@@ -95,13 +95,13 @@ const PasswordSetting = () => {
                   size="large"
                   prefix={<HiOutlineLockClosed className="text-gray-400" />}
                   placeholder="Enter your new password"
-                  className="py-3 px-4"
+                  className="py-3 px-4 rounded-none"
                 />
               </Form.Item>
 
               <Form.Item
                 name="confirmPassword"
-                label={<span className="text-lg font-medium">Confirm New Password</span>}
+                label={<span className="text-lg font-medium">Re-enter new password</span>}
                 dependencies={["newPassword"]}
                 rules={[
                   {
@@ -123,12 +123,12 @@ const PasswordSetting = () => {
                 <Input.Password
                   size="large"
                   prefix={<HiOutlineLockClosed className="text-gray-400" />}
-                  placeholder="Confirm your new password"
-                  className="py-3 px-4"
+                  placeholder="Enter your password"
+                  className="py-3 px-4 rounded-none"
                 />
               </Form.Item>
 
-              <div className="flex justify-between items-center">
+              <div className="flex justify-end items-end">
                 <button
                   type="button"
                   onClick={() => {
@@ -139,27 +139,21 @@ const PasswordSetting = () => {
                   Forgot Password?
                 </button>
 
-                <div className="flex gap-4">
+              
+              </div>  <div className="flex gap-4">
+                  
                   <Button
-                    type="default"
-                    onClick={() => navigate(-1)}
-                    className="px-6 h-10"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="primary"
+                    type="primary" 
                     htmlType="submit"
-                    className="px-6 h-10"
+                    className="px-6 h-10 w-full bg-[#77C4FE]"
                     loading={isLoading}
                   >
                     Update Password
                   </Button>
                 </div>
-              </div>
             </div>
           </Form>
-        </Card>
+        </div>
       </div>
 
       {/* Forgot Password Modal */}

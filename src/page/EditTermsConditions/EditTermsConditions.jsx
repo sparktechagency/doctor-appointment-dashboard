@@ -86,7 +86,7 @@ const EditTermsConditions = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-full p-6 rounded-lg shadow-md bg-white">
+      <div className="w-full p-6 rounded-lg  text-end bg-[#F1F9FF]">
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {/* React Quill for Terms and Conditions Content */}
           <Form.Item name="content">
@@ -95,20 +95,24 @@ const EditTermsConditions = () => {
               onChange={setContent}
               modules={{
                 toolbar: [
-                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                  [{ font: [] }],
+               [ "image"],
                   [{ list: "ordered" }, { list: "bullet" }],
-                  ["bold", "italic", "underline", "strike"],
+                  ["bold", "italic", "underline",],
+                 
+              
+                 
+              
+               
                   [{ align: [] }],
                   [{ color: [] }, { background: [] }],
-                  ["blockquote", "code-block"],
-                  ["link", "image", "video"],
-                  [{ script: "sub" }, { script: "super" }],
+                
+            
+               
                   [{ indent: "-1" }, { indent: "+1" }],
-                  ["clean"],
+               
                 ],
               }}
-              style={{ height: "400px", marginBottom: "50px" }}
+              style={{ height: "400px", marginBottom: "50px",float:"left" }}
               theme="snow"
             />
           </Form.Item>
@@ -118,11 +122,11 @@ const EditTermsConditions = () => {
             <Button
               type="primary"
               htmlType="submit"
-              className="bg-[#0d28e0] text-white px-8 py-3 h-auto"
+              className="bg-[#77C4FE] text-white px-8 py-3 h-auto"
               loading={isCreating || isUpdating}
               disabled={!content}
             >
-              {isEditing ? "Update" : "Create"} Terms
+              {isEditing ? "Update" : "Create"}
             </Button>
           </div>
         </Form>

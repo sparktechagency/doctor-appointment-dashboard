@@ -17,8 +17,7 @@ const AddPrivacyPolicy = () => {
       // Remove <p> tags from existing content
       const rawContent = privacyPolicyData.content
       console.log(rawContent)
-        ?.replace(/<p>/g, '')
-        ?.replace(/<\/p>/g, '') || "";
+ 
       setContent(rawContent);
       form.setFieldsValue({ content: rawContent });
     }
