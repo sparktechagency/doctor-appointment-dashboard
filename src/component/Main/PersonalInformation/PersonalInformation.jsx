@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { imageBaseUrl } from "../../../config/imageBaseUrl";
 import { logoutUser } from "../../../redux/features/auth/authSlice";
-import { useGetUserQuery, useLogoutMutation } from "../../../redux/features/auth/authApi"; // Import the hooks
+import { useGetUserQuery} from "../../../redux/features/auth/authApi"; // Import the hooks
 
 const PersonalInformation = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [logoutApi] = useLogoutMutation();
+
   const { data: userData, isLoading, isError } = useGetUserQuery();
 
   // Use userData from the query if available, otherwise fall back to Redux user
@@ -17,7 +17,7 @@ const PersonalInformation = () => {
 
   const handleLogout = async () => {
     try {
-      await logoutApi().unwrap();
+     
       dispatch(logoutUser());
       navigate('/auth');
     } catch (error) {

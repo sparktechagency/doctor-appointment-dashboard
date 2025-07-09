@@ -6,12 +6,12 @@ import { FiSend, FiImage, FiMoreVertical, FiPhone, FiVideo, FiSmile, FiLink } fr
 import { PiChecks } from "react-icons/pi";
 import { initializeSocket, getSocket } from "../../services/socketService";
 import notfound from "../../assets/sentmessage.svg";
+
 const MessagePage = () => {
     const params = useParams();
     const navigate = useNavigate();
     const appointmentId = params.id === 'general' ? undefined : params.id;
     const currentUser = useSelector((state) => state.auth.user);
-    console.log(currentUser)
     const currentUserId = currentUser?._id || currentUser?.id;
     const isSocketConnected = useSelector((state) => state.socket.isConnected);
     const userRole = currentUser?.role;
@@ -78,6 +78,7 @@ const MessagePage = () => {
                 socket.off("user-typing");
                 socket.off("conversation-status");
                 socket.off("user-status");
+                socket.off("message-seen");
             }
         };
     }, [navigate]);
@@ -179,6 +180,12 @@ const MessagePage = () => {
             }
         };
 
+        const handleMessageSeen = ({ conversationId, messageIds }) => {
+            setMessages(prev => prev.map(msg => 
+                messageIds.includes(msg._id) ? { ...msg, seen: true } : msg
+            ));
+        };
+
         socket.on("message-user", handleMessageUser);
         socket.on("message", handleMessage);
         socket.on("new-message", handleNewMessage);
@@ -186,6 +193,7 @@ const MessagePage = () => {
         socket.on("user-typing", handleUserTyping);
         socket.on("conversation-status", handleConversationStatus);
         socket.on("user-status", handleUserStatus);
+        socket.on("message-seen", handleMessageSeen);
 
         socket.emit("message-page", { 
             receiver: receiverId,
@@ -207,6 +215,7 @@ const MessagePage = () => {
                 socket.off("user-typing", handleUserTyping);
                 socket.off("conversation-status", handleConversationStatus);
                 socket.off("user-status", handleUserStatus);
+                socket.off("message-seen", handleMessageSeen);
             }
         };
     }, [currentUserId, appointmentId, isSocketConnected, navigate, conversationId, receiver._id]);
@@ -236,12 +245,26 @@ const MessagePage = () => {
 
     const markMessagesAsSeen = () => {
         const socket = getSocket();
-        if (socket && receiver?._id && appointmentId) {
-            socket.emit("seen", { 
-                msgByUserId: receiver._id,
-                appointmentId: appointmentId
-            });
-        }
+        if (!socket || !receiver?._id || !conversationId) return;
+
+        // Get unread messages
+        const unreadMessages = messages.filter(
+            msg => msg.msgByUserId === receiver._id && !msg.seen
+        );
+
+        if (unreadMessages.length === 0) return;
+
+        const messageIds = unreadMessages.map(msg => msg._id);
+        
+        socket.emit("mark-seen", {
+            conversationId,
+            messageIds
+        });
+
+        // Update local state immediately
+        setMessages(prev => prev.map(msg => 
+            messageIds.includes(msg._id) ? { ...msg, seen: true } : msg
+        ));
     };
 
     const sendMessage = async (e) => {
@@ -360,26 +383,24 @@ const MessagePage = () => {
                 <div className="flex items-center space-x-3">
                     {userRole === "superAdmin" && (
                        <button
-  type="button"
-  onClick={toggleConversationStatus}
-  aria-pressed={conversationStatus === "active"}
-  className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-    conversationStatus === "active" 
-      ? "bg-green-500" 
-      : "bg-gray-300"
-  }`}
->
-  <span className={`sr-only`}>Toggle status</span>
-  <span
-    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${
-      conversationStatus === "active" 
-        ? "translate-x-7" 
-        : "translate-x-1"
-    }`}
-  />
-  
-
-</button>
+                          type="button"
+                          onClick={toggleConversationStatus}
+                          aria-pressed={conversationStatus === "active"}
+                          className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                            conversationStatus === "active" 
+                              ? "bg-green-500" 
+                              : "bg-gray-300"
+                          }`}
+                        >
+                          <span className={`sr-only`}>Toggle status</span>
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${
+                              conversationStatus === "active" 
+                                ? "translate-x-7" 
+                                : "translate-x-1"
+                            }`}
+                          />
+                        </button>
                     )}
                     <Link to={`/chat/callaudio/${appointmentId || 'general'}`}>
                         <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
@@ -424,7 +445,9 @@ const MessagePage = () => {
                                             msg.msgByUserId === currentUserId
                                                 ? "bg-[#D5EDFF] text-black rounded-br-none"
                                                 : "bg-[#EDE9E9] text-black rounded-bl-none"
-                                        } ${msg.isTemporary ? 'opacity-70' : ''}`}
+                                        } ${msg.isTemporary ? 'opacity-70' : ''} ${
+                                            !msg.seen && msg.msgByUserId !== currentUserId ? 'border-l-4 border-blue-500' : ''
+                                        }`}
                                     >
                                         {msg.type === 'link' && msg.zoomJoinUrl ? (
                                             <a 
@@ -440,7 +463,18 @@ const MessagePage = () => {
                                         )}
                                     </div>
                                     <div className="flex flex-row items-center mt-1">
-                                       
+                                        {msg.msgByUserId === currentUserId && (
+                                            <span className="text-xs text-gray-500 mr-1">
+                                                {msg.seen ? (
+                                                    <span className="flex items-center">
+                                                        <PiChecks className="text-blue-500" />
+                                                     
+                                                    </span>
+                                                ) : (
+                                                    <PiChecks className="text-gray-400" />
+                                                )}
+                                            </span>
+                                        )}
                                         <p className="text-xs text-gray-800 px-1">
                                             {msg.msgByUserId === currentUserId ? 'You' : receiver.fullName}
                                         </p>
@@ -460,38 +494,35 @@ const MessagePage = () => {
             <div className="p-4 bg-white border-t">
                 <form onSubmit={sendMessage} className="flex items-center w-full ">
                     <div className='bg-[#F1F9FF] rounded-full border border-gray-300 px-4 py-2 shadow-sm w-full flex justify-between'>
-
-                         <button type="button" className="text-gray-500 hover:text-blue-500 transition duration-200">
-                        <FiSmile size={20} />
-                    </button>
-                    <input
-                        type="text"
-                        value={messageInput}
-                        onChange={(e) => setMessageInput(e.target.value)}
-                        placeholder="Send your message..."
-                        className="flex-1 bg-[#F1F9FF] px-4 py-2 text-[#222222] placeholder-[#222222] focus:outline-none"
-                        disabled={!isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
-                    />
-                      <button type="button" className="text-gray-500 hover:text-blue-500 mx-2 transition duration-200">
-                       <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M4.00004 11.5571C12.7742 1.88169 14.7628 2.45166 17.8539 5.39632C20.6252 8.03636 21.1384 9.76254 16.8274 14.6365C10.5662 21.6427 8.75355 21.2427 6.58068 19.1955C3.60828 16.3951 4.83082 14.6365 10 9.99998C11.2686 8.86214 12.4517 7.97229 14 9.49998C15.5484 11.0277 15 12 10 17" stroke="#4E4E4E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-
-                    </button> <button type="button" className="h-10 w-15 font-small rounded-md px-2 text-[#FDFDFD] bg-[#77C4FE]">
-                      Arrange Consultation
-                    </button>
+                        <button type="button" className="text-gray-500 hover:text-blue-500 transition duration-200">
+                            <FiSmile size={20} />
+                        </button>
+                        <input
+                            type="text"
+                            value={messageInput}
+                            onChange={(e) => setMessageInput(e.target.value)}
+                            placeholder="Send your message..."
+                            className="flex-1 bg-[#F1F9FF] px-4 py-2 text-[#222222] placeholder-[#222222] focus:outline-none"
+                            disabled={!isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
+                        />
+                        <button type="button" className="text-gray-500 hover:text-blue-500 mx-2 transition duration-200">
+                            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.00004 11.5571C12.7742 1.88169 14.7628 2.45166 17.8539 5.39632C20.6252 8.03636 21.1384 9.76254 16.8274 14.6365C10.5662 21.6427 8.75355 21.2427 6.58068 19.1955C3.60828 16.3951 4.83082 14.6365 10 9.99998C11.2686 8.86214 12.4517 7.97229 14 9.49998C15.5484 11.0277 15 12 10 17" stroke="#4E4E4E" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </button> 
+                        <button type="button" className="h-10 w-15 font-small rounded-md px-2 text-[#FDFDFD] bg-[#77C4FE]">
+                            Arrange Consultation
+                        </button>
                     </div>
                    
-                 
                     <button 
                         type="submit" 
                         className=" bg-[#77C4FE] p-2 m-5 rounded-full hover:bg-blue-600 transition "
                         disabled={!messageInput.trim() || !isSocketConnected || !receiver?._id || (conversationStatus === "inactive" && userRole !== "superAdmin")}
                     >
-                     <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M6.99811 10.7467L7.43298 11.5077C7.70983 11.9922 7.84825 12.2344 7.84825 12.5C7.84825 12.7656 7.70983 13.0078 7.43299 13.4923L7.43298 13.4923L6.99811 14.2533C5.75981 16.4203 5.14066 17.5039 5.62348 18.0412C6.1063 18.5785 7.24961 18.0783 9.53623 17.0779L15.8119 14.3323C17.6074 13.5468 18.5051 13.154 18.5051 12.5C18.5051 11.846 17.6074 11.4532 15.8119 10.6677L9.53624 7.9221C7.24962 6.92171 6.1063 6.42151 5.62348 6.95883C5.14066 7.49615 5.75981 8.57966 6.99811 10.7467Z" fill="white"/>
-</svg>
-
+                        <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.99811 10.7467L7.43298 11.5077C7.70983 11.9922 7.84825 12.2344 7.84825 12.5C7.84825 12.7656 7.70983 13.0078 7.43299 13.4923L7.43298 13.4923L6.99811 14.2533C5.75981 16.4203 5.14066 17.5039 5.62348 18.0412C6.1063 18.5785 7.24961 18.0783 9.53623 17.0779L15.8119 14.3323C17.6074 13.5468 18.5051 13.154 18.5051 12.5C18.5051 11.846 17.6074 11.4532 15.8119 10.6677L9.53624 7.9221C7.24962 6.92171 6.1063 6.42151 5.62348 6.95883C5.14066 7.49615 5.75981 8.57966 6.99811 10.7467Z" fill="white"/>
+                        </svg>
                     </button>
                 </form>
             </div>

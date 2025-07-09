@@ -6,6 +6,7 @@ import { FaImage, FaVideo } from "react-icons/fa";
 import { initializeSocket, getSocket } from "../../services/socketService";
 import search from "../../assets/search.svg"
 import { BASE_URL, NEXT_PUBLIC_SOCKET_URL } from "../../utils/constants";
+
 const ChatPage = ({ onConversationSelect }) => {
   const navigate = useNavigate();
   const [conversations, setConversations] = useState([]);
@@ -13,7 +14,6 @@ const ChatPage = ({ onConversationSelect }) => {
   const [error, setError] = useState(null);
 
   const currentUser = useSelector((state) => state.auth.user);
-  console.log(currentUser)
   const currentUserId = currentUser?._id || currentUser?.id;
   const isSocketConnected = useSelector((state) => state.socket.isConnected);
 
@@ -47,12 +47,21 @@ const ChatPage = ({ onConversationSelect }) => {
               sender: conv.sender || {},
               receiver: conv.receiver || {},
               lastMsg: conv.lastMsg || null,
-              unseenMsg: conv.unseenMsg || 0
+              unseenMsg: conv.unseenMsg || 0,
+              status: conv.status || 'active' // Add status with default value
             }));
             setConversations(formattedConversations);
             setError(null);
           }
           setLoading(false);
+        });
+
+        socket.on("conversation-status-updated", (updatedConversation) => {
+          setConversations(prev => prev.map(conv => 
+            conv._id === updatedConversation._id ? 
+            { ...conv, status: updatedConversation.status } : 
+            conv
+          ));
         });
 
         socket.on("error", (errorData) => {
@@ -79,6 +88,7 @@ const ChatPage = ({ onConversationSelect }) => {
       const socket = getSocket();
       if (socket) {
         socket.off("conversation");
+        socket.off("conversation-status-updated");
         socket.off("error");
       }
     };
@@ -105,7 +115,7 @@ const ChatPage = ({ onConversationSelect }) => {
     if (onConversationSelect) {
       onConversationSelect(conversation);
     } else {
-      const conversationId = conversation.appointmentId || conversation._id || 'general';
+      const conversationId = conversation.appointmentId._id || conversation._id || 'general';
       navigate(`/message/${conversationId}`);
     }
   };
@@ -150,13 +160,12 @@ const ChatPage = ({ onConversationSelect }) => {
     );
   }
 
-   return (
+  return (
     <div className="flex flex-col h-screen bg-white">
-      
       <div className="flex items-center justify-between px-5 py-4 bg-white">
         <h2 className="text-2xl font-bold text-[#77C4FE]">Messages</h2>
         <button className="h-8 w-8 rounded-full bg-[#F3F3F3] flex justify-center items-center text-gray-700">
-       <img src={search} alt="search" width={20} height={20} />
+          <img src={search} alt="search" width={20} height={20} />
         </button>
       </div>
 
@@ -184,28 +193,40 @@ const ChatPage = ({ onConversationSelect }) => {
                     minute: '2-digit'
                   })
                 : '';
-  const receiverImage = otherUser.profileImage
-    ? `${BASE_URL}${otherUser.profileImage
-}`
-    : "/uploads/user.png";
+              const receiverImage = otherUser.profileImage
+                ? `${BASE_URL}${otherUser.profileImage}`
+                : "/uploads/user.png";
+
               return (
                 <div
                   key={conversation._id}
                   onClick={() => handleConversationClick(conversation)}
-                  className="flex items-center p-4 bg-white rounded-lg shadow-sm hover:bg-blue-50 cursor-pointer transition-all duration-200"
+                  className={`flex items-center p-4 rounded-lg shadow-sm hover:bg-blue-50 cursor-pointer transition-all duration-200 ${
+                    conversation.status === 'inactive' ? 'bg-gray-100' : 'bg-white'
+                  }`}
                 >
                   {/* User Image */}
-                  <img
-                    src={receiverImage  || "/default-avatar.png"}
-                    alt={otherUser.fullName}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
-                  />
+                  <div className="relative w-12 h-12">
+                    <img
+                      src={receiverImage || "/default-avatar.png"}
+                      alt={otherUser.fullName}
+                      className="w-full h-full rounded-full object-cover border-2 border-gray-200"
+                    />
+                    {otherUser.online && (
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                    )}
+                  </div>
 
                   {/* User Info */}
                   <div className="ml-4 flex-1">
-                    <p className="text-gray-900 font-semibold text-base">
-                      {conversation.title}
-                    </p>
+                    <div className="flex justify-between items-center">
+                      <p className="text-gray-900 font-semibold text-base">
+                        {conversation.title || otherUser.fullName}
+                      </p>
+                      {conversation.status === 'inactive' && (
+                        <span className="text-xs text-red-500">Inactive</span>
+                      )}
+                    </div>
                     <div className="text-sm text-gray-500 flex items-center gap-1">
                       {lastMessage?.type === 'image' && (
                         <FaImage className="text-gray-400" />
