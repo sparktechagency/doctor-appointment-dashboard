@@ -313,7 +313,7 @@ const AddInformation = () => {
                 <Button 
                   icon={<UploadOutlined />} 
                   loading={uploading}
-                  disabled={uploading}
+                  disabled={uploading} className="bg-[#77C4FE] text-white py-4 h-[]"
                 >
                   Upload Photo
                 </Button>
@@ -370,7 +370,7 @@ const AddInformation = () => {
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input phone number!" }]}
             >
-              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" addonBefore={<Form.Item name="callingCode" noStyle><Select defaultValue="+880"><Option value="+880">+880</Option></Select></Form.Item>} />
+              <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"  />
             </Form.Item>
             <Form.Item
               name="email"
@@ -410,10 +410,10 @@ const AddInformation = () => {
           </div>
 
           <div className="flex flex-col md:flex-row gap-6 w-full">
-            <Form.Item name="linkedin" label="LinkedIn Link" className="w-full md:w-1/2">
+            <Form.Item name="linkedin" label="LinkedIn link" className="w-full md:w-1/2">
               <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
-            <Form.Item name="X" label="X (Twitter) Link" className="w-full md:w-1/2">
+            <Form.Item name="X" label="X link" className="w-full md:w-1/2">
               <Input  className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
           </div>
@@ -426,7 +426,7 @@ const AddInformation = () => {
                 <p className="text-gray-600 mt-1">Your educational background</p>
               </div>
               <Button
-                type="primary"
+                 className="bg-[#77C4FE] text-white"
                 icon={<PlusOutlined />}
                 onClick={() => setIsEducationModalVisible(true)}
               >
@@ -435,13 +435,13 @@ const AddInformation = () => {
             </div>
 
             {educationItems.map((item) => (
-              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4 w-[20rem]">
                 <div className="flex justify-between items-center pb-3">
                   <p className="text-lg font-semibold">{item.institution}</p>
                   <Button
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => deleteEducation(item.id)}
+                  
+                  
+                    onClick={() => deleteEducation(item.id)} className="bg-[#F45050] text-white"
                   >
                     Delete
                   </Button>
@@ -479,14 +479,14 @@ const AddInformation = () => {
           </div>
 
           {/* Experience Section */}
-          <div className="space-y-4 mt-8">
+          <div className="space-y-4 mt-8 ">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Experience Information</h1>
                 <p className="text-gray-600 mt-1">Your professional experience</p>
               </div>
               <Button
-                type="primary"
+                              className="bg-[#77C4FE] text-white"
                 icon={<PlusOutlined />}
                 onClick={() => setIsExperienceModalVisible(true)}
               >
@@ -495,13 +495,13 @@ const AddInformation = () => {
             </div>
 
             {experienceItems.map((item) => (
-              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4 w-[20rem]">
                 <div className="flex justify-between items-center pb-3">
                   <p className="text-lg font-semibold">{item.company}</p>
                   <Button
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => deleteExperience(item.id)}
+                
+                  
+                    onClick={() => deleteExperience(item.id)} className="bg-[#F45050] text-white"
                   >
                     Delete
                   </Button>
@@ -542,14 +542,14 @@ const AddInformation = () => {
           </div>
 
           {/* Achievements Section */}
-          <div className="space-y-4 mt-8">
+          <div className="space-y-4 mt-8 ">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Achievements Information</h1>
                 <p className="text-gray-600 mt-1">Your awards and achievements</p>
               </div>
               <Button
-                type="primary"
+                className="bg-[#77C4FE] text-white"
                 icon={<PlusOutlined />}
                 onClick={() => setIsAchievementModalVisible(true)}
               >
@@ -558,13 +558,13 @@ const AddInformation = () => {
             </div>
 
             {achievementItems.map((item) => (
-              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4 w-[20rem]">
                 <div className="flex justify-between items-center pb-3">
                   <p className="text-lg font-semibold">{item.award}</p>
                   <Button
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => deleteAchievement(item.id)}
+                    
+                 
+                    onClick={() => deleteAchievement(item.id)} className="bg-[#F45050] text-white"
                   >
                     Delete
                   </Button>
@@ -595,9 +595,9 @@ const AddInformation = () => {
 
        <Form.Item className="flex justify-end mt-8">
             <Button
-              type="primary"
+             
               htmlType="submit"
-              className="px-8 py-3 h-auto"
+              className="px-8 py-3 h-auto bg-[#77C4FE] text-white"
               loading={isLoading}
               disabled={uploading}
             >
@@ -606,10 +606,10 @@ const AddInformation = () => {
           </Form.Item>
         </Form>
        {isEducationModalVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#F1F9FF] rounded-lg w-full max-w-2xl p-6">
+        <div className="fixed inset-0 bg-black border-[#77C4FE]  px-5  bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#F1F9FF] border-2 border-[#77C4FE] rounded-lg w-full max-w-2xl p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-3xl font-bold">Education</h2>
+              <h2 className="text-4xl font-bold text-[#32526B]">Education</h2>
               <button 
                 onClick={() => setIsEducationModalVisible(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -628,7 +628,7 @@ const AddInformation = () => {
 
               <Form.Item
                 name="degree"
-                label="Degree"
+                label="Degree" className="border-[#77C4FE]"
                 rules={[{ required: true, message: "Please select degree!" }]}
               >
                 <Select placeholder="Select degree" className="h-8 bg-[#F1F9FF] border-[#77C4FE] text-sm rounded-md w-full"  >
