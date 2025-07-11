@@ -402,16 +402,7 @@ const MessagePage = () => {
                           />
                         </button>
                     )}
-                    <Link to={`/chat/callaudio/${appointmentId || 'general'}`}>
-                        <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
-                            <FiPhone className="text-gray-600" size={18} />
-                        </button>
-                    </Link>
-                    <Link to={`/chat/videocall/${appointmentId || 'general'}`}>
-                        <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
-                            <FiVideo className="text-gray-600" size={18} />
-                        </button>
-                    </Link>
+                    
                     <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
                         <FiMoreVertical className="text-gray-600" size={18} />
                     </button>

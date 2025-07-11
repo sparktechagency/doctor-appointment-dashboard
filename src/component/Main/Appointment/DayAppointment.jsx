@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import { useGetAppointmentsQuery } from "../../../redux/features/dashboard/dashboardApi"; 
 import moment from "moment";
-
+import { imageBaseUrl } from "../../../config/imageBaseUrl";
 const DayAppointment = () => {
   // Get today's date in YYYY-MM-DD format
   const today = moment().format("YYYY-MM-DD");
@@ -19,7 +20,8 @@ const DayAppointment = () => {
     email: appointment.patientEmail,
     date: appointment.date,
     timeSlot: appointment.timeSlot,
-    status: appointment.status
+    status: appointment.status,
+    appointmentId:appointment.appointmentId
   })) || [];
 
   return (
@@ -44,35 +46,40 @@ const DayAppointment = () => {
         <div className="py-6 space-y-2 bg-[#D5EDFF] rounded-md">
           {todayAppointments.map((item, index) => {
             // Format the date to show time only (since we're showing today's appointments)
-            const formattedTime = moment(item.date).format("h:mm A");
+           
             
             return (
               <div
                 key={item._id || index}
                 className="bg-white shadow-md overflow-hidden md:flex py-2 px-4 space-x-5 border-b hover:bg-gray-50"
               >
-                {/* Image */}
-                <div className="flex-shrink-0">
+              
+                      <div className="flex-shrink-0"> <Link to={`/appointments/${item.appointmentId}`}>
                   <img
-                    src={item.image}
+                    src={`${imageBaseUrl}${item.image}`}
                     alt={item.name}
                     className="w-[40px] h-[40px] rounded-full object-cover"
                     onError={(e) => {
                       e.target.src = "https://randomuser.me/api/portraits/men/1.jpg";
                     }}
                   />
+                  </Link>
                 </div>
+                
+             
+                {/* Image */}
+          
 
                 {/* Name and Email */}
-                <div className="flex-grow md:flex space-x-2 justify-around">
-                  <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
-                  <p className="text-gray-600">{item.email}</p>
+                <div className="flex-grow md:flex space-x-2 justify-around items-center">
+                  <Link to={`/appointments/${item.appointmentId}`}><h2 className="text-lg font-semibold text-gray-800">{item.name}</h2></Link> 
+                  <Link to={`/appointments/${item.appointmentId}`}><p className="text-gray-600 ">{item.email}</p></Link> 
                 </div>
 
                 {/* Time */}
                 <div className="flex-shrink-0 flex items-center">
                   <p className="text-gray-500 text-sm">
-                    {formattedTime} ({item.timeSlot})
+                    {item.timeSlot}
                   </p>
                 </div>
               </div>

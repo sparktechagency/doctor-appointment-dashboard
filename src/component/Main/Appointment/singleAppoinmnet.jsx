@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useGetAppointmentByIdQuery } from "../../../redux/features/dashboard/dashboardApi";
 import { FaArrowLeft } from "react-icons/fa";
 import { MdKeyboardArrowLeft } from "react-icons/md";
-
+import { Link } from "react-router-dom";
 import moment from "moment";
 
 const AppointmentSingleSection = () => {
@@ -53,10 +53,14 @@ const AppointmentSingleSection = () => {
               <span className="text-lg font-medium">Back to Appointments</span>
             </div>
             
-            <h2 className="text-3xl font-semibold text-gray-800 text-center mt-8 mb-10">
-              Appointment Details
+            <h2 className="flex justify-center items-center text-3xl font-semibold text-gray-800 text-center mt-8 mb-10">
+              Appointment Details <div><Link to={`/message/${selectedAppointment.id}`}><svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="48" height="48" rx="24" fill="#F1F9FF"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M32 23C32 20.1911 32 18.7866 31.3259 17.7777C31.034 17.341 30.659 16.966 30.2223 16.6741C29.2134 16 27.8089 16 25 16H23C20.1911 16 18.7866 16 17.7777 16.6741C17.341 16.966 16.966 17.341 16.6741 17.7777C16 18.7866 16 20.1911 16 23C16 25.8089 16 27.2134 16.6741 28.2223C16.966 28.659 17.341 29.034 17.7777 29.3259C18.6591 29.9148 19.8423 29.9892 22 29.9986V30L23.1056 32.2111C23.4741 32.9482 24.5259 32.9482 24.8944 32.2111L26 30V29.9986C28.1577 29.9892 29.3409 29.9148 30.2223 29.3259C30.659 29.034 31.034 28.659 31.3259 28.2223C32 27.2134 32 25.8089 32 23ZM25 25C25 24.4477 24.5523 24 24 24H21C20.4477 24 20 24.4477 20 25C20 25.5523 20.4477 26 21 26H24C24.5523 26 25 25.5523 25 25ZM28 21C28 20.4477 27.5523 20 27 20H21C20.4477 20 20 20.4477 20 21C20 21.5523 20.4477 22 21 22H27C27.5523 22 28 21.5523 28 21Z" fill="#77C4FE"/>
+</svg>
+</Link> </div>
             </h2>
-
+             
             <div className="bg-transparent rounded-lg border border-[#77C4FE] p-10 shadow-sm mb-6">
               <div className="border-b border-[#77C4FE] pb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
                 <span className="font-medium text-gray-700">Appointment ID:</span>
