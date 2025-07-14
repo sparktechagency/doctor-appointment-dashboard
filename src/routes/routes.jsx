@@ -40,6 +40,7 @@ import MessagePage from "../page/Chat/Message";
 import MessagesDashboard from "../page/Chat/MessagesDashboard";
 import AppointmentSection from "../component/Main/Appointment/Appointment";
 import AppointmentSingleSection from "../component/Main/Appointment/singleAppoinmnet";
+import PrescriptionPage from "../page/Prescription/PrescriptionPage";
 // import AppointmentList from "../page/appointmentList/AppointmentList";
 
 
@@ -67,6 +68,11 @@ const router = createBrowserRouter([
        {
         path: "/appointments/:appointmentId",
         element: <AppointmentSingleSection />,
+      },
+      {
+        path: "/prescription/:id",
+        element: <PrescriptionPage />,
+
       },
        {
         path: "/faq",

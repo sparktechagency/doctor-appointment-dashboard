@@ -17,7 +17,6 @@ const CustomCalendar = () => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
 
-  // Fetch appointments for the selected date
   const { data: appointments, isLoading } = useGetAppointmentsQuery(
     selectedDate ? { 
       date: moment(selectedDate).format("YYYY-MM-DD"),
@@ -31,14 +30,22 @@ const CustomCalendar = () => {
   const getFirstDayOfMonth = (month, year) => new Date(year, month, 1).getDay();
 
   const prevMonth = () => {
-    setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1));
-    if (currentMonth === 0) setCurrentYear((prev) => prev - 1);
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(prev => prev - 1);
+    } else {
+      setCurrentMonth(prev => prev - 1);
+    }
     setSelectedDate(null);
   };
 
   const nextMonth = () => {
-    setCurrentMonth((prev) => (prev === 11 ? 0 : prev + 1));
-    if (currentMonth === 11) setCurrentYear((prev) => prev + 1);
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(prev => prev + 1);
+    } else {
+      setCurrentMonth(prev => prev + 1);
+    }
     setSelectedDate(null);
   };
 
@@ -46,10 +53,17 @@ const CustomCalendar = () => {
   const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear);
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  // Generate an array with empty days for padding the first week
-  const calendarDays = Array.from({ length: firstDayOfMonth }).fill(null).concat(days);
+  // Generate calendar days with proper padding
+  const calendarDays = [];
+  // Add empty cells for days before the first day of month
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    calendarDays.push(null);
+  }
+  // Add actual days of the month
+  for (let day = 1; day <= daysInMonth; day++) {
+    calendarDays.push(day);
+  }
 
-  // Group appointments by date
   const appointmentsByDate = {};
   appointments?.results?.forEach(appt => {
     const date = moment(appt.date).format("YYYY-MM-DD");
@@ -82,14 +96,21 @@ const CustomCalendar = () => {
   };
 
   return (
-    <div className="p-6 w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
+    <div className="p-6 w-full max-w-6xl mx-auto bg-white shadow-lg rounded-lg">
       {/* Calendar Header */}
-      <div className="flex justify-center items-center w-full mb-6 border-b-2">
-    
-        <div className="flex flex-cols-2 justify-center items-center mx-auto">
+      <div className="flex justify-between items-center w-full mb-6 border-b-2 pb-2">
+        <button 
+          onClick={prevMonth} 
+          className="text-gray-700 py-2 px-3 rounded flex items-center transition duration-300"
+        >
+          <FaArrowLeft className="size-5" />
+        </button>
+        
+        <div className="flex items-center">
           <h2 className="text-2xl font-bold text-gray-700">{months[currentMonth]}</h2>
-          <p className="text-gray-600 pt-1 pl-2">{currentYear}</p>
+          <span className="text-gray-600 pt-1 pl-2">{currentYear}</span>
         </div>
+        
         <button 
           onClick={nextMonth} 
           className="text-gray-700 py-2 px-3 rounded flex items-center transition duration-300"
@@ -98,40 +119,48 @@ const CustomCalendar = () => {
         </button>
       </div>
 
-      {/* Days of Week - Changed to blur effect */}
-      <div className="grid grid-cols-7 gap-2 w-full mb-4 text-gray-400 font-semibold text-sm">
+      {/* Days of Week */}
+      <div className="grid grid-cols-7 gap-1 w-full mb-2 text-gray-500 font-semibold text-sm">
         {daysOfWeek.map((dayName) => (
-          <div key={dayName} className="text-center">{dayName}</div>
+          <div key={dayName} className="text-center py-1">{dayName}</div>
         ))}
       </div>
 
       {/* Calendar Days */}
-      <div className="grid grid-cols-7 w-full">
+      <div className="grid grid-cols-7 gap-1 w-full">
         {calendarDays.map((day, index) => {
           const hasAppointments = day !== null && getAppointmentCountForDay(day) > 0;
           const isSelected = selectedDate && 
                             selectedDate.getDate() === day && 
                             selectedDate.getMonth() === currentMonth && 
                             selectedDate.getFullYear() === currentYear;
+          const isToday = day === new Date().getDate() && 
+                         currentMonth === new Date().getMonth() && 
+                         currentYear === new Date().getFullYear();
 
           return (
             <div
               key={index}
               onClick={() => handleDateClick(day)}
-              className={`flex flex-col items-center justify-start border border-gray-100 p-8
-                ${isSelected ? 'border-2 border-blue-500' : ''} 
-                ${hasAppointments ? 'bg-blue-100' : 'bg-white'}
-                hover:bg-gray-50 cursor-pointer
+              className={`relative flex flex-col items-center justify-start px-5 py-[3.25rem]  border rounded
+                ${day === null ? 'border-transparent' : 'border-gray-100'}
+                ${isSelected ? 'border-2 border-blue-500 bg-blue-50' : ''} 
+                ${hasAppointments ? 'bg-[#92D0FE]' : ''}
+                ${isToday ? 'bg-blue-100' : ''}
+                ${day !== null ? 'hover:bg-gray-50 cursor-pointer' : ''}
               `}
             >
               {day !== null && (
                 <>
-                  <span className={`text-gray-700 font-medium ${hasAppointments ? 'text-blue-700' : ''}`}>
+                  <span className={`text-sm font-medium 
+                    ${isSelected ? 'text-blue-700 font-bold' : ''}
+                    ${isToday ? 'text-blue-800 font-bold' : 'text-gray-700'}
+                  `}>
                     {day}
                   </span>
                   {hasAppointments && (
-                    <div className="absolute bottom-2 left-0 right-0 flex justify-center">
-                      <div className="bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    <div className="absolute bottom-1 flex justify-center">
+                      <div className="bg-[#92D0FE] text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                         {getAppointmentCountForDay(day)}
                       </div>
                     </div>

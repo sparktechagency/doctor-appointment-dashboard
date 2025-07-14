@@ -1,6 +1,6 @@
 import { baseApi } from "../../baseApi/baseApi";
 
-const teamApi = baseApi.injectEndpoints({
+export const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createTeamMember: builder.mutation({
       query: (data) => ({
@@ -8,7 +8,7 @@ const teamApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Teams"],
+      invalidatesTags: ['TeamMembers'], // Changed from "Teams" to be more specific
     }),
     getAllTeamMembers: builder.query({
       query: (params = {}) => {
@@ -24,9 +24,14 @@ const teamApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["Teams"],
+      providesTags: (result) => 
+        result 
+          ? [
+              ...result.map(({ id }) => ({ type: 'TeamMembers', id })),
+              { type: 'TeamMembers', id: 'LIST' },
+            ]
+          : [{ type: 'TeamMembers', id: 'LIST' }],
       transformResponse: (response) => {
-        // Filter to only include admin members if needed
         return response?.data?.attributes?.results || [];
       },
     }),
@@ -35,7 +40,7 @@ const teamApi = baseApi.injectEndpoints({
         url: '/team/member/admin',
         method: "GET",
       }),
-      providesTags: ["Teams"],
+      providesTags: ['TeamMembers'],
       transformResponse: (response) => response?.data || null,
     }),
     getTeamMemberById: builder.query({
@@ -46,23 +51,59 @@ const teamApi = baseApi.injectEndpoints({
           'Content-Type': 'application/json'
         },
       }),
-      providesTags: ["Teams"],
-      transformResponse: (response) => response,
+      providesTags: (result, error, id) => [{ type: 'TeamMembers', id }],
+      transformResponse: (response) => {
+        if (response?.data?.attributes?.team?.media && typeof response.data.attributes.team.media === 'string') {
+          try {
+            response.data.attributes.team.media = JSON.parse(response.data.attributes.team.media);
+          } catch (e) {
+            console.error('Failed to parse media field', e);
+            response.data.attributes.team.media = {};
+          }
+        }
+        return response;
+      }
     }),
-    updateTeamMember: builder.mutation({
-      query: ({ id, data }) => ({
-        url: `/team/member/${id}`,
-        method: "PUT",
-        body: data,
-      }),
-      invalidatesTags: ["Teams"],
+     updateTeamMember: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          url: `/team/member/${id}`,
+          method: "PUT",
+          body: data,
+          headers: {
+            // No Content-Type header - let the browser set it with boundary
+          },
+        };
+      },
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'TeamMembers', id },
+        { type: 'TeamMembers', id: 'LIST' }
+      ],
+      transformResponse: (response) => {
+        if (response?.data?.attributes?.team?.media && typeof response.data.attributes.team.media === 'string') {
+          try {
+            response.data.attributes.team.media = JSON.parse(response.data.attributes.team.media);
+          } catch (e) {
+            console.error('Failed to parse media field', e);
+            response.data.attributes.team.media = {};
+          }
+        }
+        return response;
+      },
+      transformErrorResponse: (response) => {
+        return {
+          status: response.status,
+          message: response.data?.message || 'Failed to update team member',
+          data: response.data
+        };
+      }
     }),
     deleteTeamMember: builder.mutation({
       query: (id) => ({
         url: `/team/member/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Teams"],
+      invalidatesTags: [{ type: 'TeamMembers', id: 'LIST' }],
     }),
   }),
 });

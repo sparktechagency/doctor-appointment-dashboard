@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Radio, Select, DatePicker, Upload, message,Checkbox } from "antd";
+import { Button, Form, Input, Modal, Radio, Select, DatePicker, Upload, message, Checkbox } from "antd";
 import { UploadOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { IoChevronBack } from "react-icons/io5";
@@ -34,17 +34,24 @@ const UpdateTeamForm = () => {
   const [isExperienceModalVisible, setIsExperienceModalVisible] = useState(false);
   const [isAchievementModalVisible, setIsAchievementModalVisible] = useState(false);
 
-  // Helper function to get full image URL
   const getFullImageUrl = (path) => {
     if (!path) return "https://via.placeholder.com/128";
     if (path.startsWith("http") || path.startsWith("blob:")) return path;
-    return `${BASE_URL}/${path}`;
+    return `${BASE_URL}${path}`;
   };
-console.log
+
   useEffect(() => {
     if (teamMember) {
-      const memberData = teamMember.data?.attributes.team || teamMember;
+      const memberData = teamMember.data?.attributes?.team || teamMember;
+      let media = {};
       
+      try {
+        media = typeof memberData.media === 'string' ? JSON.parse(memberData.media) : memberData.media || {};
+      } catch (e) {
+        console.error('Failed to parse media field', e);
+        media = {};
+      }
+
       form.setFieldsValue({
         firstName: memberData.firstName,
         lastName: memberData.lastName,
@@ -54,10 +61,10 @@ console.log
         callingCode: memberData.callingCode || "+880",
         phoneNumber: memberData.phoneNumber,
         email: memberData.email,
-        facebook: memberData.media?.facebook,
-        instagram: memberData.media?.instagram,
-        linkedin: memberData.media?.linkedin,
-        X: memberData.media?.X,
+        facebook: media.facebook || '',
+        instagram: media.instagram || '',
+        linkedin: media.linkedin || '',
+        X: media.X || '',
         isAdmin: memberData.isAdmin || false
       });
 
@@ -75,7 +82,7 @@ console.log
           status: deg.status,
           description: deg.description || "",
           skills: deg.skills || [],
-        })) || []
+        })) || ['']
       );
 
       setExperienceItems(
@@ -90,7 +97,7 @@ console.log
           status: exp.status,
           description: exp.description || "",
           skills: exp.skills || [],
-        })) || []
+        })) || ['']
       );
 
       setAchievementItems(
@@ -100,7 +107,7 @@ console.log
           date: ach.date,
           status: ach.status,
           description: ach.description || "",
-        })) || []
+        })) || ['']
       );
     }
   }, [teamMember, form]);
@@ -126,80 +133,86 @@ console.log
     try {
       const formData = new FormData();
       
+      // Append all fields individually as FormData
+      formData.append('firstName', values.firstName);
+      formData.append('lastName', values.lastName);
+      formData.append('fullName', `${values.firstName} ${values.lastName}`);
+      formData.append('designation', values.designation);
+      formData.append('specialties', values.specialties);
+      formData.append('about', values.about);
+      formData.append('callingCode', values.callingCode || "+880");
+      formData.append('phoneNumber', values.phoneNumber);
+      formData.append('email', values.email);
+      formData.append('isAdmin', values.isAdmin || false);
+      
+      // Append media fields
+      formData.append('media[facebook]', values.facebook || '');
+      formData.append('media[instagram]', values.instagram || '');
+      formData.append('media[linkedin]', values.linkedin || '');
+      formData.append('media[X]', values.X || '');
+
+      // Append education items
+      educationItems.forEach((item, index) => {
+        formData.append(`degrees[${index}][school]`, item.institution);
+        formData.append(`degrees[${index}][degree]`, item.degree);
+        formData.append(`degrees[${index}][subject]`, item.field);
+        formData.append(`degrees[${index}][grade]`, item.grade);
+        formData.append(`degrees[${index}][startDate]`, item.startDate);
+        formData.append(`degrees[${index}][endDate]`, item.endDate || '');
+        formData.append(`degrees[${index}][status]`, item.status);
+        formData.append(`degrees[${index}][description]`, item.description);
+        item.skills.forEach((skill, skillIndex) => {
+          formData.append(`degrees[${index}][skills][${skillIndex}]`, skill);
+        });
+      });
+
+      // Append experience items
+      experienceItems.forEach((item, index) => {
+        formData.append(`experience[${index}][title]`, item.position);
+        formData.append(`experience[${index}][employmentType]`, item.employmentType);
+        formData.append(`experience[${index}][company]`, item.company);
+        formData.append(`experience[${index}][location]`, item.location);
+        formData.append(`experience[${index}][startDate]`, item.startDate);
+        formData.append(`experience[${index}][endDate]`, item.endDate || '');
+        formData.append(`experience[${index}][status]`, item.status);
+        formData.append(`experience[${index}][description]`, item.description);
+        item.skills.forEach((skill, skillIndex) => {
+          formData.append(`experience[${index}][skills][${skillIndex}]`, skill);
+        });
+      });
+
+      // Append achievement items
+      achievementItems.forEach((item, index) => {
+        formData.append(`achievements[${index}][title]`, item.award);
+        formData.append(`achievements[${index}][description]`, item.description);
+        formData.append(`achievements[${index}][date]`, item.date);
+        formData.append(`achievements[${index}][status]`, item.status);
+      });
+
       // Append profile image if a new one was selected
       if (profileImageFile) {
         formData.append('profileImage', profileImageFile);
       }
 
-      // Prepare the team member data
-      const teamMemberData = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        fullName: `${values.firstName} ${values.lastName}`,
-        designation: values.designation,
-        specialties: values.specialties,
-        about: values.about,
-        callingCode: values.callingCode || "+880",
-        phoneNumber: values.phoneNumber,
-        email: values.email,
-        isAdmin: values.isAdmin || false,
-        media: {
-          facebook: values.facebook || '',
-          instagram: values.instagram || '',
-          linkedin: values.linkedin || '',
-          X: values.X || '',
-        },
-        degrees: educationItems.map((item) => ({
-          school: item.institution,
-          degree: item.degree,
-          subject: item.field,
-          grade: item.grade,
-          startDate: item.startDate,
-          endDate: item.endDate,
-          skills: item.skills,
-          status: item.status,
-          description: item.description,
-        })),
-        experience: experienceItems.map((item) => ({
-          title: item.position,
-          employmentType: item.employmentType,
-          company: item.company,
-          location: item.location,
-          startDate: item.startDate,
-          endDate: item.endDate,
-          description: item.description,
-          skills: item.skills,
-          status: item.status,
-        })),
-        achievements: achievementItems.map((item) => ({
-          title: item.award,
-          description: item.description,
-          date: item.date,
-          status: item.status,
-        })),
-      };
-
-      // Append the data to formData
-      formData.append('data', JSON.stringify(teamMemberData));
-
       const response = await updateTeamMember({ id, data: formData }).unwrap();
       
-      if (response.code === 200) {
+      if (response?.data || response) {
         message.success("Team member updated successfully!");
-        // Update the profile image preview if a new image was uploaded
         if (profileImageFile) {
-          setProfileImagePreview(getFullImageUrl(response.data?.attributes?.profileImage));
+          const updatedImage = response.data?.attributes?.team?.profileImage || 
+                              response.data?.profileImage || 
+                              response.profileImage;
+          setProfileImagePreview(getFullImageUrl(updatedImage));
         }
-        navigate('/teammember'); // Redirect after successful update
+        navigate('/teammember');
       } else {
-        message.error(response.message || "Failed to update team member");
+        message.error(response?.message || "Failed to update team member");
       }
     } catch (error) {
       console.error("Update error:", error);
-      message.error(error.data?.message || "Failed to update team member");
+      message.error(error?.message || error?.data?.message || "Failed to update team member");
     }
   };
-
   // Education form handlers
   const onEducationFinish = (values) => {
     const newId = Math.max(...educationItems.map((item) => item.id), 0) + 1;
@@ -207,12 +220,12 @@ console.log
       ...educationItems,
       {
         id: newId,
-        institution: values.schoolName,
+        institution: values.institution,
         degree: values.degree,
-        field: values.subject,
+        field: values.field,
         grade: values.grade,
-        startDate: values.startDate ? moment(values.startDate).toISOString() : new Date().toISOString(),
-        endDate: values.endDate ? moment(values.endDate).toISOString() : null,
+        startDate: values.startDate ? moment(values.startDate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD"),
+        endDate: values.endDate ? moment(values.endDate).format("YYYY-MM-DD") : null,
         status: values.status,
         description: values.description,
         skills: values.skills ? values.skills.split(",").map((skill) => skill.trim()) : [],
@@ -234,8 +247,8 @@ console.log
         position: values.position,
         employmentType: values.employmentType,
         location: values.location,
-        startDate: values.startDate ? moment(values.startDate).toISOString() : new Date().toISOString(),
-        endDate: values.endDate ? moment(values.endDate).toISOString() : null,
+        startDate: values.startDate ? moment(values.startDate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD"),
+        endDate: values.endDate ? moment(values.endDate).format("YYYY-MM-DD") : null,
         status: values.status,
         description: values.description,
         skills: values.skills ? values.skills.split(",").map((skill) => skill.trim()) : [],
@@ -254,7 +267,7 @@ console.log
       {
         id: newId,
         award: values.award,
-        date: values.date ? moment(values.date).toISOString() : new Date().toISOString(),
+        date: values.date ? moment(values.date).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD"),
         status: values.status,
         description: values.description,
       },
@@ -313,6 +326,7 @@ console.log
 
   return (
     <div className="w-full px-4 py-6">
+      {/* Back Button and Title */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <Link to="/team">
@@ -322,9 +336,13 @@ console.log
         </div>
       </div>
 
-      <div className="w-full max-w-4xl mx-auto ">
-        <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8 ">
-          <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 w-full border ">
+      {/* Profile Information */}
+      <div className="w-full max-w-4xl mx-auto border border-[#B5B5B5] rounded-2xl">
+        <h1 className="p-5 text-2xl font-semibold">Basic Information</h1>
+        
+        {/* Profile Picture */}
+        <div className="flex flex-col sm:flex-row justify-start items-center gap-5 mb-8 p-4">
+          <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 w-full">
             <div className="w-32 h-32 rounded-full bg-[#D9D9D9] overflow-hidden">
               <img
                 className="w-full h-full object-cover"
@@ -337,16 +355,21 @@ console.log
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-5">
               <Upload {...uploadProps}>
-                <Button icon={<UploadOutlined />} loading={uploading} disabled={uploading}>
+                <Button 
+                  icon={<UploadOutlined />} 
+                  loading={uploading}
+                  disabled={uploading} 
+                  className="bg-[#77C4FE] text-white py-4"
+                >
                   Upload Photo
                 </Button>
               </Upload>
-              <span className="text-lg font-semibold uppercase">{user?.role || "User"}</span>
             </div>
           </div>
         </div>
 
-        <Form form={form} onFinish={onFinish} layout="vertical">
+        {/* Personal Details Form */}
+        <Form form={form} onFinish={onFinish} layout="vertical" className="p-5">
           <div className="flex flex-col md:flex-row gap-6 w-full">
             <Form.Item
               name="firstName"
@@ -354,7 +377,7 @@ console.log
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input first name!" }]}
             >
-              <Input />
+              <Input className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
             <Form.Item
               name="lastName"
@@ -362,7 +385,7 @@ console.log
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input last name!" }]}
             >
-              <Input />
+              <Input className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500" />
             </Form.Item>
           </div>
 
@@ -373,14 +396,9 @@ console.log
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input phone number!" }]}
             >
-              <Input
-                addonBefore={
-                  <Form.Item name="callingCode" noStyle>
-                    <Select defaultValue="+880">
-                      <Option value="+880">+880</Option>
-                    </Select>
-                  </Form.Item>
-                }
+              <Input 
+                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+                placeholder="Enter phone number"
               />
             </Form.Item>
             <Form.Item
@@ -389,7 +407,10 @@ console.log
               className="w-full md:w-1/2"
               rules={[{ required: true, type: "email", message: "Please input a valid email!" }]}
             >
-              <Input />
+              <Input 
+                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+                placeholder="Enter email address"
+              />
             </Form.Item>
           </div>
 
@@ -400,39 +421,54 @@ console.log
               className="w-full md:w-1/2"
               rules={[{ required: true, message: "Please input designation!" }]}
             >
-              <Input />
+              <Input 
+                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+                placeholder="Enter designation"
+              />
             </Form.Item>
             <Form.Item name="specialties" label="Specialties" className="w-full md:w-1/2">
-              <Input />
+              <Input 
+                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+                placeholder="Enter specialties"
+              />
             </Form.Item>
           </div>
 
           <Form.Item name="about" label="About Me">
-            <TextArea rows={5} />
+            <TextArea 
+              rows={8} 
+              className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+              placeholder="Tell us about yourself..."
+            />
           </Form.Item>
 
           <div className="flex flex-col md:flex-row gap-6 w-full">
             <Form.Item name="facebook" label="Facebook Link" className="w-full md:w-1/2">
-              <Input />
+              <Input 
+                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+                placeholder="https://facebook.com/username"
+              />
             </Form.Item>
             <Form.Item name="instagram" label="Instagram Link" className="w-full md:w-1/2">
-              <Input />
+              <Input 
+                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+                placeholder="https://instagram.com/username"
+              />
             </Form.Item>
           </div>
 
           <div className="flex flex-col md:flex-row gap-6 w-full">
             <Form.Item name="linkedin" label="LinkedIn Link" className="w-full md:w-1/2">
-              <Input />
+              <Input 
+                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+                placeholder="https://linkedin.com/in/username"
+              />
             </Form.Item>
             <Form.Item name="X" label="X (Twitter) Link" className="w-full md:w-1/2">
-              <Input />
-            </Form.Item>
-          </div>
-
-          {/* Admin Checkbox */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <Form.Item name="isAdmin" valuePropName="checked" className="mb-0">
-              <Checkbox className="text-lg">Is Admin</Checkbox>
+              <Input 
+                className="w-full px-3 py-2 bg-[#D5EDFF] border-0 rounded text-xs placeholder-gray-500"
+                placeholder="https://twitter.com/username"
+              />
             </Form.Item>
           </div>
 
@@ -444,7 +480,7 @@ console.log
                 <p className="text-gray-600 mt-1">Your educational background</p>
               </div>
               <Button
-                type="primary"
+                className="bg-[#77C4FE] text-white"
                 icon={<PlusOutlined />}
                 onClick={() => setIsEducationModalVisible(true)}
               >
@@ -453,46 +489,44 @@ console.log
             </div>
 
             {educationItems.map((item) => (
-              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4 max-w-md">
                 <div className="flex justify-between items-center pb-3">
                   <p className="text-lg font-semibold">{item.institution}</p>
                   <Button
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => deleteEducation(item.id)}
+                    onClick={() => deleteEducation(item.id)} 
+                    className="bg-[#F45050] text-white"
+                    size="small"
                   >
                     Delete
                   </Button>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-gray-600">{item.field}</p>
-                    <p className="text-gray-600">{item.degree}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <p className="text-gray-600">{item.field}</p>
+                  <p className="text-gray-600">{item.degree}</p>
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <p className="font-semibold text-gray-900">Start Date</p>
-                      <p className="text-gray-600">{moment(item.startDate).format("DD/MM/YYYY")}</p>
+                      <p className="font-semibold text-gray-900 text-sm">Start Date</p>
+                      <p className="text-gray-600 text-sm">{moment(item.startDate).format("DD/MM/YYYY")}</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">End Date</p>
-                      <p className="text-gray-600">
+                      <p className="font-semibold text-gray-900 text-sm">End Date</p>
+                      <p className="text-gray-600 text-sm">
                         {item.endDate ? moment(item.endDate).format("DD/MM/YYYY") : "N/A"}
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <p className="font-semibold text-gray-900">Grade</p>
-                      <p className="text-gray-600">{item.grade || "N/A"}</p>
+                      <p className="font-semibold text-gray-900 text-sm">Grade</p>
+                      <p className="text-gray-600 text-sm">{item.grade || "N/A"}</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">Status</p>
-                      <p className="text-gray-600">{item.status}</p>
+                      <p className="font-semibold text-gray-900 text-sm">Status</p>
+                      <p className="text-gray-600 text-sm">{item.status}</p>
                     </div>
                   </div>
                   <p className="text-blue-600 text-sm">{item.description || "No description"}</p>
-                  <p className="text-gray-600">Skills: {item.skills.join(", ") || "None"}</p>
+                  <p className="text-gray-600 text-sm">Skills: {item.skills.join(", ") || "None"}</p>
                 </div>
               </div>
             ))}
@@ -506,7 +540,7 @@ console.log
                 <p className="text-gray-600 mt-1">Your professional experience</p>
               </div>
               <Button
-                type="primary"
+                className="bg-[#77C4FE] text-white"
                 icon={<PlusOutlined />}
                 onClick={() => setIsExperienceModalVisible(true)}
               >
@@ -515,49 +549,47 @@ console.log
             </div>
 
             {experienceItems.map((item) => (
-              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4 max-w-md">
                 <div className="flex justify-between items-center pb-3">
                   <p className="text-lg font-semibold">{item.company}</p>
                   <Button
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => deleteExperience(item.id)}
+                    onClick={() => deleteExperience(item.id)} 
+                    className="bg-[#F45050] text-white"
+                    size="small"
                   >
                     Delete
                   </Button>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-gray-600">{item.position}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <p className="text-gray-600">{item.position}</p>
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <p className="font-semibold text-gray-900">Employment Type</p>
-                      <p className="text-gray-600">{item.employmentType}</p>
+                      <p className="font-semibold text-gray-900 text-sm">Employment Type</p>
+                      <p className="text-gray-600 text-sm">{item.employmentType}</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">Location</p>
-                      <p className="text-gray-600">{item.location || "N/A"}</p>
+                      <p className="font-semibold text-gray-900 text-sm">Location</p>
+                      <p className="text-gray-600 text-sm">{item.location || "N/A"}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <p className="font-semibold text-gray-900">Start Date</p>
-                      <p className="text-gray-600">{moment(item.startDate).format("DD/MM/YYYY")}</p>
+                      <p className="font-semibold text-gray-900 text-sm">Start Date</p>
+                      <p className="text-gray-600 text-sm">{moment(item.startDate).format("DD/MM/YYYY")}</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">End Date</p>
-                      <p className="text-gray-600">
+                      <p className="font-semibold text-gray-900 text-sm">End Date</p>
+                      <p className="text-gray-600 text-sm">
                         {item.endDate ? moment(item.endDate).format("DD/MM/YYYY") : "N/A"}
                       </p>
                     </div>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">Status</p>
-                    <p className="text-gray-600">{item.status}</p>
+                    <p className="font-semibold text-gray-900 text-sm">Status</p>
+                    <p className="text-gray-600 text-sm">{item.status}</p>
                   </div>
                   <p className="text-blue-600 text-sm">{item.description || "No description"}</p>
-                  <p className="text-gray-600">Skills: {item.skills.join(", ") || "None"}</p>
+                  <p className="text-gray-600 text-sm">Skills: {item.skills.join(", ") || "None"}</p>
                 </div>
               </div>
             ))}
@@ -571,7 +603,7 @@ console.log
                 <p className="text-gray-600 mt-1">Your awards and achievements</p>
               </div>
               <Button
-                type="primary"
+                className="bg-[#77C4FE] text-white"
                 icon={<PlusOutlined />}
                 onClick={() => setIsAchievementModalVisible(true)}
               >
@@ -580,25 +612,25 @@ console.log
             </div>
 
             {achievementItems.map((item) => (
-              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div key={item.id} className="bg-gray-50 p-4 rounded-lg mb-4 max-w-md">
                 <div className="flex justify-between items-center pb-3">
                   <p className="text-lg font-semibold">{item.award}</p>
                   <Button
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => deleteAchievement(item.id)}
+                    onClick={() => deleteAchievement(item.id)} 
+                    className="bg-[#F45050] text-white"
+                    size="small"
                   >
                     Delete
                   </Button>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <div>
-                    <p className="font-semibold text-gray-900">Date</p>
-                    <p className="text-gray-600">{moment(item.date).format("DD/MM/YYYY")}</p>
+                    <p className="font-semibold text-gray-900 text-sm">Date</p>
+                    <p className="text-gray-600 text-sm">{moment(item.date).format("DD/MM/YYYY")}</p>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">Status</p>
-                    <p className="text-gray-600">{item.status}</p>
+                    <p className="font-semibold text-gray-900 text-sm">Status</p>
+                    <p className="text-gray-600 text-sm">{item.status}</p>
                   </div>
                   <p className="text-blue-600 text-sm">{item.description || "No description"}</p>
                 </div>
@@ -606,11 +638,16 @@ console.log
             ))}
           </div>
 
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <Form.Item name="isAdmin" valuePropName="checked" className="mb-0">
+              <Checkbox className="text-lg">Is Admin</Checkbox>
+            </Form.Item>
+          </div>
+
           <Form.Item className="flex justify-end mt-8">
             <Button
-              type="primary"
               htmlType="submit"
-              className="px-8 py-3 h-auto"
+              className="px-8 py-3 h-auto bg-[#77C4FE] text-white"
               loading={isLoading}
               disabled={uploading}
             >
@@ -625,16 +662,15 @@ console.log
           open={isEducationModalVisible}
           onCancel={() => setIsEducationModalVisible(false)}
           footer={null}
-          width={700}
-          destroyOnClose
+          width={600}
         >
           <Form form={educationForm} onFinish={onEducationFinish} layout="vertical">
             <Form.Item
-              name="schoolName"
-              label="School/University Name"
-              rules={[{ required: true, message: "Please input school name!" }]}
+              name="institution"
+              label="Institution Name"
+              rules={[{ required: true, message: "Please input institution name!" }]}
             >
-              <Input />
+              <Input placeholder="Enter institution name" />
             </Form.Item>
 
             <Form.Item
@@ -643,21 +679,21 @@ console.log
               rules={[{ required: true, message: "Please select degree!" }]}
             >
               <Select placeholder="Select degree">
-                <Option value="bachelor">Bachelor's Degree</Option>
-                <Option value="master">Master's Degree</Option>
-                <Option value="phd">PhD</Option>
-                <Option value="associate">Associate Degree</Option>
-                <Option value="diploma">Diploma</Option>
-                <Option value="certificate">Certificate</Option>
+                <Option value="Bachelor">Bachelor's Degree</Option>
+                <Option value="Master">Master's Degree</Option>
+                <Option value="PhD">PhD</Option>
+                <Option value="Associate">Associate Degree</Option>
+                <Option value="Diploma">Diploma</Option>
+                <Option value="Certificate">Certificate</Option>
               </Select>
             </Form.Item>
 
             <Form.Item
-              name="subject"
+              name="field"
               label="Field of Study"
               rules={[{ required: true, message: "Please input field of study!" }]}
             >
-              <Input />
+              <Input placeholder="Enter field of study" />
             </Form.Item>
 
             <Form.Item name="grade" label="Grade">
@@ -682,7 +718,7 @@ console.log
             </div>
 
             <Form.Item name="description" label="Description">
-              <TextArea rows={4} />
+              <TextArea rows={4} placeholder="Describe your education experience" />
             </Form.Item>
 
             <Form.Item name="status" label="Status" initialValue="completed">
@@ -692,11 +728,14 @@ console.log
               </Radio.Group>
             </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block>
+            <div className="flex justify-end gap-4 mt-6">
+              <Button onClick={() => setIsEducationModalVisible(false)}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit">
                 Save Education
               </Button>
-            </Form.Item>
+            </div>
           </Form>
         </Modal>
 
@@ -706,8 +745,7 @@ console.log
           open={isExperienceModalVisible}
           onCancel={() => setIsExperienceModalVisible(false)}
           footer={null}
-          width={700}
-          destroyOnClose
+          width={600}
         >
           <Form form={experienceForm} onFinish={onExperienceFinish} layout="vertical">
             <Form.Item
@@ -715,7 +753,7 @@ console.log
               label="Company"
               rules={[{ required: true, message: "Please input company name!" }]}
             >
-              <Input />
+              <Input placeholder="Enter company name" />
             </Form.Item>
 
             <Form.Item
@@ -723,7 +761,7 @@ console.log
               label="Position"
               rules={[{ required: true, message: "Please input position!" }]}
             >
-              <Input />
+              <Input placeholder="Enter your position" />
             </Form.Item>
 
             <Form.Item
@@ -761,7 +799,7 @@ console.log
             </div>
 
             <Form.Item name="description" label="Description">
-              <TextArea rows={4} />
+              <TextArea rows={4} placeholder="Describe your experience" />
             </Form.Item>
 
             <Form.Item name="status" label="Status" initialValue="completed">
@@ -771,11 +809,14 @@ console.log
               </Radio.Group>
             </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block>
+            <div className="flex justify-end gap-4 mt-6">
+              <Button onClick={() => setIsExperienceModalVisible(false)}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit">
                 Save Experience
               </Button>
-            </Form.Item>
+            </div>
           </Form>
         </Modal>
 
@@ -785,8 +826,7 @@ console.log
           open={isAchievementModalVisible}
           onCancel={() => setIsAchievementModalVisible(false)}
           footer={null}
-          width={700}
-          destroyOnClose
+          width={600}
         >
           <Form form={achievementForm} onFinish={onAchievementFinish} layout="vertical">
             <Form.Item
@@ -794,7 +834,7 @@ console.log
               label="Award Name"
               rules={[{ required: true, message: "Please input award name!" }]}
             >
-              <Input />
+              <Input placeholder="Enter award name" />
             </Form.Item>
 
             <Form.Item
@@ -806,7 +846,7 @@ console.log
             </Form.Item>
 
             <Form.Item name="description" label="Description">
-              <TextArea rows={4} />
+              <TextArea rows={4} placeholder="Describe your achievement" />
             </Form.Item>
 
             <Form.Item name="status" label="Status" initialValue="achieved">
@@ -816,11 +856,14 @@ console.log
               </Radio.Group>
             </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block>
+            <div className="flex justify-end gap-4 mt-6">
+              <Button onClick={() => setIsAchievementModalVisible(false)}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit">
                 Save Achievement
               </Button>
-            </Form.Item>
+            </div>
           </Form>
         </Modal>
       </div>

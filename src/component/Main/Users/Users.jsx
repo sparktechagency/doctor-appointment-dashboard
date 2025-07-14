@@ -95,11 +95,15 @@ const Users = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <BsInfoCircle
-            onClick={() => handleView(record)}
-            size={18}
-            className="text-[#111111] cursor-pointer"
-          />
+          <button onClick={() => handleView(record)}
+            size={18}>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2.97928 10.2709C4.36459 8.19808 7.26856 5 12 5C16.7314 5 19.6354 8.19808 21.0207 10.2709C21.4856 10.9665 21.718 11.3143 21.6969 11.9569C21.6757 12.5995 21.4089 12.9469 20.8752 13.6417C19.2861 15.7107 16.113 19 12 19C7.88704 19 4.71388 15.7107 3.12475 13.6417C2.59111 12.9469 2.32428 12.5995 2.30313 11.9569C2.28197 11.3143 2.51441 10.9665 2.97928 10.2709ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 7.99999 9.79086 7.99999 12C7.99999 14.2091 9.79086 16 12 16Z" fill="#414141"/>
+</svg>
+
+          </button>
+           
+       
         </Space>
       ),
     },
@@ -170,7 +174,7 @@ const Users = () => {
               pageSize: usersData?.limit || 10,
               total: usersData?.totalResults || 0,
               onChange: setCurrentPage,
-              position: ["bottomCenter"]
+              position: ["end"]
             }}
             columns={columns}
             dataSource={dataSource}

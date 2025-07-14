@@ -7,10 +7,10 @@ const Appointment = () => {
     <div>
       <AppointmentSection />
       <div className="md:flex justify-between ">
-        <div className="w-full">
+        <div className="w-2/3">
           <CustomCalendar />
         </div>
-        <div className="w-full">
+        <div className="w-1/3">
           <DayAppointment />
         </div>
       </div>

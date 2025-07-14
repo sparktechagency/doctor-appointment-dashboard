@@ -80,7 +80,7 @@ const Earnings = () => {
             src={`${imageBaseUrl}${record.user?.profileImage || '/uploads/users/user.png'}`}
             alt="avatar"
             onError={(e) => {
-              e.target.src = `${imageBaseUrl}/uploads/users/user.png`;
+              e.target.src = "https://randomuser.me/api/portraits/men/1.jpg";
             }}
           />
           {text || 'N/A'}
@@ -117,10 +117,13 @@ const Earnings = () => {
       key: "action",
       width: 80,
       render: (_, record) => (
-        <InfoCircleOutlined
-          className="cursor-pointer text-lg text-[#77C4FE] hover:text-[#5aa8e6] transition-colors"
-          onClick={() => showModal(record)}
-        />
+        <button  
+          onClick={() => showModal(record)}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2.97928 10.2709C4.36459 8.19808 7.26856 5 12 5C16.7314 5 19.6354 8.19808 21.0207 10.2709C21.4856 10.9665 21.718 11.3143 21.6969 11.9569C21.6757 12.5995 21.4089 12.9469 20.8752 13.6417C19.2861 15.7107 16.113 19 12 19C7.88704 19 4.71388 15.7107 3.12475 13.6417C2.59111 12.9469 2.32428 12.5995 2.30313 11.9569C2.28197 11.3143 2.51441 10.9665 2.97928 10.2709ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 7.99999 9.79086 7.99999 12C7.99999 14.2091 9.79086 16 12 16Z" fill="#414141"/>
+</svg>
+</button>
+       
+    
       ),
     },
   ];
@@ -223,9 +226,9 @@ const Earnings = () => {
           },
         }}
         closeIcon={
-          <div className="flex items-center justify-center size-8 bg-[#77C4FE] rounded-full text-white hover:bg-[#5aa8e6] transition-colors">
+            <span className="flex items-center justify-center w-10 h-10 bg-red-500 rounded-tr-lg rounded-bl-2xl">
             ×
-          </div>
+          </span>
         }
       >
         {selectedRecord && (
@@ -236,9 +239,9 @@ const Earnings = () => {
                   className="size-24 rounded-full object-cover border-4 border-[#77C4FE]"
                   src={`${imageBaseUrl}${selectedRecord?.user?.profileImage || '/uploads/users/user.png'}`}
                   alt="Profile"
-                  onError={(e) => {
-                    e.target.src = `${imageBaseUrl}/uploads/users/user.png`;
-                  }}
+                 onError={(e) => {
+              e.target.src = "https://randomuser.me/api/portraits/men/1.jpg";
+            }}
                 />
                 <h3 className="mt-2 font-medium">{selectedRecord?.user?.fullName}</h3>
                 <p className="text-gray-500">User</p>

@@ -28,7 +28,8 @@ const MessagePage = () => {
     const [isTyping, setIsTyping] = useState(false);
     const [conversationStatus, setConversationStatus] = useState("active");
     const [conversationId, setConversationId] = useState(null);
-    
+    const [isSendingZoomLink, setIsSendingZoomLink] = useState(false);
+     const [conversation, setConversation] = useState("active");
     const messagesEndRef = useRef(null);
     const socketInitialized = useRef(false);
     const [loading, setLoading] = useState({
@@ -90,7 +91,7 @@ const MessagePage = () => {
 
         const receiverId = localStorage.getItem("receiverId");
         const savedConversation = localStorage.getItem("currentConversation");
-        
+       
         if (!receiverId && !savedConversation) {
             console.error('No receiverId found');
             setError('Please select a conversation first');
@@ -111,7 +112,7 @@ const MessagePage = () => {
                     online: false,
                     _id: otherUser._id || receiverId
                 });
-                
+                 setConversation(conversation)
                 if (conversation.status) {
                     setConversationStatus(conversation.status);
                 }
@@ -194,7 +195,7 @@ const MessagePage = () => {
         socket.on("conversation-status", handleConversationStatus);
         socket.on("user-status", handleUserStatus);
         socket.on("message-seen", handleMessageSeen);
-
+console.log(conversation)
         socket.emit("message-page", { 
             receiver: receiverId,
             appointmentId
@@ -270,7 +271,7 @@ const MessagePage = () => {
     const sendMessage = async (e) => {
         e.preventDefault();
         const socket = getSocket();
-        if (!messageInput.trim() || !socket || !appointmentId || !isSocketConnected || !receiver?._id) {
+        if (!messageInput.trim() || !socket || !isSocketConnected || !receiver?._id) {
             return;
         }
 
@@ -312,6 +313,61 @@ const MessagePage = () => {
         } catch (error) {
             setMessages(prev => prev.filter(msg => msg._id !== tempId));
             setError("Failed to send message. Please try again.");
+        }
+    };
+
+    const handleArrangeConsultation = async () => {
+        const socket = getSocket();
+        if (!socket || !isSocketConnected || !receiver?._id) {
+            setError("Connection error. Please try again.");
+            return;
+        }
+
+        if (conversationStatus === "inactive" && userRole !== "superAdmin") {
+            setError("You cannot send messages in an inactive conversation");
+            return;
+        }
+
+        if (!appointmentId) {
+            setError("Please select an appointment first");
+            return;
+        }
+
+        setIsSendingZoomLink(true);
+        console.log(currentUserId)
+        try {
+            const messagePayload = {
+                sender: currentUserId,
+                receiver: receiver._id,
+                appointmentId,
+                msgByUserId: currentUserId,
+                type: "link"
+            };
+
+            const tempId = `temp_${Date.now()}`;
+            const tempMessage = {
+                _id: tempId,
+                text: "🔗 Creating Zoom meeting link...",
+                msgByUserId: currentUserId,
+                createdAt: new Date().toISOString(),
+                seen: false,
+                isTemporary: true,
+                type: "link"
+            };
+
+            setMessages(prev => [...prev, tempMessage]);
+            scrollToBottom();
+
+            socket.emit('new-message', messagePayload, (ack) => {
+                setIsSendingZoomLink(false);
+                if (!ack?.success) {
+                    setMessages(prev => prev.filter(msg => msg._id !== tempId));
+                    setError(ack?.error?.message || "Failed to create Zoom meeting. Please try again.");
+                }
+            });
+        } catch (error) {
+            setIsSendingZoomLink(false);
+            setError("Failed to create Zoom meeting. Please try again.");
         }
     };
 
@@ -402,7 +458,9 @@ const MessagePage = () => {
                           />
                         </button>
                     )}
-                    
+                     <Link to={`/prescription/${conversation.appointment.appointmentId}`} className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
+                        Write Prescription
+                    </Link>
                     <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
                         <FiMoreVertical className="text-gray-600" size={18} />
                     </button>
@@ -501,8 +559,13 @@ const MessagePage = () => {
                                 <path d="M4.00004 11.5571C12.7742 1.88169 14.7628 2.45166 17.8539 5.39632C20.6252 8.03636 21.1384 9.76254 16.8274 14.6365C10.5662 21.6427 8.75355 21.2427 6.58068 19.1955C3.60828 16.3951 4.83082 14.6365 10 9.99998C11.2686 8.86214 12.4517 7.97229 14 9.49998C15.5484 11.0277 15 12 10 17" stroke="#4E4E4E" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                         </button> 
-                        <button type="button" className="h-10 w-15 font-small rounded-md px-2 text-[#FDFDFD] bg-[#77C4FE]">
-                            Arrange Consultation
+                        <button 
+                            type="button" 
+                            className="h-10 w-15 font-small rounded-md px-2 text-[#FDFDFD] bg-[#77C4FE] disabled:opacity-50"
+                            onClick={handleArrangeConsultation}
+                            disabled={!isSocketConnected || !receiver?._id || !appointmentId || isSendingZoomLink || (conversationStatus === "inactive" && userRole !== "superAdmin")}
+                        >
+                            {isSendingZoomLink ? 'Creating...' : 'Arrange Consultation'}
                         </button>
                     </div>
                    

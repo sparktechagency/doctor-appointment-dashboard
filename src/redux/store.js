@@ -6,6 +6,7 @@ import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
 import { combineReducers } from "redux";
 import socketReducer from "./features/socket/socketSlice";
+import { teamApi } from "./features/product/teamApi";
 
 const authPersistConfig = {
   key: "auth",
@@ -16,13 +17,14 @@ const authPersistConfig = {
 const socketPersistConfig = {
   key: "socket",
   storage,
-  blacklist: ['socketId'], // Don't persist socket ID
+  blacklist: ['socketId'],
 };
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   socket: persistReducer(socketPersistConfig, socketReducer),
   [baseApi.reducerPath]: baseApi.reducer,
+  [teamApi.reducerPath]: teamApi.reducer,
 });
 
 export const store = configureStore({
@@ -33,7 +35,10 @@ export const store = configureStore({
         ignoredActions: ['persist/PERSIST'],
         ignoredPaths: ['socket.socketId']
       },
-    }).concat(baseApi.middleware),
+    }).concat(
+      baseApi.middleware,
+      teamApi.middleware
+    ),
 });
 
 export const persistor = persistStore(store);

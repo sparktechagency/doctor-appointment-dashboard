@@ -10,16 +10,20 @@ const { Meta } = Card;
 
 const AboutProfile = () => {
     const { user } = useSelector((state) => state.auth);
-    const { data: teamMembers = [], isLoading } = useGetAllTeamMembersQuery();
+    const { data: teamMembers = [], isLoading, isError } = useGetAllTeamMembersQuery();
     
     // Find the first admin team member
-    const adminTeamMember = teamMembers.find(member => member.isAdmin) || {};
-    
+    const adminTeamMember = teamMembers.find(member => member?.isAdmin);
+    console.log(teamMembers )
     const profileImageUrl = `${BASE_URL}${user?.profileImage}`;
-    const adminProfileImageUrl = `${BASE_URL}${adminTeamMember?.profileImage}`;
+    const adminProfileImageUrl = adminTeamMember?.profileImage ? `${BASE_URL}${adminTeamMember.profileImage}` : null;
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-64">Loading...</div>;
+    }
+
+    if (isError) {
+        return <div className="flex justify-center items-center h-64 text-red-500">Error loading team data</div>;
     }
 
     return (
@@ -48,30 +52,36 @@ const AboutProfile = () => {
                 </div>
 
                 <div className="mx-auto md:w-[20%] mt-16">
-                    
-
                     {/* Display Admin Team Member */}
-                    {adminTeamMember && (
+                    {adminTeamMember ? (
                         <div className="mt-8">
                             <img
-                                className="rounded-md"
-                                alt="admin profile"
+                                className="rounded-md w-full h-auto max-h-[200px] object-cover"
+                                alt={`${adminTeamMember.fullName}'s profile`}
                                 src={adminProfileImageUrl}
-                               
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = '/default-profile.png';
+                                }}
                             />
                             <div className="py-5">
                                 <Meta
-                                    title={adminTeamMember.fullName}
+                                    title={adminTeamMember.fullName || "Admin Team Member"}
                                     description={adminTeamMember.designation || "Team Admin"}
                                 />
                             </div>
                         </div>
+                    ) : (
+                        <div className="mt-8 p-4 bg-gray-100 rounded-md text-center">
+                            <p className="text-gray-500">No admin team member found</p>
+                        </div>
                     )}
-                     <Link to="/edit-personal-info">
-                            <button className="w-full mt-2 bg-secondary py-2 text-center text-white rounded-md border-none">
-                                Edit Information
-                            </button>
-                        </Link>
+                    
+                    <Link to="/edit-personal-info">
+                        <button className="w-full mt-2 bg-[#77C4FE] py-2 text-center text-white rounded-md border-none">
+                            Edit Information
+                        </button>
+                    </Link>
                 </div>
             </section>
         </div>
