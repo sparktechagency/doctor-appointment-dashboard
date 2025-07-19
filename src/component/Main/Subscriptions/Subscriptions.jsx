@@ -21,7 +21,7 @@ const Subscriptions = () => {
         </h1>
         <Link
           to="/subscriptions/add-item"
-          className="px-4 py-2 bg-blue-500 text-white rounded flex items-center gap-2 hover:bg-blue-600 transition"
+          className="px-4 py-2 bg-[#77c4fe] text-white rounded flex items-center gap-2 hover:bg-blue-600 transition"
         >
           <FaPlus />
           Add Subscription
