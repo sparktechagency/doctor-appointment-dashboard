@@ -1,6 +1,6 @@
 import { Modal } from "antd";
 import PropTypes from "prop-types";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle,FaPoundSign } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useDeleteSubscriptionMutation } from "../../../redux/features/subscription/subscriptionApi";
@@ -31,9 +31,9 @@ const SubscriptionsCard = ({ subscription, index }) => {
   // Determine pricing period text based on limitation
   const getPeriodText = () => {
     switch (limitation) {
-      case 'monthly': return 'Per Month';
-      case 'annual': return 'Per Year';
-      case 'weekly': return 'Per Week';
+      case 'monthly': return 'Pay Prescription';
+      case 'annual': return 'Pay Prescription';
+      case 'weekly': return 'Pay Consultation';
       default: return 'Per Month';
     }
   };
@@ -58,7 +58,7 @@ const SubscriptionsCard = ({ subscription, index }) => {
           <div className="relative flex">
             <p className="text-[3.25rem] p-2 mb-5">{amount}</p>  
             <div className="flex flex-col justify-start items-start">
-                  <p className="">$</p>  
+                  <p className=""><FaPoundSign/></p>  
               <span className="text-md">{getPeriodText()}</span>
             </div>
           </div>

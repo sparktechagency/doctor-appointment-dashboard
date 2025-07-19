@@ -88,7 +88,7 @@ const AddSubscriptions = () => {
 
         {/* Billing Cycle */}
         <Form.Item
-          label="Billing Cycle"
+          label="Pay Subscription"
           name="limitation"
           rules={[{ required: true, message: "Please select billing cycle!" }]}
           className="w-[60%]"

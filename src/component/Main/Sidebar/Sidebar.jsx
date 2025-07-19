@@ -8,7 +8,7 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { PiCurrencyCircleDollar, PiTestTubeFill, PiUsersThree } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import LogoImage from "../../../assets/auth/Logo.png";
+import LogoImage from "../../../assets/logotrust.png";
 import { logoutUser } from "../../../redux/features/auth/authSlice";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { AiOutlineInfoCircle } from "react-icons/ai";
